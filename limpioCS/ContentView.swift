@@ -16,7 +16,7 @@
 //  Nota: Asegúrate de inyectar .environmentObject(LocationService())
 //  en la jerarquía superior (App) para que la ubicación funcione.
 //
-//  Fecha: 2025-10-03
+//  Fecha: 2025-10-03 la hora de hoy es 15:55
 //
 
 import SwiftUI

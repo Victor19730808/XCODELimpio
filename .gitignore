@@ -1,0 +1,43 @@
+# ——— Xcode ———
+xcuserdata/
+*.xcuserstate
+*.xccheckout
+*.moved-aside
+*.xcscmblueprint
+DerivedData/
+*.ipa
+*.dSYM
+*.dSYM.zip
+
+# ——— Swift / SPM ———
+.swiftpm/
+.build/
+
+# ——— CocoaPods / Carthage / Rome (si llegas a usarlos) ———
+Pods/
+Carthage/
+Rome/
+
+# ——— Playgrounds ———
+timeline.xctimeline
+playground.xcworkspace
+
+# ——— Logs, backups, temporales ———
+*.log
+*.orig
+*.rej
+*~.nib
+*~.xib
+
+# ——— Archivos de sistema ———
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# ——— Fastlane (si lo usas) ———
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output

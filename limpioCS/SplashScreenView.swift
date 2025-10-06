@@ -3,49 +3,151 @@ import SwiftUI
 struct SplashScreenView: View {
     @State private var isAnimating = false
     @State private var showMainApp = false
-    @State private var logoScale: CGFloat = 0.5
+    @State private var logoScale: CGFloat = 0.8
     @State private var logoOpacity: Double = 0.0
     @State private var backgroundOpacity: Double = 0.0
-    @State private var particleOffset: CGFloat = 0
-    @State private var glowIntensity: Double = 0.0
-    @State private var rotationAngle: Double = 0.0
+    @State private var headerOpacity: Double = 0.0
+    @State private var contentOpacity: Double = 0.0
+    @State private var pulseScale: CGFloat = 1.0
+    
+    // Colores inspirados en El Buen Fin
+    private let buenFinRed = Color(red: 0.89, green: 0.12, blue: 0.14) // #E31E24
+    private let buenFinWhite = Color.white
+    private let buenFinGray = Color(red: 0.2, green: 0.2, blue: 0.2) // #333333
     
     var body: some View {
         ZStack {
-            // Fondo con gradiente animado
-            AnimatedGradientBackground()
+            // Fondo blanco limpio como El Buen Fin
+            Color.white
                 .ignoresSafeArea()
                 .opacity(backgroundOpacity)
             
-            // Imagen de portada con parallax
-            Image("Portada")
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .ignoresSafeArea()
-                .opacity(logoOpacity)
-                .scaleEffect(logoScale)
-                .offset(y: particleOffset * 0.3) // Efecto parallax
-                .animation(.easeInOut(duration: 1.0), value: logoScale)
-                .animation(.easeInOut(duration: 1.0), value: logoOpacity)
-                .animation(.easeInOut(duration: 2.0).repeatForever(autoreverses: true), value: particleOffset)
-            
-            // Efecto de partículas
-            ParticleEffectView(offset: particleOffset)
-                .opacity(logoOpacity * 0.6)
-            
-            // Overlay con efecto de desvanecimiento
-            Rectangle()
-                .fill(Color.black.opacity(0.3))
-                .ignoresSafeArea()
-                .opacity(isAnimating ? 0.0 : 1.0)
-                .animation(.easeInOut(duration: 1.5), value: isAnimating)
-            
-                // Logo/Texto de la app con efectos avanzados
-                VStack(spacing: 20) {
-                    // Contenido removido - solo efectos de fondo
+            VStack(spacing: 0) {
+                    // Header rojo minimalista
+                    VStack(spacing: 0) {
+                        HStack {
+                            Spacer()
+                            
+                            // Etiqueta "Hecho en México" centrada
+                            Text("Hecho en México")
+                                .font(.system(size: 14, weight: .medium, design: .rounded))
+                                .foregroundColor(buenFinWhite)
+                            
+                            Spacer()
+                        }
+                        .padding(.top, 20)
+                        .padding(.bottom, 20)
+                        
+                        // Línea divisoria
+                        Rectangle()
+                            .fill(buenFinWhite.opacity(0.3))
+                            .frame(height: 1)
+                            .padding(.horizontal, 20)
+                    }
+                .frame(height: 120)
+                .background(buenFinRed)
+                .opacity(headerOpacity)
+                
+                // Contenido principal con fondo gris
+                VStack(spacing: 0) {
+                    // Fondo gris elegante
+                    ZStack {
+                        // Fondo gris degradado
+                        LinearGradient(
+                            gradient: Gradient(colors: [
+                                Color.gray.opacity(0.1),
+                                Color.gray.opacity(0.05),
+                                Color.white
+                            ]),
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                        .ignoresSafeArea()
+                        
+                        VStack(spacing: 40) {
+                            Spacer()
+                            
+                            // Composición elegante con las tres imágenes
+                            VStack(spacing: 0) {
+                                // Composición triangular de las imágenes
+                                ZStack {
+                                    // Círculo de fondo con pulso sutil
+                                    Circle()
+                                        .fill(buenFinRed.opacity(0.08))
+                                        .frame(width: 400, height: 400)
+                                        .scaleEffect(pulseScale)
+                                        .animation(.easeInOut(duration: 2.0).repeatForever(autoreverses: true), value: pulseScale)
+                                    
+                                    // Composición de las tres imágenes
+                                    VStack(spacing: 25) {
+                                        // Imagen superior - CO
+                                        Image("CO")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 140, height: 140)
+                                            .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 4)
+                                            .scaleEffect(logoScale)
+                                        
+                                        // Imágenes inferiores - HM y BF lado a lado
+                                        HStack(spacing: 35) {
+                                            Image("HM")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 120, height: 120)
+                                                .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 4)
+                                                .scaleEffect(logoScale)
+                                            
+                                            Image("BF")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 120, height: 120)
+                                                .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 4)
+                                                .scaleEffect(logoScale)
+                                        }
+                                    }
+                                }
+                                .opacity(logoOpacity)
+                            }
+                            
+                            Spacer()
+                            
+                            // Footer con mensaje poderoso
+                            VStack(spacing: 16) {
+                                VStack(spacing: 8) {
+                                    Text("IMPULSANDO EL CRECIMIENTO")
+                                        .font(.system(size: 18, weight: .bold, design: .rounded))
+                                        .foregroundColor(buenFinGray)
+                                    
+                                    Text("ECONÓMICO DE MÉXICO")
+                                        .font(.system(size: 18, weight: .bold, design: .rounded))
+                                        .foregroundColor(buenFinGray)
+                                }
+                                
+                                VStack(spacing: 6) {
+                                    Text("Conectamos consumidores con establecimientos")
+                                        .font(.system(size: 14, weight: .medium, design: .rounded))
+                                        .foregroundColor(buenFinGray.opacity(0.8))
+                                    
+                                    Text("para fortalecer la economía nacional")
+                                        .font(.system(size: 14, weight: .medium, design: .rounded))
+                                        .foregroundColor(buenFinGray.opacity(0.8))
+                                }
+                                
+                                // Etiqueta de desarrollador
+                                Text("Performed by: VAL Human Tech")
+                                    .font(.system(size: 10, weight: .light, design: .rounded))
+                                    .foregroundColor(buenFinGray.opacity(0.5))
+                                    .padding(.top, 8)
+                            }
+                            .opacity(contentOpacity)
+                            
+                            Spacer()
+                        }
+                        .padding(.horizontal, 30)
+                    }
                 }
-            .scaleEffect(logoScale)
-            .opacity(logoOpacity)
+                .padding(.horizontal, 30)
+            }
         }
         .onAppear {
             startAnimation()
@@ -56,114 +158,52 @@ struct SplashScreenView: View {
     }
     
     private func startAnimation() {
-        // Secuencia de animaciones avanzadas
-        withAnimation(.easeInOut(duration: 0.8)) {
+        // Secuencia de animaciones estilo El Buen Fin
+        withAnimation(.easeInOut(duration: 0.6)) {
             backgroundOpacity = 1.0
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            withAnimation(.easeOut(duration: 0.8)) {
+                headerOpacity = 1.0
+            }
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
             withAnimation(.easeOut(duration: 1.0)) {
                 logoScale = 1.0
                 logoOpacity = 1.0
             }
             
-            // Iniciar efectos de partículas
+            // Iniciar efecto de pulso
             withAnimation(.easeInOut(duration: 2.0).repeatForever(autoreverses: true)) {
-                particleOffset = 20
-            }
-            
-            // Iniciar efecto de brillo
-            withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
-                glowIntensity = 0.8
-            }
-            
-            // Iniciar rotación sutil
-            withAnimation(.easeInOut(duration: 3.0).repeatForever(autoreverses: true)) {
-                rotationAngle = 5
+                pulseScale = 1.1
             }
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            withAnimation(.easeInOut(duration: 0.8)) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+            withAnimation(.easeOut(duration: 0.8)) {
+                contentOpacity = 1.0
+            }
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
+            withAnimation(.easeInOut(duration: 0.6)) {
                 isAnimating = true
             }
         }
         
-        // Transición a la app principal después de 2.5 segundos
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-            showMainApp = true
-        }
-    }
-}
-
-// MARK: - Componentes de Animación Avanzada
-
-struct AnimatedGradientBackground: View {
-    @State private var gradientOffset: CGFloat = 0
-    
-    var body: some View {
-        LinearGradient(
-            gradient: Gradient(colors: [
-                Color.black,
-                Color.blue.opacity(0.8),
-                Color.purple.opacity(0.6),
-                Color.pink.opacity(0.4)
-            ]),
-            startPoint: UnitPoint(x: gradientOffset, y: 0),
-            endPoint: UnitPoint(x: 1 - gradientOffset, y: 1)
-        )
-        .onAppear {
-            withAnimation(.easeInOut(duration: 3.0).repeatForever(autoreverses: true)) {
-                gradientOffset = 0.3
+            // Transición a la app principal después de 5 segundos
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                showMainApp = true
             }
-        }
     }
 }
 
-struct ParticleEffectView: View {
-    let offset: CGFloat
-    @State private var particles: [Particle] = []
-    
-    var body: some View {
-        ZStack {
-            ForEach(particles, id: \.id) { particle in
-                Circle()
-                    .fill(particle.color)
-                    .frame(width: particle.size, height: particle.size)
-                    .position(particle.position)
-                    .opacity(particle.opacity)
-                    .scaleEffect(particle.scale)
-            }
-        }
-        .onAppear {
-            generateParticles()
-        }
-    }
-    
-    private func generateParticles() {
-        particles = (0..<20).map { _ in
-            Particle(
-                position: CGPoint(
-                    x: CGFloat.random(in: 0...UIScreen.main.bounds.width),
-                    y: CGFloat.random(in: 0...UIScreen.main.bounds.height)
-                ),
-                size: CGFloat.random(in: 2...6),
-                color: [Color.white, Color.blue, Color.purple].randomElement() ?? .white,
-                opacity: Double.random(in: 0.3...0.8),
-                scale: Double.random(in: 0.5...1.2)
-            )
-        }
-    }
-}
+// MARK: - Componentes de Estilo El Buen Fin
 
-struct Particle: Identifiable {
-    let id = UUID()
-    var position: CGPoint
-    let size: CGFloat
-    let color: Color
-    let opacity: Double
-    let scale: Double
-}
+// Los componentes de animación compleja han sido reemplazados por un diseño más limpio
+// inspirado en el estilo oficial de El Buen Fin
 
 #Preview {
     SplashScreenView()

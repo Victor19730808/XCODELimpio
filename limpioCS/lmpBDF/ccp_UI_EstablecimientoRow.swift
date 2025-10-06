@@ -22,6 +22,7 @@ struct ccp_UI_EstablecimientoRow: View {
     @EnvironmentObject private var locationService: LocationService
     @Bindable var est: lmpBDF_EstablecimientoLocal
     @State private var isPressed = false
+    @State private var showPromociones = false
 
     var body: some View {
         HStack(spacing: 12) {
@@ -87,28 +88,45 @@ struct ccp_UI_EstablecimientoRow: View {
 
             Spacer()
 
-            Button {
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                est.esFavorito.toggle()
-                    }
-                do {
-                    try modelContext.save()
-                } catch {
-                    print("⚠️ Error al guardar favorito:", error.localizedDescription)
+            HStack(spacing: 8) {
+                // Botón de promociones
+                Button {
+                    showPromociones = true
+                } label: {
+                    Image(systemName: "tag.fill")
+                        .font(.title3)
+                        .foregroundStyle(.blue)
+                        .padding(8)
+                        .background(.ultraThinMaterial)
+                        .clipShape(Circle())
                 }
-            } label: {
-                Image(systemName: est.esFavorito ? "star.fill" : "star")
+                .buttonStyle(.plain)
+                .accessibilityLabel("Ver promociones")
+                
+                // Botón de favoritos
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        est.esFavorito.toggle()
+                    }
+                    do {
+                        try modelContext.save()
+                    } catch {
+                        print("⚠️ Error al guardar favorito:", error.localizedDescription)
+                    }
+                } label: {
+                    Image(systemName: est.esFavorito ? "star.fill" : "star")
                         .font(.title2)
-                    .foregroundStyle(est.esFavorito ? .yellow : .secondary)
+                        .foregroundStyle(est.esFavorito ? .yellow : .secondary)
                         .scaleEffect(isPressed ? 0.9 : 1.0)
                 }
-            .buttonStyle(.plain)
-            .onLongPressGesture(minimumDuration: 0) { pressing in
-                withAnimation(.easeInOut(duration: 0.1)) {
-                    isPressed = pressing
-                }
-            } perform: {}
-            .accessibilityLabel(est.esFavorito ? "Quitar de favoritos" : "Agregar a favoritos")
+                .buttonStyle(.plain)
+                .onLongPressGesture(minimumDuration: 0) { pressing in
+                    withAnimation(.easeInOut(duration: 0.1)) {
+                        isPressed = pressing
+                    }
+                } perform: {}
+                .accessibilityLabel(est.esFavorito ? "Quitar de favoritos" : "Agregar a favoritos")
+            }
         }
         .padding(.vertical, 8)
         .padding(.horizontal, 12)
@@ -119,6 +137,9 @@ struct ccp_UI_EstablecimientoRow: View {
         )
         .scaleEffect(isPressed ? 0.98 : 1.0)
         .animation(.easeInOut(duration: 0.1), value: isPressed)
+        .sheet(isPresented: $showPromociones) {
+            ccp_BDF_PromocionesView()
+        }
     }
     
     // MARK: - Computed Properties

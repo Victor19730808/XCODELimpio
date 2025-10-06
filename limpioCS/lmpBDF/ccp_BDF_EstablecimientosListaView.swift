@@ -33,31 +33,9 @@ struct ccp_BDF_EstablecimientosListaView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Encabezado personalizado "Participantes" como DB MORSA ADM
-            HStack {
-                Text("Participantes")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.primary)
-                
-                Spacer()
-            }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 16)
-            .background(.ultraThinMaterial)
-            
-            // Header con contador, búsqueda y controles
-            VStack(spacing: 12) {
-                // Contador de registros
-                HStack {
-                    Text("\(all.count) registros")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    
-                    Spacer()
-                }
-                
-                // Barra de búsqueda y controles
+            // Header con búsqueda y controles
+                VStack(spacing: 12) {
+                    // Barra de búsqueda y controles
                 HStack(spacing: 12) {
                     // Barra de búsqueda
                     HStack {
@@ -126,8 +104,8 @@ struct ccp_BDF_EstablecimientosListaView: View {
                     }
                 }
             }
-        }
-            .navigationTitle("")
+            }
+            .navigationTitle("Participantes")
             .navigationBarTitleDisplayMode(.inline)
     }
 }

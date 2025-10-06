@@ -30,7 +30,7 @@ struct SplashScreenView: View {
                             
                             // Etiqueta "Hecho en México" centrada
                             Text("Hecho en México")
-                                .font(.system(size: 14, weight: .medium, design: .rounded))
+                                .font(.system(size: 16, weight: .medium, design: .rounded))
                                 .foregroundColor(buenFinWhite)
                             
                             Spacer()

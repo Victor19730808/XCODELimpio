@@ -19,7 +19,7 @@ import SwiftUI
 struct PORT_PASO: View {
     @EnvironmentObject private var location: LocationService
     @State private var scrollOffset: CGFloat = 0
-    @State private var cardAnimations: [Bool] = Array(repeating: false, count: 3)
+    @State private var cardAnimations: [Bool] = Array(repeating: false, count: 4)
     
     var body: some View {
         NavigationStack {
@@ -36,73 +36,120 @@ struct PORT_PASO: View {
                 )
                 .ignoresSafeArea()
                 
-                ScrollView {
-                    VStack(spacing: 30) {
-                        // Header con imagen y título con parallax
-                        VStack(spacing: 15) {
-                            Image("Portada")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(height: 120)
-                                .clipShape(RoundedRectangle(cornerRadius: 15))
-                                .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
-                                .offset(y: scrollOffset * 0.5) // Efecto parallax
-                                .scaleEffect(1 + scrollOffset * 0.0001) // Efecto de zoom sutil
+                VStack(spacing: 0) {
+                    // Header rojo con menú hamburguesa
+                    VStack(spacing: 0) {
+                        HStack {
+                            // Espacio para balance visual
+                            Color.clear
+                                .frame(width: 30, height: 30)
                             
-                            VStack(spacing: 8) {
-                                Text("Sistema de Gestión de Establecimientos")
+                            Spacer()
+                            
+                            // Etiqueta "Hecho en México" centrada
+                            Text("Hecho en México")
+                                .font(.system(size: 16, weight: .medium, design: .rounded))
+                                .foregroundColor(.white)
+                            
+                            Spacer()
+                            
+                            // Menú hamburguesa
+                            Menu {
+                                Button {
+                                    // Mis configuraciones
+                                } label: {
+                                    Label("Mis Configuraciones", systemImage: "gear")
+                                }
+                                
+                                Button {
+                                    // Búsquedas Avanzadas
+                                } label: {
+                                    Label("Búsquedas Avanzadas", systemImage: "magnifyingglass.circle")
+                                }
+                                
+                                Button {
+                                    // Admin Datos
+                                } label: {
+                                    Label("Admin Datos", systemImage: "wrench.and.screwdriver")
+                                }
+                            } label: {
+                                Image(systemName: "line.3.horizontal")
                                     .font(.title2)
-                                    .fontWeight(.semibold)
-                                    .foregroundColor(.primary)
-                                    .multilineTextAlignment(.center)
-                                    .offset(y: scrollOffset * 0.2) // Parallax en el subtítulo
+                                    .foregroundColor(.white)
                             }
+                            .padding(.trailing, 16)
                         }
                         .padding(.top, 20)
+                        .padding(.bottom, 20)
                         
-                        // Cards de funcionalidades con animaciones
+                        // Línea divisoria
+                        Rectangle()
+                            .fill(Color.white.opacity(0.3))
+                            .frame(height: 1)
+                            .padding(.horizontal, 20)
+                    }
+                    .frame(height: 120)
+                    .background(Color(red: 0.89, green: 0.12, blue: 0.14)) // Mismo rojo del splash
+                    
+                    ScrollView {
+                        VStack(spacing: 30) {
+                            // Espaciado superior
+                            Spacer()
+                                .frame(height: 20)
+                        
+                        // Cards principales para usuarios
                         VStack(spacing: 20) {
-                            // Sección Explorar
+                            // Participantes - Lista Unificada
                             MenuCard(
-                                title: "Explorar Base de Datos",
-                                icon: "magnifyingglass.circle.fill",
+                                title: "Participantes",
+                                icon: "building.2.fill",
                                 color: .blue,
                                 items: [
-                                    MenuItem(title: "Lista Unificada", subtitle: "Filtros y búsqueda", destination: AnyView(ccp_BDF_EstablecimientosListaView())),
-                                    MenuItem(title: "Favoritos", subtitle: "Establecimientos guardados", destination: AnyView(ccp_BDF_FavoritosView()))
+                                    MenuItem(title: "Lista de Establecimientos", subtitle: "Todos los participantes", destination: AnyView(ccp_BDF_EstablecimientosListaView()))
                                 ]
                             )
                             .offset(x: cardAnimations[0] ? 0 : -50)
                             .opacity(cardAnimations[0] ? 1 : 0)
                             .animation(.easeOut(duration: 0.6).delay(0.1), value: cardAnimations[0])
                             
-                            // Sección Administración
+                            // Mis Favoritos
                             MenuCard(
-                                title: "Administración",
-                                icon: "gear.circle.fill",
-                                color: .orange,
+                                title: "Mis Favoritos",
+                                icon: "heart.fill",
+                                color: .red,
                                 items: [
-                                    MenuItem(title: "Prueba DB Incremental", subtitle: "Gestión de datos", destination: AnyView(ccp_BDF_DBIncrementalTestView())),
-                                    MenuItem(title: "Promociones", subtitle: "Gestión de ofertas", destination: AnyView(ccp_BDF_PromocionesView()))
+                                    MenuItem(title: "Favoritos", subtitle: "Mis participantes guardados", destination: AnyView(ccp_BDF_FavoritosView()))
                                 ]
                             )
                             .offset(x: cardAnimations[1] ? 0 : 50)
                             .opacity(cardAnimations[1] ? 1 : 0)
                             .animation(.easeOut(duration: 0.6).delay(0.3), value: cardAnimations[1])
                             
-                            // Sección Mapas
+                            // Cerca de Mi
                             MenuCard(
-                                title: "Visualización",
-                                icon: "map.circle.fill",
+                                title: "Cerca de Mi",
+                                icon: "location.fill",
                                 color: .green,
                                 items: [
-                                    MenuItem(title: "Mapa Principal", subtitle: "Vista general", destination: AnyView(ccp_BDF_MapView())),
-                                    MenuItem(title: "Mapa con Clusters", subtitle: "Vista agrupada", destination: AnyView(ccp_BDF_MapClustersView()))
+                                    MenuItem(title: "Mapa de Cercanías", subtitle: "Participantes cercanos", destination: AnyView(ccp_BDF_MapView()))
                                 ]
                             )
                             .offset(x: cardAnimations[2] ? 0 : -50)
                             .opacity(cardAnimations[2] ? 1 : 0)
                             .animation(.easeOut(duration: 0.6).delay(0.5), value: cardAnimations[2])
+                            
+                            // Todo México
+                            MenuCard(
+                                title: "Todo México",
+                                icon: "map.fill",
+                                color: .orange,
+                                items: [
+                                    MenuItem(title: "Mapa de la República", subtitle: "Vista de todo el país", destination: AnyView(ccp_BDF_MapClustersView()))
+                                ]
+                            )
+                            .offset(x: cardAnimations[3] ? 0 : 50)
+                            .opacity(cardAnimations[3] ? 1 : 0)
+                            .animation(.easeOut(duration: 0.6).delay(0.7), value: cardAnimations[3])
                         }
                         .padding(.horizontal, 20)
                         
@@ -124,7 +171,8 @@ struct PORT_PASO: View {
                             .padding(.horizontal, 20)
                         }
                         
-                        Spacer(minLength: 50)
+                            Spacer(minLength: 50)
+                        }
                     }
                 }
             }

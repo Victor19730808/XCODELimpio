@@ -8,8 +8,7 @@ struct limpioCSApp: App {
 
     var body: some Scene {
         WindowGroup {
-            // Si ya usas NavigationStack en ContentView, puedes dejarlo como está.
-            PORT_PASO()
+            SplashScreenView()
                 .environmentObject(locationService)
         }
         // ✅ Registramos el contenedor con el nuevo modelo lmpBDF

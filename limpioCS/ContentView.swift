@@ -47,7 +47,7 @@ struct ContentView: View {
                     NavigationLink {
                         ccp_BDF_DBIncrementalTestView()
                     } label: {
-                        Label("DB Incremental (ccp · prueba)", systemImage: "archivebox.fill")
+                        Label("Prueba DB Incremental", systemImage: "externaldrive.connected.to.line.below")
                     }
                 }
 

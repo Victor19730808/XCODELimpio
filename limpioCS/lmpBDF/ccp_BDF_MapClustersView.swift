@@ -28,10 +28,16 @@ import CoreLocation
 // MARK: - Vista principal
 
 struct ccp_BDF_MapClustersView: View {
+    @Environment(\.dismiss) private var dismiss
 
     // Dependencias
     @EnvironmentObject private var location: LocationService
     @Environment(\.modelContext) private var context
+    
+    // Colores inspirados en El Buen Fin
+    private let buenFinRed = Color(red: 0.89, green: 0.12, blue: 0.14) // #E31E24
+    private let buenFinWhite = Color.white
+    private let buenFinGray = Color(red: 0.2, green: 0.2, blue: 0.2) // #333333
 
     /// SwiftData: todos los establecimientos locales (ordenados por nombre).
     @Query(sort: [SortDescriptor(\lmpBDF_EstablecimientoLocal.nombre, comparator: .localizedStandard)])
@@ -42,10 +48,14 @@ struct ccp_BDF_MapClustersView: View {
     @State private var filtroNombre: String = ""
     @State private var filtroMunicipio: String = ""
     @State private var filtroEstado: String = ""
+    @State private var soloFavoritos = false                      // Filtro para mostrar solo favoritos
 
     // Mostrar/ocultar filtros
     @State private var mostrarFiltros: Bool = true
     @State private var showCategoriasSheet = false
+    
+    // Estadísticas
+    @State private var showStats = false                        // Mostrar/ocultar panel de estadísticas
 
     // Estado del mapa
     @State private var region: MKCoordinateRegion? = nil          // región visible (para zoom/recenter)
@@ -82,7 +92,7 @@ struct ccp_BDF_MapClustersView: View {
             .sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending }
     }
 
-    // Aplicar filtros (global, sin radio)
+    // Aplicar filtros (global, sin radio, incluyendo favoritos)
     private var filtrados: [lmpBDF_EstablecimientoLocal] {
         let categoriasSelNorm = Set(filtroCategorias.map(normalizeCategory))
         let nombre    = normalizeText(filtroNombre)
@@ -91,6 +101,9 @@ struct ccp_BDF_MapClustersView: View {
 
         return todos.filter { e in
             guard let _ = e.lat, let _ = e.lon else { return false }
+
+            // Filtro de favoritos
+            if soloFavoritos && !e.esFavorito { return false }
 
             if !categoriasSelNorm.isEmpty {
                 let catNorm = normalizeCategory(e.categoria)
@@ -103,135 +116,386 @@ struct ccp_BDF_MapClustersView: View {
             return true
         }
     }
+    
+    // Estadísticas por categoría de los establecimientos filtrados
+    private var estadisticasPorCategoria: [(categoria: String, count: Int, color: Color)] {
+        let categorias = Dictionary(grouping: filtrados, by: { normalizeCategory($0.categoria) })
+            .mapValues { $0.count }
+            .sorted { $0.value > $1.value }
+        
+        return categorias.map { (categoria, count) in
+            let color = colorForCategory(categoria)
+            return (categoria: categoria, count: count, color: color)
+        }
+    }
+    
+    // Función para obtener color por categoría
+    private func colorForCategory(_ raw: String?) -> Color {
+        let normalized = normalizeCategory(raw)
+        if let color = fixedPaletteNormalized[normalized] {
+            return color
+        }
+        return Color.gray
+    }
 
     var body: some View {
-        VStack(spacing: 8) {
-
-            // ---- Filtros (colapsables) ----
-            GroupBox {
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Text("Filtros").font(.headline)
-                        Spacer()
-                        Button {
-                            withAnimation { mostrarFiltros.toggle() }
-                        } label: {
-                            Label(mostrarFiltros ? "Ocultar" : "Mostrar",
-                                  systemImage: mostrarFiltros ? "chevron.up.circle.fill" : "chevron.down.circle.fill")
-                        }
-                        .buttonStyle(.bordered)
-                    }
-
-                    if mostrarFiltros {
-                        VStack(alignment: .leading, spacing: 10) {
-                            // Categorías — botón abre sheet con toggles
-                            VStack(alignment: .leading, spacing: 6) {
-                                HStack {
-                                    Text("Categorías:")
-                                    Button { showCategoriasSheet = true } label: {
-                                        if filtroCategorias.isEmpty {
-                                            Label("Todas", systemImage: "line.3.horizontal.decrease.circle")
-                                        } else {
-                                            Label("\(filtroCategorias.count) seleccionadas", systemImage: "line.3.horizontal.decrease.circle")
-                                        }
-                                    }
-                                    .buttonStyle(.bordered)
-                                }
-
-                                // Chips con lo seleccionado (removibles)
-                                if !filtroCategorias.isEmpty {
-                                    WrapChips(items: Array(filtroCategorias).sorted()) { cat in
-                                        HStack(spacing: 6) {
-                                            Text(cat).font(.caption)
-                                            Button { filtroCategorias.remove(cat) } label: {
-                                                Image(systemName: "xmark.circle.fill")
-                                            }
-                                            .buttonStyle(.plain)
-                                        }
-                                        .padding(.vertical, 4)
-                                        .padding(.horizontal, 8)
-                                        .background(.thinMaterial)
-                                        .clipShape(Capsule())
-                                    }
-                                    .padding(.top, 2)
-                                }
-                            }
-
-                            // Texto libre
-                            TextField("Nombre contiene…", text: $filtroNombre)
-                                .textFieldStyle(.roundedBorder)
-                            HStack {
-                                TextField("Municipio contiene…", text: $filtroMunicipio)
-                                    .textFieldStyle(.roundedBorder)
-                                TextField("Estado contiene…", text: $filtroEstado)
-                                    .textFieldStyle(.roundedBorder)
-                            }
-
-                            Text("Mostrando: \(filtrados.count)  ·  En BD: \(todos.count)")
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
-                        }
-                        .transition(.opacity.combined(with: .move(edge: .top)))
-                    }
-                }
-            }
-
-            // ---- Mapa con CLUSTER (UIKit bridge) ----
-            ClusterMap(
-                items: filtrados,
-                region: $region,
-                colorResolver: { rawCat in
-                    let key = normalizeCategory(rawCat)
-                    if let ui = fixedUIColor(for: key) { return ui }
-                    return hashedUIColor(from: key)
-                },
-                onSelect: { est in
-                    self.seleccionado = est
-                }
+        ZStack {
+            // Fondo con gradiente sutil
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    Color.gray.opacity(0.05),
+                    Color.white
+                ]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
             )
-            // Botones: Zoom, Ver México, Centrar en mí
-            .overlay(alignment: .topTrailing) {
-                VStack(spacing: 10) {
-                    Button { zoomIn() } label: {
-                        Image(systemName: "plus.magnifyingglass")
-                            .font(.title2.bold())
-                            .padding(8)
+            .ignoresSafeArea()
+            
+            VStack(spacing: 0) {
+                // Header rojo estilo El Buen Fin
+                VStack(spacing: 0) {
+                    HStack {
+                        // Botón regresar al menú principal
+                        HStack {
+                            Button {
+                                dismiss()
+                            } label: {
+                                Image(systemName: "house.fill")
+                                    .font(.title2)
+                                    .foregroundColor(buenFinWhite)
+                                    .padding(12)
+                                    .background(
+                                        Circle()
+                                            .fill(Color.white.opacity(0.2))
+                                            .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+                                    )
+                            }
+                            .padding(.leading, 20)
+                            
+                            Spacer()
+                        }
+                        .frame(maxWidth: .infinity)
+                        
+                        // Título "Mapa de la República" centrado
+                        Text("Mapa de la República")
+                            .font(.system(size: 18, weight: .bold, design: .rounded))
+                            .foregroundColor(buenFinWhite)
+                        
+                        // Menú hamburguesa
+                        HStack {
+                            Spacer()
+                            
+                            Menu {
+                                Button {
+                                    // Mis configuraciones
+                                } label: {
+                                    Label("Mis Configuraciones", systemImage: "gear")
+                                }
+                                
+                                Button {
+                                    // Búsquedas Avanzadas
+                                } label: {
+                                    Label("Búsquedas Avanzadas", systemImage: "magnifyingglass.circle")
+                                }
+                                
+                                Button {
+                                    // Admin Datos
+                                } label: {
+                                    Label("Admin Datos", systemImage: "wrench.and.screwdriver")
+                                }
+                            } label: {
+                                Image(systemName: "line.3.horizontal")
+                                    .font(.title2)
+                                    .foregroundColor(buenFinWhite)
+                                    .padding(12)
+                                    .background(
+                                        Circle()
+                                            .fill(Color.white.opacity(0.2))
+                                            .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+                                    )
+                            }
+                            .padding(.trailing, 20)
+                        }
+                        .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.borderedProminent)
-
-                    Button { zoomOut() } label: {
-                        Image(systemName: "minus.magnifyingglass")
-                            .font(.title2.bold())
-                            .padding(8)
-                    }
-                    .buttonStyle(.bordered)
-
-                    Button { zoomToMexico() } label: {
-                        Label("", systemImage: "globe.americas.fill")
-                            .labelStyle(.iconOnly)
-                            .font(.title2.bold())
-                            .padding(8)
-                    }
-                    .buttonStyle(.bordered)
-                    .help("Ver toda la República")
+                    .padding(.top, 20)
+                    .padding(.bottom, 20)
+                    
+                    // Línea divisoria
+                    Rectangle()
+                        .fill(buenFinWhite.opacity(0.3))
+                        .frame(height: 1)
+                        .padding(.horizontal, 20)
                 }
-                .padding(.top, 12)
-                .padding(.trailing, 12)
-            }
-            .overlay(alignment: .bottomTrailing) {
-                VStack(spacing: 8) {
-                    Button { recenterOnUser() } label: {
-                        Label("Centrar en mí", systemImage: "location.circle.fill")
-                            .labelStyle(.iconOnly)
+                .frame(height: 100)
+                .background(buenFinRed)
+                
+                // Contenido principal
+                VStack(spacing: 0) {
+                    // Barra de filtros y controles
+                    VStack(spacing: 16) {
+                        // Fila de controles principales
+                        HStack(spacing: 12) {
+                            // Botón de categorías
+                            Button {
+                                showCategoriasSheet = true
+                            } label: {
+                                HStack(spacing: 8) {
+                                    Image(systemName: "line.3.horizontal.decrease.circle")
+                                        .font(.title3)
+                                        .foregroundColor(buenFinRed)
+                                    
+                                    Text(filtroCategorias.isEmpty ? "Todas" : "\(filtroCategorias.count) seleccionadas")
+                                        .font(.system(size: 14, weight: .medium, design: .rounded))
+                                        .foregroundColor(buenFinGray)
+                                }
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 12)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(buenFinWhite)
+                                        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                )
+                            }
+                            
+                            // Toggle de favoritos
+                            Button { 
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    soloFavoritos.toggle()
+                                }
+                            } label: {
+                                Image(systemName: soloFavoritos ? "star.fill" : "star")
+                                    .font(.title3)
+                                    .foregroundColor(soloFavoritos ? buenFinWhite : buenFinRed)
+                                    .padding(12)
+                                    .background(
+                                        Circle()
+                                            .fill(soloFavoritos ? buenFinRed : buenFinWhite)
+                                            .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                    )
+                            }
+                            .accessibilityLabel(soloFavoritos ? "Mostrar todos" : "Solo favoritos")
+                            
+                            // Botón de estadísticas
+                            Button { 
+                                withAnimation(.easeInOut(duration: 0.3)) {
+                                    showStats.toggle()
+                                }
+                            } label: {
+                                Image(systemName: showStats ? "chart.bar.fill" : "chart.bar")
+                                    .font(.title3)
+                                    .foregroundColor(showStats ? buenFinWhite : buenFinRed)
+                                    .padding(12)
+                                    .background(
+                                        Circle()
+                                            .fill(showStats ? buenFinRed : buenFinWhite)
+                                            .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                    )
+                            }
+                        }
+                        
+                        // Campos de búsqueda
+                        VStack(spacing: 12) {
+                            // Búsqueda por nombre
+                            HStack {
+                                Image(systemName: "magnifyingglass")
+                                    .foregroundStyle(buenFinGray.opacity(0.6))
+                                
+                                TextField("Nombre contiene...", text: $filtroNombre)
+                                    .textFieldStyle(.plain)
+                                    .foregroundStyle(buenFinGray)
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(buenFinWhite)
+                                    .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                            )
+                            
+                            // Búsqueda por ubicación
+                            HStack(spacing: 12) {
+                                HStack {
+                                    Image(systemName: "building.2")
+                                        .foregroundStyle(buenFinGray.opacity(0.6))
+                                    
+                                    TextField("Municipio...", text: $filtroMunicipio)
+                                        .textFieldStyle(.plain)
+                                        .foregroundStyle(buenFinGray)
+                                }
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 12)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(buenFinWhite)
+                                        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                )
+                                
+                                HStack {
+                                    Image(systemName: "flag")
+                                        .foregroundStyle(buenFinGray.opacity(0.6))
+                                    
+                                    TextField("Estado...", text: $filtroEstado)
+                                        .textFieldStyle(.plain)
+                                        .foregroundStyle(buenFinGray)
+                                }
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 12)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(buenFinWhite)
+                                        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                )
+                            }
+                        }
+                        
+                        // Chips de categorías seleccionadas
+                        if !filtroCategorias.isEmpty {
+                            WrapChips(items: Array(filtroCategorias).sorted()) { cat in
+                                HStack(spacing: 6) {
+                                    Text(cat)
+                                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                                        .foregroundColor(buenFinRed)
+                                    
+                                    Button {
+                                        filtroCategorias.remove(cat)
+                                    } label: {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .font(.caption)
+                                            .foregroundColor(buenFinGray.opacity(0.6))
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                                .padding(.vertical, 6)
+                                .padding(.horizontal, 12)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .fill(buenFinRed.opacity(0.1))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 16)
+                                                .stroke(buenFinRed.opacity(0.3), lineWidth: 1)
+                                        )
+                                )
+                            }
+                        }
+                        
+                        // Panel de estadísticas por categoría
+                        if showStats {
+                            StatsPanelView(
+                                filtrados: filtrados,
+                                estadisticasPorCategoria: estadisticasPorCategoria,
+                                buenFinRed: buenFinRed,
+                                buenFinWhite: buenFinWhite,
+                                buenFinGray: buenFinGray
+                            )
+                            .transition(.asymmetric(
+                                insertion: .opacity.combined(with: .scale(scale: 0.95)),
+                                removal: .opacity.combined(with: .scale(scale: 0.95))
+                            ))
+                        }
+                        
+                        // Contador de resultados con indicador de favoritos
+                        HStack {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Mostrando: \(filtrados.count) · En BD: \(todos.count)")
+                                    .font(.system(size: 14, weight: .medium, design: .rounded))
+                                    .foregroundColor(buenFinGray.opacity(0.7))
+                                
+                                if soloFavoritos {
+                                    let favoritosCount = todos.filter { $0.esFavorito }.count
+                                    Text("⭐ \(favoritosCount) favoritos en total")
+                                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                                        .foregroundColor(buenFinRed.opacity(0.8))
+                                }
+                            }
+                            
+                            Spacer()
+                        }
                     }
-                    .buttonStyle(.borderedProminent)
+                    .padding(.horizontal, 20)
+                    .padding(.top, 20)
+                    .padding(.bottom, 16)
+                    .background(buenFinWhite)
+                    
+                    // Mapa con clusters
+                    ClusterMap(
+                        items: filtrados,
+                        region: $region,
+                        colorResolver: { rawCat in
+                            let key = normalizeCategory(rawCat)
+                            if let ui = fixedUIColor(for: key) { return ui }
+                            return hashedUIColor(from: key)
+                        },
+                        onSelect: { est in
+                            self.seleccionado = est
+                        }
+                    )
+                    .overlay(alignment: .topTrailing) {
+                        VStack(spacing: 10) {
+                            Button { zoomIn() } label: {
+                                Image(systemName: "plus.magnifyingglass")
+                                    .font(.title2.bold())
+                                    .foregroundColor(buenFinWhite)
+                                    .padding(12)
+                                    .background(
+                                        Circle()
+                                            .fill(buenFinRed)
+                                            .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+                                    )
+                            }
+                            .buttonStyle(.plain)
+
+                            Button { zoomOut() } label: {
+                                Image(systemName: "minus.magnifyingglass")
+                                    .font(.title2.bold())
+                                    .foregroundColor(buenFinGray)
+                                    .padding(12)
+                                    .background(
+                                        Circle()
+                                            .fill(buenFinWhite)
+                                            .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+                                    )
+                            }
+                            .buttonStyle(.plain)
+
+                            Button { zoomToMexico() } label: {
+                                Image(systemName: "globe.americas.fill")
+                                    .font(.title2.bold())
+                                    .foregroundColor(buenFinGray)
+                                    .padding(12)
+                                    .background(
+                                        Circle()
+                                            .fill(buenFinWhite)
+                                            .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+                                    )
+                            }
+                            .buttonStyle(.plain)
+                            .help("Ver toda la República")
+                        }
+                        .padding(.top, 12)
+                        .padding(.trailing, 12)
+                    }
+                    .overlay(alignment: .bottomTrailing) {
+                        Button { recenterOnUser() } label: {
+                            Image(systemName: "location.circle.fill")
+                                .font(.title2)
+                                .foregroundColor(buenFinWhite)
+                                .padding(12)
+                                .background(
+                                    Circle()
+                                        .fill(buenFinRed)
+                                        .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+                                )
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.trailing, 16)
+                        .padding(.bottom, 16)
+                    }
+                    .frame(minHeight: 320)
                 }
-                .padding()
             }
-            .frame(minHeight: 320)
         }
-        .padding()
-        .toolbar { ToolbarItem(placement: .principal) { EmptyView() } }
+        .navigationBarHidden(true)
         .onAppear {
             if let lat = location.latitude, let lon = location.longitude {
                 region = MKCoordinateRegion(center: .init(latitude: lat, longitude: lon),
@@ -622,3 +886,4 @@ private func normalizeText(_ raw: String?) -> String {
         .lowercased()
 }
 private func normalizeCategory(_ raw: String?) -> String { normalizeText(raw) }
+

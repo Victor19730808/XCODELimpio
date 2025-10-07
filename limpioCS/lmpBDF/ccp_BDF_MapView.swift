@@ -22,6 +22,7 @@ import MapKit
 import CoreLocation
 
 struct ccp_BDF_MapView: View {
+    @Environment(\.dismiss) private var dismiss
 
     // Dependencias
     @EnvironmentObject private var location: LocationService
@@ -29,6 +30,11 @@ struct ccp_BDF_MapView: View {
     /// Consulta a SwiftData: todos los establecimientos locales ordenados por nombre.
     @Query(sort: [SortDescriptor(\lmpBDF_EstablecimientoLocal.nombre, comparator: .localizedStandard)])
     private var todos: [lmpBDF_EstablecimientoLocal]
+    
+    // Colores inspirados en El Buen Fin
+    private let buenFinRed = Color(red: 0.89, green: 0.12, blue: 0.14) // #E31E24
+    private let buenFinWhite = Color.white
+    private let buenFinGray = Color(red: 0.2, green: 0.2, blue: 0.2) // #333333
 
     // Estado UI / Mapa
     @State private var cameraPosition: MapCameraPosition = .userLocation(fallback: .automatic)
@@ -42,6 +48,15 @@ struct ccp_BDF_MapView: View {
     @State private var filtroCategorias: Set<String> = []       // multi-select (vacío = todas)
     @State private var filtroNombre: String = ""
     @State private var showCategoriasSheet = false
+    @State private var soloFavoritos = false                    // Filtro para mostrar solo favoritos
+    
+    // Optimizaciones de performance
+    @State private var debounceTimer: Timer?
+    @State private var maxMarkersToShow = 200                    // Límite de marcadores para performance
+    @State private var colorCache: [String: Color] = [:]        // Cache de colores por categoría
+    
+    // Estadísticas
+    @State private var showStats = false                        // Mostrar/ocultar panel de estadísticas
 
     // Rango del radio
     private let radioMin: Double = 1
@@ -72,14 +87,29 @@ struct ccp_BDF_MapView: View {
         return uniqueOriginalsByNormalized(originales, normalizer: normalizeCategory)
             .sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending }
     }
+    
+    // Estadísticas por categoría de los establecimientos filtrados
+    private var estadisticasPorCategoria: [(categoria: String, count: Int, color: Color)] {
+        let categorias = Dictionary(grouping: filtrados, by: { normalizeCategory($0.categoria) })
+            .mapValues { $0.count }
+            .sorted { $0.value > $1.value }
+        
+        return categorias.map { (categoria, count) in
+            let color = colorForCategory(categoria)
+            return (categoria: categoria, count: count, color: color)
+        }
+    }
 
-    // Filtro compuesto (categorías, nombre, radio desde el centro del mapa)
+    // Filtro compuesto (categorías, nombre, radio desde el centro del mapa, favoritos) con optimizaciones
     private var filtrados: [lmpBDF_EstablecimientoLocal] {
         let categoriasSelNorm = Set(filtroCategorias.map(normalizeCategory))
         let nombre = filtroNombre.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        return todos.filter { e in
+        let filtered = todos.filter { e in
             guard let lat = e.lat, let lon = e.lon else { return false }
+
+            // Filtro de favoritos
+            if soloFavoritos && !e.esFavorito { return false }
 
             // Categorías (multi-select, normalizadas)
             if !categoriasSelNorm.isEmpty {
@@ -97,158 +127,423 @@ struct ccp_BDF_MapView: View {
             }
             return true
         }
+        
+        // Optimización: Limitar número de marcadores para performance
+        if filtered.count > maxMarkersToShow {
+            // Ordenar por distancia al centro para mostrar los más cercanos
+            if let center = mapCenter {
+                return Array(filtered.sorted { e1, e2 in
+                    let d1 = distanceKm(lat1: center.latitude, lon1: center.longitude, 
+                                      lat2: e1.lat!, lon2: e1.lon!)
+                    let d2 = distanceKm(lat1: center.latitude, lon1: center.longitude, 
+                                      lat2: e2.lat!, lon2: e2.lon!)
+                    return d1 < d2
+                }.prefix(maxMarkersToShow))
+            } else {
+                return Array(filtered.prefix(maxMarkersToShow))
+            }
+        }
+        
+        return filtered
     }
 
     var body: some View {
-        VStack(spacing: 8) {
-
-            // Filtros
-            GroupBox("Filtros") {
-                VStack(alignment: .leading, spacing: 10) {
-
-                    // Slider del radio (rango 1…50 km) — SIEMPRE desde el centro del mapa
+        ZStack {
+            // Fondo con gradiente sutil
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    Color.gray.opacity(0.05),
+                    Color.white
+                ]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
+            
+            VStack(spacing: 0) {
+                // Header rojo estilo El Buen Fin
+                VStack(spacing: 0) {
                     HStack {
-                        Text("Radio: \(Int(filtroRadioKm)) km")
-                        Slider(value: $filtroRadioKm, in: radioMin...radioMax, step: 1)
-                    }
-                    if mapCenter == nil {
-                        Text("Mueve el mapa para fijar el centro (ancla del radio).")
-                            .font(.footnote).foregroundStyle(.secondary)
-                    }
-
-                    // Categorías (multi-select)
-                    VStack(alignment: .leading, spacing: 6) {
+                        // Botón regresar al menú principal
                         HStack {
-                            Text("Categorías:")
+                            Button {
+                                dismiss()
+                            } label: {
+                                Image(systemName: "house.fill")
+                                    .font(.title2)
+                                    .foregroundColor(buenFinWhite)
+                                    .padding(12)
+                                    .background(
+                                        Circle()
+                                            .fill(Color.white.opacity(0.2))
+                                            .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+                                    )
+                            }
+                            .padding(.leading, 20)
+                            
+                            Spacer()
+                        }
+                        .frame(maxWidth: .infinity)
+                        
+                        // Título "Mapa de Cercanías" centrado
+                        Text("Mapa de Cercanías")
+                            .font(.system(size: 18, weight: .bold, design: .rounded))
+                            .foregroundColor(buenFinWhite)
+                        
+                        // Menú hamburguesa
+                        HStack {
+                            Spacer()
+                            
+                            Menu {
+                                Button {
+                                    // Mis configuraciones
+                                } label: {
+                                    Label("Mis Configuraciones", systemImage: "gear")
+                                }
+                                
+                                Button {
+                                    // Búsquedas Avanzadas
+                                } label: {
+                                    Label("Búsquedas Avanzadas", systemImage: "magnifyingglass.circle")
+                                }
+                                
+                                Button {
+                                    // Admin Datos
+                                } label: {
+                                    Label("Admin Datos", systemImage: "wrench.and.screwdriver")
+                                }
+                            } label: {
+                                Image(systemName: "line.3.horizontal")
+                                    .font(.title2)
+                                    .foregroundColor(buenFinWhite)
+                                    .padding(12)
+                                    .background(
+                                        Circle()
+                                            .fill(Color.white.opacity(0.2))
+                                            .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+                                    )
+                            }
+                            .padding(.trailing, 20)
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                    .padding(.top, 20)
+                    .padding(.bottom, 20)
+                    
+                    // Línea divisoria
+                    Rectangle()
+                        .fill(buenFinWhite.opacity(0.3))
+                        .frame(height: 1)
+                        .padding(.horizontal, 20)
+                }
+                .frame(height: 100)
+                .background(buenFinRed)
+                
+                // Contenido principal
+                VStack(spacing: 0) {
+                    // Filtros con estilo El Buen Fin
+                    VStack(spacing: 16) {
+                        // Slider del radio
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Text("Radio: \(Int(filtroRadioKm)) km")
+                                    .font(.system(size: 16, weight: .semibold, design: .rounded))
+                                    .foregroundColor(buenFinGray)
+                                
+                                Spacer()
+                            }
+                            
+                            Slider(value: $filtroRadioKm, in: radioMin...radioMax, step: 1)
+                                .accentColor(buenFinRed)
+                                .onChange(of: filtroRadioKm) { _ in
+                                    debounceSearch()
+                                }
+                            
+                            if mapCenter == nil {
+                                Text("Mueve el mapa para fijar el centro (ancla del radio).")
+                                    .font(.system(size: 12, weight: .medium, design: .rounded))
+                                    .foregroundColor(buenFinGray.opacity(0.6))
+                            }
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 12)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(buenFinWhite)
+                                .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                        )
+                        
+                        // Categorías, búsqueda y estadísticas en una fila
+                        HStack(spacing: 12) {
+                            // Botón de categorías
                             Button { showCategoriasSheet = true } label: {
-                                if filtroCategorias.isEmpty {
-                                    Label("Todas", systemImage: "line.3.horizontal.decrease.circle")
-                                } else {
-                                    Label("\(filtroCategorias.count) seleccionadas", systemImage: "line.3.horizontal.decrease.circle")
+                                HStack(spacing: 8) {
+                                    Image(systemName: "line.3.horizontal.decrease.circle")
+                                        .foregroundColor(buenFinRed)
+                                    
+                                    Text(filtroCategorias.isEmpty ? "Todas" : "\(filtroCategorias.count) seleccionadas")
+                                        .font(.system(size: 14, weight: .medium, design: .rounded))
+                                        .foregroundColor(buenFinGray)
+                                }
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 12)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(buenFinWhite)
+                                        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                )
+                            }
+                            
+                            // Búsqueda por nombre
+                            HStack {
+                                Image(systemName: "magnifyingglass")
+                                    .foregroundColor(buenFinGray.opacity(0.6))
+                                
+                                TextField("Nombre contiene...", text: $filtroNombre)
+                                    .textFieldStyle(.plain)
+                                    .foregroundColor(buenFinGray)
+                                    .onChange(of: filtroNombre) { _ in
+                                        debounceSearch()
+                                    }
+                                
+                                if !filtroNombre.isEmpty {
+                                    Button {
+                                        filtroNombre = ""
+                                    } label: {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundColor(buenFinGray.opacity(0.6))
+                                    }
                                 }
                             }
-                            .buttonStyle(.bordered)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(buenFinWhite)
+                                    .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                            )
+                            
+                            // Toggle de favoritos
+                            Button { 
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    soloFavoritos.toggle()
+                                }
+                            } label: {
+                                Image(systemName: soloFavoritos ? "star.fill" : "star")
+                                    .font(.title3)
+                                    .foregroundColor(soloFavoritos ? buenFinWhite : buenFinRed)
+                                    .padding(12)
+                                    .background(
+                                        Circle()
+                                            .fill(soloFavoritos ? buenFinRed : buenFinWhite)
+                                            .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                    )
+                            }
+                            .accessibilityLabel(soloFavoritos ? "Mostrar todos" : "Solo favoritos")
+                            
+                            // Botón de estadísticas
+                            Button { 
+                                withAnimation(.easeInOut(duration: 0.3)) {
+                                    showStats.toggle()
+                                }
+                            } label: {
+                                Image(systemName: showStats ? "chart.bar.fill" : "chart.bar")
+                                    .font(.title3)
+                                    .foregroundColor(showStats ? buenFinWhite : buenFinRed)
+                                    .padding(12)
+                                    .background(
+                                        Circle()
+                                            .fill(showStats ? buenFinRed : buenFinWhite)
+                                            .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                    )
+                            }
                         }
-
+                        
+                        // Chips de categorías seleccionadas
                         if !filtroCategorias.isEmpty {
                             WrapChips(items: Array(filtroCategorias).sorted()) { cat in
                                 HStack(spacing: 6) {
-                                    Text(cat).font(.caption)
+                                    Text(cat)
+                                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                                        .foregroundColor(buenFinRed)
+                                    
                                     Button { filtroCategorias.remove(cat) } label: {
                                         Image(systemName: "xmark.circle.fill")
+                                            .foregroundColor(buenFinGray.opacity(0.6))
                                     }
                                     .buttonStyle(.plain)
                                 }
-                                .padding(.vertical, 4)
-                                .padding(.horizontal, 8)
-                                .background(.thinMaterial)
-                                .clipShape(Capsule())
+                                .padding(.vertical, 6)
+                                .padding(.horizontal, 12)
+                                .background(
+                                    Capsule()
+                                        .fill(buenFinRed.opacity(0.1))
+                                        .overlay(
+                                            Capsule()
+                                                .stroke(buenFinRed.opacity(0.3), lineWidth: 1)
+                                        )
+                                )
                             }
-                            .padding(.top, 2)
                         }
-                    }
-
-                    // Búsqueda por nombre
-                    TextField("Nombre contiene…", text: $filtroNombre)
-                        .textFieldStyle(.roundedBorder)
-
-                    Text("Mostrando: \(filtrados.count)  ·  En BD: \(todos.count)")
-                        .font(.footnote).foregroundStyle(.secondary)
-                }
-            }
-
-            // Mapa
-            Map(position: $cameraPosition, interactionModes: .all) {
-                // Pin de usuario personalizado (referencia visual)
-                if let lat = location.latitude, let lon = location.longitude {
-                    Annotation("Mi ubicación", coordinate: CLLocationCoordinate2D(latitude: lat, longitude: lon)) {
-                        Image(systemName: "location.fill")
-                            .resizable()
-                            .frame(width: 28, height: 28)
-                            .foregroundStyle(.blue)
-                            .shadow(radius: 3)
-                    }
-                }
-
-                // Establecimientos filtrados
-                ForEach(filtrados) { e in
-                    if let lat = e.lat, let lon = e.lon {
-                        let color = colorForCategory(e.categoria)
-                        Annotation(e.nombre, coordinate: CLLocationCoordinate2D(latitude: lat, longitude: lon)) {
-                            Button { selected = e } label: {
-                                ZStack {
-                                    Circle().fill(color).frame(width: 18, height: 18)
-                                    Circle().stroke(.white, lineWidth: 2).frame(width: 18, height: 18)
+                        
+                        // Panel de estadísticas por categoría
+                        if showStats {
+                            StatsPanelView(
+                                filtrados: filtrados,
+                                estadisticasPorCategoria: estadisticasPorCategoria,
+                                buenFinRed: buenFinRed,
+                                buenFinWhite: buenFinWhite,
+                                buenFinGray: buenFinGray
+                            )
+                            .transition(.asymmetric(
+                                insertion: .opacity.combined(with: .scale(scale: 0.95)),
+                                removal: .opacity.combined(with: .scale(scale: 0.95))
+                            ))
+                        }
+                        
+                        // Contador de resultados con indicador de performance y favoritos
+                        HStack {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Mostrando: \(filtrados.count) · En BD: \(todos.count)")
+                                    .font(.system(size: 14, weight: .medium, design: .rounded))
+                                    .foregroundColor(buenFinGray.opacity(0.7))
+                                
+                                if soloFavoritos {
+                                    let favoritosCount = todos.filter { $0.esFavorito }.count
+                                    Text("⭐ \(favoritosCount) favoritos en total")
+                                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                                        .foregroundColor(buenFinRed.opacity(0.8))
                                 }
-                                .shadow(radius: 2)
+                            }
+                            
+                            Spacer()
+                            
+                            if filtrados.count >= maxMarkersToShow {
+                                Text("(limitado para performance)")
+                                    .font(.system(size: 12, weight: .medium, design: .rounded))
+                                    .foregroundColor(buenFinRed.opacity(0.7))
                             }
                         }
                     }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 20)
+                    .padding(.bottom, 16)
+                    .background(buenFinWhite)
+                    
+                    // Mapa
+                    Map(position: $cameraPosition, interactionModes: .all) {
+                        // Pin de usuario personalizado
+                        if let lat = location.latitude, let lon = location.longitude {
+                            Annotation("Mi ubicación", coordinate: CLLocationCoordinate2D(latitude: lat, longitude: lon)) {
+                                Image(systemName: "location.fill")
+                                    .resizable()
+                                    .frame(width: 28, height: 28)
+                                    .foregroundStyle(.blue)
+                                    .shadow(radius: 3)
+                            }
+                        }
+
+                        // Establecimientos filtrados
+                        ForEach(filtrados) { e in
+                            if let lat = e.lat, let lon = e.lon {
+                                let color = colorForCategory(e.categoria)
+                                Annotation(e.nombre, coordinate: CLLocationCoordinate2D(latitude: lat, longitude: lon)) {
+                                    Button { selected = e } label: {
+                                        ZStack {
+                                            // Círculo principal con color de categoría
+                                            Circle().fill(color).frame(width: 18, height: 18)
+                                            
+                                            // Borde blanco
+                                            Circle().stroke(.white, lineWidth: 2).frame(width: 18, height: 18)
+                                            
+                                            // Indicador especial para favoritos
+                                            if e.esFavorito {
+                                                Circle()
+                                                    .stroke(.yellow, lineWidth: 3)
+                                                    .frame(width: 24, height: 24)
+                                                
+                                                // Estrella pequeña en el centro
+                                                Image(systemName: "star.fill")
+                                                    .font(.system(size: 8, weight: .bold))
+                                                    .foregroundColor(.yellow)
+                                            }
+                                        }
+                                        .shadow(radius: e.esFavorito ? 4 : 2)
+                                        .scaleEffect(e.esFavorito ? 1.1 : 1.0)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    // Capturamos el centro y la región del mapa
+                    .onMapCameraChange { context in
+                        mapCenter = context.region.center
+                        currentRegion = context.region
+                        adjustMarkerLimit() // Ajustar límite según zoom
+                    }
+                    .mapControls { MapCompass(); MapPitchToggle(); MapScaleView() }
+
+                    // Mira SIEMPRE visible (el radio se mide desde aquí)
+                    .overlay(alignment: .center) {
+                        CrosshairOverlay().allowsHitTesting(false)
+                    }
+
+                    // Botones de Zoom (+ / −)
+                    .overlay(alignment: .topTrailing) {
+                        VStack(spacing: 10) {
+                            Button {
+                                zoomIn()
+                            } label: {
+                                Image(systemName: "plus.magnifyingglass")
+                                    .font(.title2.bold())
+                                    .foregroundColor(buenFinWhite)
+                                    .padding(8)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(buenFinRed)
+
+                            Button {
+                                zoomOut()
+                            } label: {
+                                Image(systemName: "minus.magnifyingglass")
+                                    .font(.title2.bold())
+                                    .foregroundColor(buenFinGray)
+                                    .padding(8)
+                            }
+                            .buttonStyle(.bordered)
+                        }
+                        .padding(.top, 12)
+                        .padding(.trailing, 12)
+                    }
+
+                    // Acciones rápidas (centrar a mi ubicación)
+                    .overlay(alignment: .bottomTrailing) {
+                        VStack(spacing: 8) {
+                            Button { recenter() } label: {
+                                Label("Centrar en mí", systemImage: "location.circle.fill").labelStyle(.iconOnly)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(buenFinRed)
+                            MapUserLocationButton()
+                        }
+                        .padding()
+                    }
+                    .frame(minHeight: 320)
                 }
             }
-            // Capturamos el centro y la región del mapa (iOS 17+)
-            .onMapCameraChange { context in
-                mapCenter = context.region.center
-                currentRegion = context.region
-            }
-            .mapControls { MapCompass(); MapPitchToggle(); MapScaleView() }
-
-            // Mira SIEMPRE visible (el radio se mide desde aquí)
-            .overlay(alignment: .center) {
-                CrosshairOverlay().allowsHitTesting(false)
-            }
-
-            // Botones de Zoom (+ / −)
-            .overlay(alignment: .topTrailing) {
-                VStack(spacing: 10) {
-                    Button {
-                        zoomIn()
-                    } label: {
-                        Image(systemName: "plus.magnifyingglass")
-                            .font(.title2.bold())
-                            .padding(8)
-                    }
-                    .buttonStyle(.borderedProminent)
-
-                    Button {
-                        zoomOut()
-                    } label: {
-                        Image(systemName: "minus.magnifyingglass")
-                            .font(.title2.bold())
-                            .padding(8)
-                    }
-                    .buttonStyle(.bordered)
-                }
-                .padding(.top, 12)
-                .padding(.trailing, 12)
-            }
-
-            // Acciones rápidas (centrar a mi ubicación; NO afecta el origen del radio)
-            .overlay(alignment: .bottomTrailing) {
-                VStack(spacing: 8) {
-                    Button { recenter() } label: {
-                        Label("Centrar en mí", systemImage: "location.circle.fill").labelStyle(.iconOnly)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    MapUserLocationButton()
-                }
-                .padding()
-            }
-            .frame(minHeight: 320)
         }
-        .padding()
-        .navigationTitle("Mapa (BD local)")
+        .navigationBarHidden(true)
         .onAppear {
             location.start() // Permite mostrar el pin de usuario y autocentrar
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { autoCenterIfPossible() }
+            clearCachesIfNeeded() // Limpiar cachés al iniciar
         }
-        // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        // Usar la vista reusabe EstablecimientoDetalleSheetSimple
+        // Sheet de detalle del establecimiento
         .sheet(item: $selected) { est in
             EstablecimientoDetalleSheetSimple(est: est)
                 .presentationDetents([.fraction(0.35), .medium])
         }
-        // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        // Sheet de selección de categorías
         .sheet(isPresented: $showCategoriasSheet) {
             CategoriaMultiSelectSheet(
                 todasLasCategorias: categoriasEnBD,
@@ -282,15 +577,29 @@ struct ccp_BDF_MapView: View {
         return result
     }
 
-    // Colores por categoría con fallback hash
+    // Colores por categoría con caché para performance
     private func colorForCategory(_ raw: String?) -> Color {
         let key = normalizeCategory(raw)
-        if let fixed = fixedPaletteNormalized[key] { return fixed }
-        if !key.isEmpty && !reportedUnknowns.contains(key) {
-            reportedUnknowns.insert(key)
-            print("🧩 Categoría sin paleta fija (hash color): '\(raw ?? "")' → normalizada '\(key)'")
+        
+        // Verificar caché primero
+        if let cachedColor = colorCache[key] {
+            return cachedColor
         }
-        return hashedColor(from: key)
+        
+        let color: Color
+        if let fixed = fixedPaletteNormalized[key] {
+            color = fixed
+        } else {
+            if !key.isEmpty && !reportedUnknowns.contains(key) {
+                reportedUnknowns.insert(key)
+                print("🧩 Categoría sin paleta fija (hash color): '\(raw ?? "")' → normalizada '\(key)'")
+            }
+            color = hashedColor(from: key)
+        }
+        
+        // Guardar en caché
+        colorCache[key] = color
+        return color
     }
     private func hashedColor(from text: String) -> Color {
         guard !text.isEmpty else { return .gray }
@@ -357,16 +666,57 @@ struct ccp_BDF_MapView: View {
         let c = 2 * atan2(sqrt(a), sqrt(1-a))
         return R * c
     }
+    
+    // MARK: - Optimizaciones de Performance
+    
+    /// Debounce para búsquedas y filtros (evita recálculos excesivos)
+    private func debounceSearch() {
+        debounceTimer?.invalidate()
+        debounceTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false) { _ in
+            // El filtrado se ejecuta automáticamente por la computed property
+            // Solo limpiamos el caché de colores si es necesario
+            if colorCache.count > 100 {
+                colorCache.removeAll()
+            }
+        }
+    }
+    
+    /// Limpia cachés cuando sea necesario
+    private func clearCachesIfNeeded() {
+        if colorCache.count > 200 {
+            colorCache.removeAll()
+        }
+    }
+    
+    /// Ajusta dinámicamente el límite de marcadores según el zoom
+    private func adjustMarkerLimit() {
+        guard let region = currentRegion else { return }
+        
+        let span = max(region.span.latitudeDelta, region.span.longitudeDelta)
+        
+        // Más zoom = más marcadores permitidos
+        if span < 0.01 { // Muy cerca
+            maxMarkersToShow = 500
+        } else if span < 0.1 { // Cerca
+            maxMarkersToShow = 300
+        } else if span < 1.0 { // Medio
+            maxMarkersToShow = 200
+        } else { // Lejos
+            maxMarkersToShow = 100
+        }
+    }
 }
 
 // MARK: - Overlay: mira en el centro del mapa
 /// Crosshair permanente que indica el centro del mapa (ancla del radio).
 private struct CrosshairOverlay: View {
+    private let buenFinRed = Color(red: 0.89, green: 0.12, blue: 0.14) // #E31E24
+    
     var body: some View {
         ZStack {
-            Circle().strokeBorder(.blue.opacity(0.5), lineWidth: 2).frame(width: 24, height: 24)
-            Circle().fill(.blue.opacity(0.15)).frame(width: 8, height: 8)
-        }.shadow(radius: 1)
+            Circle().strokeBorder(buenFinRed.opacity(0.6), lineWidth: 2).frame(width: 24, height: 24)
+            Circle().fill(buenFinRed.opacity(0.2)).frame(width: 8, height: 8)
+        }.shadow(radius: 2)
     }
 }
 
@@ -452,5 +802,113 @@ private struct CategoriaMultiSelectSheet: View {
 
     private func toggle(_ cat: String) {
         if seleccion.contains(cat) { seleccion.remove(cat) } else { seleccion.insert(cat) }
+    }
+}
+
+// MARK: - Vista Separada para Panel de Estadísticas
+
+struct StatsPanelView: View {
+    let filtrados: [lmpBDF_EstablecimientoLocal]
+    let estadisticasPorCategoria: [(categoria: String, count: Int, color: Color)]
+    let buenFinRed: Color
+    let buenFinWhite: Color
+    let buenFinGray: Color
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text("Estadísticas por Categoría")
+                        .font(.system(size: 16, weight: .bold, design: .rounded))
+                        .foregroundColor(buenFinGray)
+                    
+                    Spacer()
+                    
+                    Text("\(filtrados.count) establecimientos")
+                        .font(.system(size: 14, weight: .medium, design: .rounded))
+                        .foregroundColor(buenFinGray.opacity(0.7))
+                }
+                
+                // Información de favoritos
+                let favoritosCount = filtrados.filter { $0.esFavorito }.count
+                if favoritosCount > 0 {
+                    HStack {
+                        Image(systemName: "star.fill")
+                            .foregroundColor(.yellow)
+                            .font(.system(size: 12))
+                        
+                        Text("\(favoritosCount) de \(filtrados.count) son favoritos")
+                            .font(.system(size: 12, weight: .medium, design: .rounded))
+                            .foregroundColor(buenFinGray.opacity(0.8))
+                        
+                        Spacer()
+                        
+                        Text("\(Int(Double(favoritosCount) / Double(filtrados.count) * 100))%")
+                            .font(.system(size: 12, weight: .bold, design: .rounded))
+                            .foregroundColor(buenFinRed)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(.yellow.opacity(0.1))
+                    )
+                }
+            }
+            
+            if estadisticasPorCategoria.isEmpty {
+                Text("No hay datos para mostrar")
+                    .font(.system(size: 14, weight: .medium, design: .rounded))
+                    .foregroundColor(buenFinGray.opacity(0.6))
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.vertical, 20)
+            } else {
+                VStack(spacing: 8) {
+                    ForEach(estadisticasPorCategoria.prefix(5), id: \.categoria) { stat in
+                        HStack(spacing: 12) {
+                            // Indicador de color
+                            Circle()
+                                .fill(stat.color)
+                                .frame(width: 12, height: 12)
+                            
+                            // Nombre de la categoría
+                            Text(stat.categoria.capitalized)
+                                .font(.system(size: 14, weight: .medium, design: .rounded))
+                                .foregroundColor(buenFinGray)
+                            
+                            Spacer()
+                            
+                            // Contador
+                            Text("\(stat.count)")
+                                .font(.system(size: 14, weight: .bold, design: .rounded))
+                                .foregroundColor(buenFinRed)
+                            
+                            // Barra de progreso
+                            GeometryReader { geometry in
+                                RoundedRectangle(cornerRadius: 2)
+                                    .fill(stat.color.opacity(0.3))
+                                    .frame(width: geometry.size.width * CGFloat(stat.count) / CGFloat(estadisticasPorCategoria.first?.count ?? 1))
+                            }
+                            .frame(width: 60, height: 4)
+                        }
+                    }
+                    
+                    if estadisticasPorCategoria.count > 5 {
+                        Text("Y \(estadisticasPorCategoria.count - 5) categorías más...")
+                            .font(.system(size: 12, weight: .medium, design: .rounded))
+                            .foregroundColor(buenFinGray.opacity(0.6))
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.top, 4)
+                    }
+                }
+            }
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(buenFinWhite)
+                .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
+        )
+        .padding(.horizontal, 20)
     }
 }

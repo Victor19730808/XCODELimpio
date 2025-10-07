@@ -23,62 +23,66 @@ struct ccp_UI_EstablecimientoRow: View {
     @Bindable var est: lmpBDF_EstablecimientoLocal
     @State private var isPressed = false
     @State private var showPromociones = false
+    @State private var showFavoritoConfirmation = false
+    
+    // Colores inspirados en El Buen Fin
+    private let buenFinRed = Color(red: 0.89, green: 0.12, blue: 0.14) // #E31E24
+    private let buenFinWhite = Color.white
+    private let buenFinGray = Color(red: 0.2, green: 0.2, blue: 0.2) // #333333
 
     var body: some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 6) {
+        HStack(spacing: 16) {
+            VStack(alignment: .leading, spacing: 8) {
                 // Nombre del establecimiento
                 Text(est.nombre)
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.primary)
+                    .font(.system(size: 16, weight: .bold, design: .rounded))
+                    .foregroundStyle(buenFinGray)
                     .lineLimit(2)
                 
                 // Estado
-                HStack(spacing: 4) {
-                    Image(systemName: "location")
+                HStack(spacing: 6) {
+                    Image(systemName: "location.fill")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(buenFinRed)
                     
                     Text(est.estado ?? "N/A")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .font(.system(size: 14, weight: .medium, design: .rounded))
+                        .foregroundStyle(buenFinGray.opacity(0.7))
                 }
                 
                 // Categoría
                 if let categoria = est.categoria, !categoria.isEmpty {
-                    HStack(spacing: 4) {
-                        Image(systemName: "tag")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    HStack(spacing: 6) {
+                        Image(systemName: "tag.fill")
+                            .font(.caption)
+                            .foregroundStyle(buenFinRed)
                         
                         Text(categoria)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .font(.system(size: 14, weight: .medium, design: .rounded))
+                            .foregroundStyle(buenFinGray.opacity(0.7))
                     }
                 }
                 
                 // Distancia (solo en favoritos) - clickeable para ir al mapa
                 if est.esFavorito && hasValidCoordinates {
                     NavigationLink(destination: MapViewWithLocation(establecimiento: est)) {
-                        HStack(spacing: 4) {
-                            Image(systemName: "location.circle")
+                        HStack(spacing: 6) {
+                            Image(systemName: "location.circle.fill")
                                 .font(.caption)
-                                .foregroundStyle(.blue)
+                                .foregroundStyle(buenFinRed)
                             
                             Text("A \(distanceFromUser) km")
-                                .font(.subheadline)
-                                .fontWeight(.medium)
-                                .foregroundStyle(.blue)
+                                .font(.system(size: 13, weight: .semibold, design: .rounded))
+                                .foregroundStyle(buenFinRed)
                         }
-                        .padding(.vertical, 4)
-                        .padding(.horizontal, 8)
+                        .padding(.vertical, 6)
+                        .padding(.horizontal, 10)
                         .background(
                             RoundedRectangle(cornerRadius: 8)
-                                .fill(.blue.opacity(0.1))
+                                .fill(buenFinRed.opacity(0.1))
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .stroke(.blue.opacity(0.3), lineWidth: 1)
+                                        .stroke(buenFinRed.opacity(0.3), lineWidth: 1)
                                 )
                         )
                     }
@@ -88,35 +92,34 @@ struct ccp_UI_EstablecimientoRow: View {
 
             Spacer()
 
-            HStack(spacing: 8) {
+            HStack(spacing: 12) {
                 // Botón de promociones
                 Button {
                     showPromociones = true
                 } label: {
                     Image(systemName: "tag.fill")
                         .font(.title3)
-                        .foregroundStyle(.blue)
-                        .padding(8)
-                        .background(.ultraThinMaterial)
-                        .clipShape(Circle())
+                        .foregroundStyle(buenFinRed)
+                        .padding(10)
+                        .background(
+                            Circle()
+                                .fill(buenFinRed.opacity(0.1))
+                                .overlay(
+                                    Circle()
+                                        .stroke(buenFinRed.opacity(0.2), lineWidth: 1)
+                                )
+                        )
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Ver promociones")
                 
                 // Botón de favoritos
                 Button {
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        est.esFavorito.toggle()
-                    }
-                    do {
-                        try modelContext.save()
-                    } catch {
-                        print("⚠️ Error al guardar favorito:", error.localizedDescription)
-                    }
+                    showFavoritoConfirmation = true
                 } label: {
                     Image(systemName: est.esFavorito ? "star.fill" : "star")
                         .font(.title2)
-                        .foregroundStyle(est.esFavorito ? .yellow : .secondary)
+                        .foregroundStyle(est.esFavorito ? .yellow : buenFinGray.opacity(0.4))
                         .scaleEffect(isPressed ? 0.9 : 1.0)
                 }
                 .buttonStyle(.plain)
@@ -128,17 +131,34 @@ struct ccp_UI_EstablecimientoRow: View {
                 .accessibilityLabel(est.esFavorito ? "Quitar de favoritos" : "Agregar a favoritos")
             }
         }
-        .padding(.vertical, 8)
-        .padding(.horizontal, 12)
+        .padding(.vertical, 16)
+        .padding(.horizontal, 20)
         .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(.ultraThinMaterial)
-                .opacity(isPressed ? 0.8 : 1.0)
+            RoundedRectangle(cornerRadius: 16)
+                .fill(buenFinWhite)
+                .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 4)
         )
         .scaleEffect(isPressed ? 0.98 : 1.0)
         .animation(.easeInOut(duration: 0.1), value: isPressed)
         .sheet(isPresented: $showPromociones) {
             ccp_BDF_PromocionesView()
+        }
+        .alert(est.esFavorito ? "Quitar de favoritos" : "Agregar a favoritos", isPresented: $showFavoritoConfirmation) {
+            Button("Cancelar", role: .cancel) { }
+            Button(est.esFavorito ? "Quitar" : "Agregar") {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    est.esFavorito.toggle()
+                }
+                do {
+                    try modelContext.save()
+                } catch {
+                    print("⚠️ Error al guardar favorito:", error.localizedDescription)
+                }
+            }
+        } message: {
+            Text(est.esFavorito ? 
+                "¿Quieres quitar \"\(est.nombre)\" de tus favoritos?" :
+                "¿Quieres agregar \"\(est.nombre)\" a tus favoritos?")
         }
     }
     

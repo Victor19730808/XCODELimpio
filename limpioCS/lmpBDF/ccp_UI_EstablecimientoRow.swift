@@ -141,7 +141,7 @@ struct ccp_UI_EstablecimientoRow: View {
         .scaleEffect(isPressed ? 0.98 : 1.0)
         .animation(.easeInOut(duration: 0.1), value: isPressed)
         .sheet(isPresented: $showPromociones) {
-            ccp_BDF_PromocionesView()
+            ccp_BDF_PromocionesView(establecimientoIdInicial: est.id)
         }
         .alert(est.esFavorito ? "Quitar de favoritos" : "Agregar a favoritos", isPresented: $showFavoritoConfirmation) {
             Button("Cancelar", role: .cancel) { }

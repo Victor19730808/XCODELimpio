@@ -20,21 +20,27 @@ struct PORT_PASO: View {
     @EnvironmentObject private var location: LocationService
     @State private var scrollOffset: CGFloat = 0
     @State private var cardAnimations: [Bool] = Array(repeating: false, count: 4)
+    @State private var showAdminDatos = false // Estado para mostrar la vista de administración
     
     var body: some View {
         NavigationStack {
-            ZStack {
-                // Fondo con gradiente
-                LinearGradient(
-                    gradient: Gradient(colors: [
-                        Color.blue.opacity(0.1),
-                        Color.purple.opacity(0.05),
-                        Color.white
-                    ]),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                .ignoresSafeArea()
+                ZStack {
+                    // Fondo con gradiente
+                    LinearGradient(
+                        gradient: Gradient(colors: [
+                            Color.blue.opacity(0.1),
+                            Color.purple.opacity(0.05),
+                            Color.white
+                        ]),
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                    .ignoresSafeArea()
+                    
+                    // Fondo blanco sólido para asegurar contraste
+                    Color.white
+                        .ignoresSafeArea()
+                        .opacity(0.95)
                 
                 VStack(spacing: 0) {
                     // Header rojo con menú hamburguesa
@@ -68,7 +74,7 @@ struct PORT_PASO: View {
                                 }
                                 
                                 Button {
-                                    // Admin Datos
+                                    showAdminDatos = true
                                 } label: {
                                     Label("Admin Datos", systemImage: "wrench.and.screwdriver")
                                 }
@@ -199,6 +205,10 @@ struct PORT_PASO: View {
             scrollOffset = value
         }
         .coordinateSpace(name: "scroll")
+        .sheet(isPresented: $showAdminDatos) {
+            ccp_BDF_DBIncrementalTestView()
+                .environmentObject(location)
+        }
     }
 }
 
@@ -225,7 +235,7 @@ struct MenuCard: View {
                 Text(title)
                     .font(.headline)
                     .fontWeight(.semibold)
-                    .foregroundColor(.primary)
+                    .foregroundColor(.black)
                 
                 Spacer()
             }
@@ -238,11 +248,11 @@ struct MenuCard: View {
                                 Text(items[index].title)
                                     .font(.subheadline)
                                     .fontWeight(.medium)
-                                    .foregroundColor(.primary)
+                                    .foregroundColor(.black)
                                 
                                 Text(items[index].subtitle)
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(.gray)
                             }
                             
                             Spacer()
@@ -262,10 +272,10 @@ struct MenuCard: View {
                 }
             }
         }
-        .padding(20)
-        .background(Color.white)
-        .clipShape(RoundedRectangle(cornerRadius: 15))
-        .shadow(color: .black.opacity(0.05), radius: shadowRadius, x: 0, y: 4)
+            .padding(20)
+            .background(Color.white)
+            .clipShape(RoundedRectangle(cornerRadius: 15))
+            .shadow(color: .black.opacity(0.1), radius: shadowRadius, x: 0, y: 4)
         .scaleEffect(cardScale)
         .onHover { hovering in
             withAnimation(.easeInOut(duration: 0.2)) {

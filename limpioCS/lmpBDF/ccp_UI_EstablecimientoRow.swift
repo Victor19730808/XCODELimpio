@@ -8,8 +8,10 @@
 //    con su información básica y un botón para marcarlo como favorito.
 //  • Vinculado al modelo SwiftData: lmpBDF_EstablecimientoLocal
 //  • Permite alternar la propiedad esFavorito y guardar cambios.
+//  • Migrado al sistema de temas dinámico
 //
 //  Fecha: 2025-10-04
+//  Migrado: 2025-01-10
 //
 
 import SwiftUI
@@ -20,34 +22,32 @@ import CoreLocation
 struct ccp_UI_EstablecimientoRow: View {
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject private var locationService: LocationService
+    @ObservedObject private var themeManager = ThemeManager.shared
     @Bindable var est: lmpBDF_EstablecimientoLocal
     @State private var isPressed = false
     @State private var showPromociones = false
     @State private var showFavoritoConfirmation = false
-    
-    // Colores inspirados en El Buen Fin
-    private let buenFinRed = Color(red: 0.89, green: 0.12, blue: 0.14) // #E31E24
-    private let buenFinWhite = Color.white
-    private let buenFinGray = Color(red: 0.2, green: 0.2, blue: 0.2) // #333333
 
     var body: some View {
         HStack(spacing: 16) {
             VStack(alignment: .leading, spacing: 8) {
                 // Nombre del establecimiento
                 Text(est.nombre)
-                    .font(.system(size: 16, weight: .bold, design: .rounded))
-                    .foregroundStyle(buenFinGray)
+                    .font(themeManager.currentTheme.fonts.body)
+                    .fontWeight(.bold)
+                    .foregroundStyle(themeManager.currentTheme.colors.textPrimary)
                     .lineLimit(2)
                 
                 // Estado
                 HStack(spacing: 6) {
                     Image(systemName: "location.fill")
                         .font(.caption)
-                        .foregroundStyle(buenFinRed)
+                        .foregroundStyle(themeManager.currentTheme.colors.primary)
                     
                     Text(est.estado ?? "N/A")
-                        .font(.system(size: 14, weight: .medium, design: .rounded))
-                        .foregroundStyle(buenFinGray.opacity(0.7))
+                        .font(themeManager.currentTheme.fonts.caption)
+                        .fontWeight(.medium)
+                        .foregroundStyle(themeManager.currentTheme.colors.textSecondary)
                 }
                 
                 // Categoría
@@ -55,11 +55,12 @@ struct ccp_UI_EstablecimientoRow: View {
                     HStack(spacing: 6) {
                         Image(systemName: "tag.fill")
                             .font(.caption)
-                            .foregroundStyle(buenFinRed)
+                            .foregroundStyle(themeManager.currentTheme.colors.primary)
                         
                         Text(categoria)
-                            .font(.system(size: 14, weight: .medium, design: .rounded))
-                            .foregroundStyle(buenFinGray.opacity(0.7))
+                            .font(themeManager.currentTheme.fonts.caption)
+                            .fontWeight(.medium)
+                            .foregroundStyle(themeManager.currentTheme.colors.textSecondary)
                     }
                 }
                 
@@ -69,20 +70,21 @@ struct ccp_UI_EstablecimientoRow: View {
                         HStack(spacing: 6) {
                             Image(systemName: "location.circle.fill")
                                 .font(.caption)
-                                .foregroundStyle(buenFinRed)
+                                .foregroundStyle(themeManager.currentTheme.colors.primary)
                             
                             Text("A \(distanceFromUser) km")
-                                .font(.system(size: 13, weight: .semibold, design: .rounded))
-                                .foregroundStyle(buenFinRed)
+                                .font(themeManager.currentTheme.fonts.footnote)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(themeManager.currentTheme.colors.primary)
                         }
                         .padding(.vertical, 6)
                         .padding(.horizontal, 10)
                         .background(
                             RoundedRectangle(cornerRadius: 8)
-                                .fill(buenFinRed.opacity(0.1))
+                                .fill(themeManager.currentTheme.colors.primary.opacity(0.1))
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .stroke(buenFinRed.opacity(0.3), lineWidth: 1)
+                                        .stroke(themeManager.currentTheme.colors.primary.opacity(0.3), lineWidth: 1)
                                 )
                         )
                     }
@@ -99,14 +101,14 @@ struct ccp_UI_EstablecimientoRow: View {
                 } label: {
                     Image(systemName: "tag.fill")
                         .font(.title3)
-                        .foregroundStyle(buenFinRed)
+                        .foregroundStyle(themeManager.currentTheme.colors.primary)
                         .padding(10)
                         .background(
                             Circle()
-                                .fill(buenFinRed.opacity(0.1))
+                                .fill(themeManager.currentTheme.colors.primary.opacity(0.1))
                                 .overlay(
                                     Circle()
-                                        .stroke(buenFinRed.opacity(0.2), lineWidth: 1)
+                                        .stroke(themeManager.currentTheme.colors.primary.opacity(0.2), lineWidth: 1)
                                 )
                         )
                 }
@@ -119,7 +121,7 @@ struct ccp_UI_EstablecimientoRow: View {
                 } label: {
                     Image(systemName: est.esFavorito ? "star.fill" : "star")
                         .font(.title2)
-                        .foregroundStyle(est.esFavorito ? .yellow : buenFinGray.opacity(0.4))
+                        .foregroundStyle(est.esFavorito ? .yellow : themeManager.currentTheme.colors.textSecondary)
                         .scaleEffect(isPressed ? 0.9 : 1.0)
                 }
                 .buttonStyle(.plain)
@@ -135,8 +137,8 @@ struct ccp_UI_EstablecimientoRow: View {
         .padding(.horizontal, 20)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(buenFinWhite)
-                .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 4)
+                .fill(themeManager.currentTheme.colors.cardBackground)
+                .shadow(color: themeManager.currentTheme.colors.shadow, radius: 8, x: 0, y: 4)
         )
         .scaleEffect(isPressed ? 0.98 : 1.0)
         .animation(.easeInOut(duration: 0.1), value: isPressed)

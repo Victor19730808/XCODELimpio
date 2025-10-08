@@ -12,8 +12,10 @@
 //  • Mapa: pin de usuario (referencia visual), mira (crosshair) permanente en el centro,
 //          colores por categoría (paleta fija + fallback hash), y **botones de zoom**.
 //  • Los botones de zoom actúan sobre la región visible (span) sin perder el centro.
+//  • Migrado al sistema de temas dinámico
 //
 //  Fecha: 2025-10-02
+//  Migrado: 2025-01-10
 //
 
 import SwiftUI
@@ -23,6 +25,7 @@ import CoreLocation
 
 struct ccp_BDF_MapView: View {
     @Environment(\.dismiss) private var dismiss
+    @ObservedObject private var themeManager = ThemeManager.shared
 
     // Dependencias
     @EnvironmentObject private var location: LocationService
@@ -30,11 +33,6 @@ struct ccp_BDF_MapView: View {
     /// Consulta a SwiftData: todos los establecimientos locales ordenados por nombre.
     @Query(sort: [SortDescriptor(\lmpBDF_EstablecimientoLocal.nombre, comparator: .localizedStandard)])
     private var todos: [lmpBDF_EstablecimientoLocal]
-    
-    // Colores inspirados en El Buen Fin
-    private let buenFinRed = Color(red: 0.89, green: 0.12, blue: 0.14) // #E31E24
-    private let buenFinWhite = Color.white
-    private let buenFinGray = Color(red: 0.2, green: 0.2, blue: 0.2) // #333333
 
     // Estado UI / Mapa
     @State private var cameraPosition: MapCameraPosition = .userLocation(fallback: .automatic)
@@ -171,12 +169,12 @@ struct ccp_BDF_MapView: View {
                             } label: {
                                 Image(systemName: "house.fill")
                                     .font(.title2)
-                                    .foregroundColor(buenFinWhite)
+                                    .foregroundColor(themeManager.currentTheme.colors.textOnPrimary)
                                     .padding(12)
                                     .background(
                                         Circle()
-                                            .fill(Color.white.opacity(0.2))
-                                            .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+                                            .fill(themeManager.currentTheme.colors.textOnPrimary.opacity(0.2))
+                                            .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
                                     )
                             }
                             .padding(.leading, 20)
@@ -186,43 +184,31 @@ struct ccp_BDF_MapView: View {
                         .frame(maxWidth: .infinity)
                         
                         // Título "Mapa de Cercanías" centrado
-                        Text("Mapa de Cercanías")
-                            .font(.system(size: 18, weight: .bold, design: .rounded))
-                            .foregroundColor(buenFinWhite)
+                        HeaderView.themed(
+                            text: "Mapa de Cercanías",
+                            type: .main,
+                            themeManager: themeManager
+                        )
                         
                         // Menú hamburguesa
                         HStack {
                             Spacer()
                             
-                            Menu {
-                                Button {
-                                    // Mis configuraciones
-                                } label: {
-                                    Label("Mis Configuraciones", systemImage: "gear")
-                                }
-                                
-                                Button {
-                                    // Búsquedas Avanzadas
-                                } label: {
-                                    Label("Búsquedas Avanzadas", systemImage: "magnifyingglass.circle")
-                                }
-                                
-                                Button {
-                                    // Admin Datos
-                                } label: {
-                                    Label("Admin Datos", systemImage: "wrench.and.screwdriver")
-                                }
-                            } label: {
-                                Image(systemName: "line.3.horizontal")
-                                    .font(.title2)
-                                    .foregroundColor(buenFinWhite)
-                                    .padding(12)
-                                    .background(
-                                        Circle()
-                                            .fill(Color.white.opacity(0.2))
-                                            .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
-                                    )
-                            }
+                            HamburgerMenuView.themed(
+                                viewType: .map,
+                                menuActions: [
+                                    .themes: { 
+                                        // Temas - implementar según necesidad
+                                    },
+                                    .advancedSearch: { 
+                                        // Búsquedas Avanzadas - implementar según necesidad
+                                    },
+                                    .mySettings: { 
+                                        // Mis Configuraciones - implementar según necesidad
+                                    }
+                                ],
+                                themeManager: themeManager
+                            )
                             .padding(.trailing, 20)
                         }
                         .frame(maxWidth: .infinity)
@@ -232,12 +218,12 @@ struct ccp_BDF_MapView: View {
                     
                     // Línea divisoria
                     Rectangle()
-                        .fill(buenFinWhite.opacity(0.3))
+                        .fill(themeManager.currentTheme.colors.textOnPrimary.opacity(0.3))
                         .frame(height: 1)
                         .padding(.horizontal, 20)
                 }
                 .frame(height: 100)
-                .background(buenFinRed)
+                .background(themeManager.currentTheme.colors.primary)
                 
                 // Contenido principal
                 VStack(spacing: 0) {
@@ -247,14 +233,14 @@ struct ccp_BDF_MapView: View {
                         VStack(alignment: .leading, spacing: 8) {
                             HStack {
                                 Text("Radio: \(Int(filtroRadioKm)) km")
-                                    .font(.system(size: 16, weight: .semibold, design: .rounded))
-                                    .foregroundColor(buenFinGray)
+                                    .font(themeManager.currentTheme.fonts.body)
+                                    .foregroundColor(themeManager.currentTheme.colors.textPrimary)
                                 
                                 Spacer()
                             }
                             
                             Slider(value: $filtroRadioKm, in: radioMin...radioMax, step: 1)
-                                .accentColor(buenFinRed)
+                                .accentColor(themeManager.currentTheme.colors.primary)
                                 .onChange(of: filtroRadioKm) { _ in
                                     debounceSearch()
                                 }
@@ -262,15 +248,15 @@ struct ccp_BDF_MapView: View {
                             if mapCenter == nil {
                                 Text("Mueve el mapa para fijar el centro (ancla del radio).")
                                     .font(.system(size: 12, weight: .medium, design: .rounded))
-                                    .foregroundColor(buenFinGray.opacity(0.6))
+                                    .foregroundColor(themeManager.currentTheme.colors.textSecondary.opacity(0.6))
                             }
                         }
                         .padding(.horizontal, 20)
                         .padding(.vertical, 12)
                         .background(
                             RoundedRectangle(cornerRadius: 12)
-                                .fill(buenFinWhite)
-                                .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                .fill(themeManager.currentTheme.colors.cardBackground)
+                                .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
                         )
                         
                         // Categorías, búsqueda y estadísticas en una fila
@@ -279,29 +265,29 @@ struct ccp_BDF_MapView: View {
                             Button { showCategoriasSheet = true } label: {
                                 HStack(spacing: 8) {
                                     Image(systemName: "line.3.horizontal.decrease.circle")
-                                        .foregroundColor(buenFinRed)
+                                        .foregroundColor(themeManager.currentTheme.colors.primary)
                                     
                                     Text(filtroCategorias.isEmpty ? "Todas" : "\(filtroCategorias.count) seleccionadas")
                                         .font(.system(size: 14, weight: .medium, design: .rounded))
-                                        .foregroundColor(buenFinGray)
+                                        .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                                 }
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 12)
                                 .background(
                                     RoundedRectangle(cornerRadius: 12)
-                                        .fill(buenFinWhite)
-                                        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                        .fill(themeManager.currentTheme.colors.cardBackground)
+                                        .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
                                 )
                             }
                             
                             // Búsqueda por nombre
                             HStack {
                                 Image(systemName: "magnifyingglass")
-                                    .foregroundColor(buenFinGray.opacity(0.6))
+                                    .foregroundColor(themeManager.currentTheme.colors.textSecondary.opacity(0.6))
                                 
                                 TextField("Nombre contiene...", text: $filtroNombre)
                                     .textFieldStyle(.plain)
-                                    .foregroundColor(buenFinGray)
+                                    .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                                     .onChange(of: filtroNombre) { _ in
                                         debounceSearch()
                                     }
@@ -311,7 +297,7 @@ struct ccp_BDF_MapView: View {
                                         filtroNombre = ""
                                     } label: {
                                         Image(systemName: "xmark.circle.fill")
-                                            .foregroundColor(buenFinGray.opacity(0.6))
+                                            .foregroundColor(themeManager.currentTheme.colors.textSecondary.opacity(0.6))
                                     }
                                 }
                             }
@@ -319,8 +305,8 @@ struct ccp_BDF_MapView: View {
                             .padding(.vertical, 12)
                             .background(
                                 RoundedRectangle(cornerRadius: 12)
-                                    .fill(buenFinWhite)
-                                    .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                    .fill(themeManager.currentTheme.colors.cardBackground)
+                                    .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
                             )
                             
                             // Toggle de favoritos
@@ -331,12 +317,12 @@ struct ccp_BDF_MapView: View {
                             } label: {
                                 Image(systemName: soloFavoritos ? "star.fill" : "star")
                                     .font(.title3)
-                                    .foregroundColor(soloFavoritos ? buenFinWhite : buenFinRed)
+                                    .foregroundColor(soloFavoritos ? themeManager.currentTheme.colors.textOnPrimary : themeManager.currentTheme.colors.primary)
                                     .padding(12)
                                     .background(
                                         Circle()
-                                            .fill(soloFavoritos ? buenFinRed : buenFinWhite)
-                                            .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                            .fill(soloFavoritos ? themeManager.currentTheme.colors.primary : themeManager.currentTheme.colors.cardBackground)
+                                            .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
                                     )
                             }
                             .accessibilityLabel(soloFavoritos ? "Mostrar todos" : "Solo favoritos")
@@ -349,12 +335,12 @@ struct ccp_BDF_MapView: View {
                             } label: {
                                 Image(systemName: showStats ? "chart.bar.fill" : "chart.bar")
                                     .font(.title3)
-                                    .foregroundColor(showStats ? buenFinWhite : buenFinRed)
+                                    .foregroundColor(showStats ? themeManager.currentTheme.colors.textOnPrimary : themeManager.currentTheme.colors.primary)
                                     .padding(12)
                                     .background(
                                         Circle()
-                                            .fill(showStats ? buenFinRed : buenFinWhite)
-                                            .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                            .fill(showStats ? themeManager.currentTheme.colors.primary : themeManager.currentTheme.colors.cardBackground)
+                                            .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
                                     )
                             }
                         }
@@ -365,11 +351,11 @@ struct ccp_BDF_MapView: View {
                                 HStack(spacing: 6) {
                                     Text(cat)
                                         .font(.system(size: 12, weight: .medium, design: .rounded))
-                                        .foregroundColor(buenFinRed)
+                                        .foregroundColor(themeManager.currentTheme.colors.primary)
                                     
                                     Button { filtroCategorias.remove(cat) } label: {
                                         Image(systemName: "xmark.circle.fill")
-                                            .foregroundColor(buenFinGray.opacity(0.6))
+                                            .foregroundColor(themeManager.currentTheme.colors.textSecondary.opacity(0.6))
                                     }
                                     .buttonStyle(.plain)
                                 }
@@ -377,10 +363,10 @@ struct ccp_BDF_MapView: View {
                                 .padding(.horizontal, 12)
                                 .background(
                                     Capsule()
-                                        .fill(buenFinRed.opacity(0.1))
+                                        .fill(themeManager.currentTheme.colors.primary.opacity(0.1))
                                         .overlay(
                                             Capsule()
-                                                .stroke(buenFinRed.opacity(0.3), lineWidth: 1)
+                                                .stroke(themeManager.currentTheme.colors.primary.opacity(0.3), lineWidth: 1)
                                         )
                                 )
                             }
@@ -390,10 +376,7 @@ struct ccp_BDF_MapView: View {
                         if showStats {
                             StatsPanelView(
                                 filtrados: filtrados,
-                                estadisticasPorCategoria: estadisticasPorCategoria,
-                                buenFinRed: buenFinRed,
-                                buenFinWhite: buenFinWhite,
-                                buenFinGray: buenFinGray
+                                estadisticasPorCategoria: estadisticasPorCategoria
                             )
                             .transition(.asymmetric(
                                 insertion: .opacity.combined(with: .scale(scale: 0.95)),
@@ -406,13 +389,13 @@ struct ccp_BDF_MapView: View {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text("Mostrando: \(filtrados.count) · En BD: \(todos.count)")
                                     .font(.system(size: 14, weight: .medium, design: .rounded))
-                                    .foregroundColor(buenFinGray.opacity(0.7))
+                                    .foregroundColor(themeManager.currentTheme.colors.textSecondary.opacity(0.7))
                                 
                                 if soloFavoritos {
                                     let favoritosCount = todos.filter { $0.esFavorito }.count
                                     Text("⭐ \(favoritosCount) favoritos en total")
                                         .font(.system(size: 12, weight: .medium, design: .rounded))
-                                        .foregroundColor(buenFinRed.opacity(0.8))
+                                        .foregroundColor(themeManager.currentTheme.colors.primary.opacity(0.8))
                                 }
                             }
                             
@@ -421,14 +404,14 @@ struct ccp_BDF_MapView: View {
                             if filtrados.count >= maxMarkersToShow {
                                 Text("(limitado para performance)")
                                     .font(.system(size: 12, weight: .medium, design: .rounded))
-                                    .foregroundColor(buenFinRed.opacity(0.7))
+                                    .foregroundColor(themeManager.currentTheme.colors.primary.opacity(0.7))
                             }
                         }
                     }
                     .padding(.horizontal, 20)
                     .padding(.top, 20)
                     .padding(.bottom, 16)
-                    .background(buenFinWhite)
+                    .background(themeManager.currentTheme.colors.cardBackground)
                     
                     // Mapa
                     Map(position: $cameraPosition, interactionModes: .all) {
@@ -496,18 +479,18 @@ struct ccp_BDF_MapView: View {
                             } label: {
                                 Image(systemName: "plus.magnifyingglass")
                                     .font(.title2.bold())
-                                    .foregroundColor(buenFinWhite)
+                                    .foregroundColor(themeManager.currentTheme.colors.cardBackground)
                                     .padding(8)
                             }
                             .buttonStyle(.borderedProminent)
-                            .tint(buenFinRed)
+                            .tint(themeManager.currentTheme.colors.primary)
 
                             Button {
                                 zoomOut()
                             } label: {
                                 Image(systemName: "minus.magnifyingglass")
                                     .font(.title2.bold())
-                                    .foregroundColor(buenFinGray)
+                                    .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                                     .padding(8)
                             }
                             .buttonStyle(.bordered)
@@ -523,7 +506,7 @@ struct ccp_BDF_MapView: View {
                                 Label("Centrar en mí", systemImage: "location.circle.fill").labelStyle(.iconOnly)
                             }
                             .buttonStyle(.borderedProminent)
-                            .tint(buenFinRed)
+                            .tint(themeManager.currentTheme.colors.primary)
                             MapUserLocationButton()
                         }
                         .padding()
@@ -710,12 +693,12 @@ struct ccp_BDF_MapView: View {
 // MARK: - Overlay: mira en el centro del mapa
 /// Crosshair permanente que indica el centro del mapa (ancla del radio).
 private struct CrosshairOverlay: View {
-    private let buenFinRed = Color(red: 0.89, green: 0.12, blue: 0.14) // #E31E24
+    @ObservedObject private var themeManager = ThemeManager.shared
     
     var body: some View {
         ZStack {
-            Circle().strokeBorder(buenFinRed.opacity(0.6), lineWidth: 2).frame(width: 24, height: 24)
-            Circle().fill(buenFinRed.opacity(0.2)).frame(width: 8, height: 8)
+            Circle().strokeBorder(themeManager.currentTheme.colors.primary.opacity(0.6), lineWidth: 2).frame(width: 24, height: 24)
+            Circle().fill(themeManager.currentTheme.colors.primary.opacity(0.2)).frame(width: 8, height: 8)
         }.shadow(radius: 2)
     }
 }
@@ -810,9 +793,7 @@ private struct CategoriaMultiSelectSheet: View {
 struct StatsPanelView: View {
     let filtrados: [lmpBDF_EstablecimientoLocal]
     let estadisticasPorCategoria: [(categoria: String, count: Int, color: Color)]
-    let buenFinRed: Color
-    let buenFinWhite: Color
-    let buenFinGray: Color
+    @ObservedObject private var themeManager = ThemeManager.shared
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -820,13 +801,13 @@ struct StatsPanelView: View {
                 HStack {
                     Text("Estadísticas por Categoría")
                         .font(.system(size: 16, weight: .bold, design: .rounded))
-                        .foregroundColor(buenFinGray)
+                        .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                     
                     Spacer()
                     
                     Text("\(filtrados.count) establecimientos")
                         .font(.system(size: 14, weight: .medium, design: .rounded))
-                        .foregroundColor(buenFinGray.opacity(0.7))
+                        .foregroundColor(themeManager.currentTheme.colors.textSecondary.opacity(0.7))
                 }
                 
                 // Información de favoritos
@@ -839,13 +820,13 @@ struct StatsPanelView: View {
                         
                         Text("\(favoritosCount) de \(filtrados.count) son favoritos")
                             .font(.system(size: 12, weight: .medium, design: .rounded))
-                            .foregroundColor(buenFinGray.opacity(0.8))
+                            .foregroundColor(themeManager.currentTheme.colors.textSecondary.opacity(0.8))
                         
                         Spacer()
                         
                         Text("\(Int(Double(favoritosCount) / Double(filtrados.count) * 100))%")
                             .font(.system(size: 12, weight: .bold, design: .rounded))
-                            .foregroundColor(buenFinRed)
+                            .foregroundColor(themeManager.currentTheme.colors.primary)
                     }
                     .padding(.horizontal, 12)
                     .padding(.vertical, 6)
@@ -859,7 +840,7 @@ struct StatsPanelView: View {
             if estadisticasPorCategoria.isEmpty {
                 Text("No hay datos para mostrar")
                     .font(.system(size: 14, weight: .medium, design: .rounded))
-                    .foregroundColor(buenFinGray.opacity(0.6))
+                    .foregroundColor(themeManager.currentTheme.colors.textSecondary.opacity(0.6))
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.vertical, 20)
             } else {
@@ -874,14 +855,14 @@ struct StatsPanelView: View {
                             // Nombre de la categoría
                             Text(stat.categoria.capitalized)
                                 .font(.system(size: 14, weight: .medium, design: .rounded))
-                                .foregroundColor(buenFinGray)
+                                .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                             
                             Spacer()
                             
                             // Contador
                             Text("\(stat.count)")
                                 .font(.system(size: 14, weight: .bold, design: .rounded))
-                                .foregroundColor(buenFinRed)
+                                .foregroundColor(themeManager.currentTheme.colors.primary)
                             
                             // Barra de progreso
                             GeometryReader { geometry in
@@ -896,7 +877,7 @@ struct StatsPanelView: View {
                     if estadisticasPorCategoria.count > 5 {
                         Text("Y \(estadisticasPorCategoria.count - 5) categorías más...")
                             .font(.system(size: 12, weight: .medium, design: .rounded))
-                            .foregroundColor(buenFinGray.opacity(0.6))
+                            .foregroundColor(themeManager.currentTheme.colors.textSecondary.opacity(0.6))
                             .frame(maxWidth: .infinity, alignment: .center)
                             .padding(.top, 4)
                     }
@@ -906,8 +887,8 @@ struct StatsPanelView: View {
         .padding(16)
         .background(
             RoundedRectangle(cornerRadius: 12)
-                .fill(buenFinWhite)
-                .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
+                .fill(themeManager.currentTheme.colors.cardBackground)
+                .shadow(color: themeManager.currentTheme.colors.shadow, radius: 8, x: 0, y: 4)
         )
         .padding(.horizontal, 20)
     }

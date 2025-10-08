@@ -3,16 +3,12 @@ import SwiftData
 
 struct ccp_BDF_EstablecimientosListaView: View {
     @Environment(\.dismiss) private var dismiss
+    @ObservedObject private var themeManager = ThemeManager.shared
     @State private var searchText = ""
     @State private var showFavoritesOnly = false
 
     @Query(sort: \lmpBDF_EstablecimientoLocal.nombre, order: .forward)
     private var all: [lmpBDF_EstablecimientoLocal]
-    
-    // Colores inspirados en El Buen Fin
-    private let buenFinRed = Color(red: 0.89, green: 0.12, blue: 0.14) // #E31E24
-    private let buenFinWhite = Color.white
-    private let buenFinGray = Color(red: 0.2, green: 0.2, blue: 0.2) // #333333
     
     // Computed properties
     private var data: [lmpBDF_EstablecimientoLocal] {
@@ -39,11 +35,11 @@ struct ccp_BDF_EstablecimientosListaView: View {
 
     var body: some View {
         ZStack {
-            // Fondo con gradiente sutil
+            // Fondo con gradiente sutil usando el tema actual
             LinearGradient(
                 gradient: Gradient(colors: [
-                    Color.gray.opacity(0.05),
-                    Color.white
+                    themeManager.currentTheme.colors.surface,
+                    themeManager.currentTheme.colors.background
                 ]),
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
@@ -61,12 +57,12 @@ struct ccp_BDF_EstablecimientosListaView: View {
                             } label: {
                                 Image(systemName: "house.fill")
                                     .font(.title2)
-                                    .foregroundColor(buenFinWhite)
+                                    .foregroundColor(themeManager.currentTheme.colors.textOnPrimary)
                                     .padding(12)
                                     .background(
                                         Circle()
-                                            .fill(Color.white.opacity(0.2))
-                                            .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+                                            .fill(themeManager.currentTheme.colors.textOnPrimary.opacity(0.2))
+                                            .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
                                     )
                             }
                             .padding(.leading, 20)
@@ -76,43 +72,31 @@ struct ccp_BDF_EstablecimientosListaView: View {
                         .frame(maxWidth: .infinity)
                         
                         // Título "Participantes" centrado
-                        Text("Participantes")
-                            .font(.system(size: 18, weight: .bold, design: .rounded))
-                            .foregroundColor(buenFinWhite)
+                        HeaderView.themed(
+                            text: "Participantes",
+                            type: .section,
+                            themeManager: themeManager
+                        )
                         
                         // Menú hamburguesa
                         HStack {
                             Spacer()
                             
-                            Menu {
-                                Button {
-                                    // Mis configuraciones
-                                } label: {
-                                    Label("Mis Configuraciones", systemImage: "gear")
-                                }
-                                
-                                Button {
-                                    // Búsquedas Avanzadas
-                                } label: {
-                                    Label("Búsquedas Avanzadas", systemImage: "magnifyingglass.circle")
-                                }
-                                
-                                Button {
-                                    // Admin Datos
-                                } label: {
-                                    Label("Admin Datos", systemImage: "wrench.and.screwdriver")
-                                }
-                            } label: {
-                                Image(systemName: "line.3.horizontal")
-                                    .font(.title2)
-                                    .foregroundColor(buenFinWhite)
-                                    .padding(12)
-                                    .background(
-                                        Circle()
-                                            .fill(Color.white.opacity(0.2))
-                                            .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
-                                    )
-                            }
+                            HamburgerMenuView.themed(
+                                viewType: .list,
+                                menuActions: [
+                                    .themes: { 
+                                        // Temas - implementar según necesidad
+                                    },
+                                    .adminDatos: { 
+                                        // Admin Datos - implementar según necesidad
+                                    },
+                                    .mySettings: { 
+                                        // Mis Configuraciones - implementar según necesidad
+                                    }
+                                ],
+                                themeManager: themeManager
+                            )
                             .padding(.trailing, 20)
                         }
                         .frame(maxWidth: .infinity)
@@ -122,12 +106,12 @@ struct ccp_BDF_EstablecimientosListaView: View {
                     
                     // Línea divisoria
                     Rectangle()
-                        .fill(buenFinWhite.opacity(0.3))
+                        .fill(themeManager.currentTheme.colors.textOnPrimary.opacity(0.3))
                         .frame(height: 1)
                         .padding(.horizontal, 20)
                 }
                 .frame(height: 100)
-                .background(buenFinRed)
+                .background(themeManager.currentTheme.colors.primary)
                 
                 // Contenido principal
                 VStack(spacing: 0) {
@@ -137,18 +121,18 @@ struct ccp_BDF_EstablecimientosListaView: View {
                             // Barra de búsqueda
                             HStack {
                                 Image(systemName: "magnifyingglass")
-                                    .foregroundStyle(buenFinGray.opacity(0.6))
+                                    .foregroundStyle(themeManager.currentTheme.colors.textSecondary)
                                 
                                 TextField("Buscar por nombre o categoría...", text: $searchText)
                                     .textFieldStyle(.plain)
-                                    .foregroundStyle(buenFinGray)
+                                    .foregroundStyle(themeManager.currentTheme.colors.textPrimary)
                                 
                                 if !searchText.isEmpty {
                                     Button {
                                         searchText = ""
                                     } label: {
                                         Image(systemName: "xmark.circle.fill")
-                                            .foregroundStyle(buenFinGray.opacity(0.6))
+                                            .foregroundStyle(themeManager.currentTheme.colors.textSecondary)
                                     }
                                 }
                             }
@@ -156,8 +140,8 @@ struct ccp_BDF_EstablecimientosListaView: View {
                             .padding(.vertical, 12)
                             .background(
                                 RoundedRectangle(cornerRadius: 12)
-                                    .fill(buenFinWhite)
-                                    .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                    .fill(themeManager.currentTheme.colors.cardBackground)
+                                    .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
                             )
                             
                             // Toggle de favoritos
@@ -168,12 +152,12 @@ struct ccp_BDF_EstablecimientosListaView: View {
                             } label: {
                                 Image(systemName: showFavoritesOnly ? "star.fill" : "star")
                                     .font(.title2)
-                                    .foregroundStyle(showFavoritesOnly ? .yellow : buenFinGray.opacity(0.6))
+                                    .foregroundStyle(showFavoritesOnly ? .yellow : themeManager.currentTheme.colors.textSecondary)
                                     .padding(12)
                                     .background(
                                         Circle()
-                                            .fill(buenFinWhite)
-                                            .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                            .fill(themeManager.currentTheme.colors.cardBackground)
+                                            .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
                                     )
                             }
                         }
@@ -182,7 +166,7 @@ struct ccp_BDF_EstablecimientosListaView: View {
                     .padding(.horizontal, 20)
                     .padding(.top, 20)
                     .padding(.bottom, 16)
-                    .background(buenFinWhite)
+                    .background(themeManager.currentTheme.colors.background)
                     
                     // Lista de participantes
                     Group {
@@ -194,20 +178,20 @@ struct ccp_BDF_EstablecimientosListaView: View {
                                     (showFavoritesOnly ? "star" : "building.2") :
                                     "magnifyingglass")
                                     .font(.system(size: 60))
-                                    .foregroundStyle(buenFinGray.opacity(0.3))
+                                    .foregroundStyle(themeManager.currentTheme.colors.textSecondary.opacity(0.3))
                                 
                                 VStack(spacing: 8) {
                                     Text(searchText.isEmpty ? 
                                         (showFavoritesOnly ? "Aún no tienes favoritos" : "Sin registros") :
                                         "Sin resultados")
-                                        .font(.system(size: 20, weight: .semibold, design: .rounded))
-                                        .foregroundStyle(buenFinGray)
+                                        .font(themeManager.currentTheme.fonts.title)
+                                        .foregroundStyle(themeManager.currentTheme.colors.textPrimary)
                                     
                                     Text(searchText.isEmpty ? 
                                         (showFavoritesOnly ? "Marca participantes con la estrella para verlos aquí." : "Aún no hay participantes en la base local.") :
                                         "Intenta con otros términos de búsqueda.")
-                                        .font(.system(size: 16, weight: .medium, design: .rounded))
-                                        .foregroundStyle(buenFinGray.opacity(0.6))
+                                        .font(themeManager.currentTheme.fonts.body)
+                                        .foregroundStyle(themeManager.currentTheme.colors.textSecondary)
                                         .multilineTextAlignment(.center)
                                 }
                                 

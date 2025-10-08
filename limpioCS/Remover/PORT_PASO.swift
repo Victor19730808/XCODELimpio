@@ -9,36 +9,40 @@
 //      - Lista unificada (Todos / Favoritos)
 //      - Mapa base (ccp_BDF_MapView)
 //      - Mapa con clusters (ccp_BDF_MapClustersView)
+//  • Migrado al sistema de temas dinámico
 //  • iOS 17+
 //
 //  Fecha: 2025-10-04
+//  Migrado: 2025-01-10
 //
 
 import SwiftUI
 
 struct PORT_PASO: View {
     @EnvironmentObject private var location: LocationService
+    @ObservedObject private var themeManager = ThemeManager.shared
     @State private var scrollOffset: CGFloat = 0
     @State private var cardAnimations: [Bool] = Array(repeating: false, count: 4)
     @State private var showAdminDatos = false // Estado para mostrar la vista de administración
+    @State private var showThemeSelector = false // Estado para mostrar el selector de temas
     
     var body: some View {
         NavigationStack {
                 ZStack {
-                    // Fondo con gradiente
+                    // Fondo con gradiente usando el tema actual
                     LinearGradient(
                         gradient: Gradient(colors: [
-                            Color.blue.opacity(0.1),
-                            Color.purple.opacity(0.05),
-                            Color.white
+                            themeManager.currentTheme.colors.surface,
+                            themeManager.currentTheme.colors.background,
+                            themeManager.currentTheme.colors.background
                         ]),
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
                     .ignoresSafeArea()
                     
-                    // Fondo blanco sólido para asegurar contraste
-                    Color.white
+                    // Fondo sólido para asegurar contraste
+                    themeManager.backgroundColor
                         .ignoresSafeArea()
                         .opacity(0.95)
                 
@@ -53,36 +57,29 @@ struct PORT_PASO: View {
                             Spacer()
                             
                             // Etiqueta "Hecho en México" centrada
-                            Text("Hecho en México")
-                                .font(.system(size: 16, weight: .medium, design: .rounded))
-                                .foregroundColor(.white)
+                            HeaderView.themed(
+                                text: "Hecho en México",
+                                type: .main,
+                                themeManager: themeManager
+                            )
                             
                             Spacer()
                             
-                            // Menú hamburguesa
-                            Menu {
-                                Button {
-                                    // Mis configuraciones
-                                } label: {
-                                    Label("Mis Configuraciones", systemImage: "gear")
-                                }
-                                
-                                Button {
-                                    // Búsquedas Avanzadas
-                                } label: {
-                                    Label("Búsquedas Avanzadas", systemImage: "magnifyingglass.circle")
-                                }
-                                
-                                Button {
-                                    showAdminDatos = true
-                                } label: {
-                                    Label("Admin Datos", systemImage: "wrench.and.screwdriver")
-                                }
-                            } label: {
-                                Image(systemName: "line.3.horizontal")
-                                    .font(.title2)
-                                    .foregroundColor(.white)
-                            }
+                            // Menú hamburguesa centralizado
+                            HamburgerMenuView.themed(
+                                viewType: .main,
+                                menuActions: [
+                                    .themes: { showThemeSelector = true },
+                                    .adminDatos: { showAdminDatos = true },
+                                    .advancedSearch: { 
+                                        // Búsquedas Avanzadas - implementar según necesidad
+                                    },
+                                    .mySettings: { 
+                                        // Mis Configuraciones - implementar según necesidad
+                                    }
+                                ],
+                                themeManager: themeManager
+                            )
                             .padding(.trailing, 16)
                         }
                         .padding(.top, 20)
@@ -90,12 +87,12 @@ struct PORT_PASO: View {
                         
                         // Línea divisoria
                         Rectangle()
-                            .fill(Color.white.opacity(0.3))
+                            .fill(themeManager.currentTheme.colors.textOnPrimary.opacity(0.3))
                             .frame(height: 1)
                             .padding(.horizontal, 20)
                     }
                     .frame(height: 120)
-                    .background(Color(red: 0.89, green: 0.12, blue: 0.14)) // Mismo rojo del splash
+                    .background(themeManager.currentTheme.colors.primary) // Color primario del tema actual
                     
                     ScrollView {
                         VStack(spacing: 30) {
@@ -159,23 +156,6 @@ struct PORT_PASO: View {
                         }
                         .padding(.horizontal, 20)
                         
-                        // Footer con información de ubicación
-                        if !location.estado.isEmpty && !location.municipio.isEmpty {
-                            VStack(spacing: 8) {
-                                Text("📍 Ubicación Actual")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                
-                                Text("\(location.municipio), \(location.estado)")
-                                    .font(.subheadline)
-                                    .fontWeight(.medium)
-                                    .foregroundColor(.primary)
-                            }
-                            .padding()
-                            .background(Color.gray.opacity(0.1))
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .padding(.horizontal, 20)
-                        }
                         
                             Spacer(minLength: 50)
                         }
@@ -209,6 +189,9 @@ struct PORT_PASO: View {
             ccp_BDF_DBIncrementalTestView()
                 .environmentObject(location)
         }
+        .sheet(isPresented: $showThemeSelector) {
+            ThemeSelectorView()
+        }
     }
 }
 
@@ -223,6 +206,8 @@ struct MenuCard: View {
     @State private var cardScale: CGFloat = 1.0
     @State private var shadowRadius: CGFloat = 8
     
+    @ObservedObject private var themeManager = ThemeManager.shared
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 15) {
             HStack {
@@ -232,10 +217,10 @@ struct MenuCard: View {
                     .scaleEffect(isHovered ? 1.1 : 1.0)
                     .animation(.easeInOut(duration: 0.2), value: isHovered)
                 
-                Text(title)
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.black)
+                HeaderView.sectionThemed(
+                    text: title,
+                    themeManager: themeManager
+                )
                 
                 Spacer()
             }
@@ -246,26 +231,26 @@ struct MenuCard: View {
                         HStack {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(items[index].title)
-                                    .font(.subheadline)
+                                    .font(themeManager.currentTheme.fonts.subheadline)
                                     .fontWeight(.medium)
-                                    .foregroundColor(.black)
+                                    .foregroundColor(themeManager.currentTheme.colors.textPrimary)
                                 
                                 Text(items[index].subtitle)
-                                    .font(.caption)
-                                    .foregroundColor(.gray)
+                                    .font(themeManager.currentTheme.fonts.caption)
+                                    .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                             }
                             
                             Spacer()
                             
                             Image(systemName: "chevron.right")
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                                 .scaleEffect(isHovered ? 1.2 : 1.0)
                                 .animation(.easeInOut(duration: 0.2), value: isHovered)
                         }
                         .padding(.vertical, 8)
                         .padding(.horizontal, 12)
-                        .background(Color.gray.opacity(isHovered ? 0.1 : 0.05))
+                        .background(themeManager.currentTheme.colors.surface.opacity(isHovered ? 0.3 : 0.1))
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                     }
                     .buttonStyle(PlainButtonStyle())
@@ -273,9 +258,9 @@ struct MenuCard: View {
             }
         }
             .padding(20)
-            .background(Color.white)
+            .background(themeManager.currentTheme.colors.cardBackground)
             .clipShape(RoundedRectangle(cornerRadius: 15))
-            .shadow(color: .black.opacity(0.1), radius: shadowRadius, x: 0, y: 4)
+            .shadow(color: themeManager.currentTheme.colors.shadow, radius: shadowRadius, x: 0, y: 4)
         .scaleEffect(cardScale)
         .onHover { hovering in
             withAnimation(.easeInOut(duration: 0.2)) {

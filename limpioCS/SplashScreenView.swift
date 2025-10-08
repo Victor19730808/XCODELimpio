@@ -10,15 +10,12 @@ struct SplashScreenView: View {
     @State private var contentOpacity: Double = 0.0
     @State private var pulseScale: CGFloat = 1.0
     
-    // Colores inspirados en El Buen Fin
-    private let buenFinRed = Color(red: 0.89, green: 0.12, blue: 0.14) // #E31E24
-    private let buenFinWhite = Color.white
-    private let buenFinGray = Color(red: 0.2, green: 0.2, blue: 0.2) // #333333
+    @ObservedObject private var themeManager = ThemeManager.shared
     
     var body: some View {
         ZStack {
-            // Fondo blanco limpio como El Buen Fin
-            Color.white
+            // Fondo usando el tema actual
+            themeManager.backgroundColor
                 .ignoresSafeArea()
                 .opacity(backgroundOpacity)
             
@@ -30,8 +27,8 @@ struct SplashScreenView: View {
                             
                             // Etiqueta "Hecho en México" centrada
                             Text("Hecho en México")
-                                .font(.system(size: 16, weight: .medium, design: .rounded))
-                                .foregroundColor(buenFinWhite)
+                                .font(themeManager.currentTheme.fonts.body)
+                                .foregroundColor(themeManager.currentTheme.colors.textOnPrimary)
                             
                             Spacer()
                         }
@@ -40,24 +37,24 @@ struct SplashScreenView: View {
                         
                         // Línea divisoria
                         Rectangle()
-                            .fill(buenFinWhite.opacity(0.3))
+                            .fill(themeManager.currentTheme.colors.textOnPrimary.opacity(0.3))
                             .frame(height: 1)
                             .padding(.horizontal, 20)
                     }
                 .frame(height: 120)
-                .background(buenFinRed)
+                .background(themeManager.currentTheme.colors.primary)
                 .opacity(headerOpacity)
                 
                 // Contenido principal con fondo gris
                 VStack(spacing: 0) {
                     // Fondo gris elegante
                     ZStack {
-                        // Fondo gris degradado
+                        // Fondo con gradiente usando el tema actual
                         LinearGradient(
                             gradient: Gradient(colors: [
-                                Color.gray.opacity(0.1),
-                                Color.gray.opacity(0.05),
-                                Color.white
+                                themeManager.currentTheme.colors.surface,
+                                themeManager.currentTheme.colors.background,
+                                themeManager.currentTheme.colors.background
                             ]),
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
@@ -73,7 +70,7 @@ struct SplashScreenView: View {
                                 ZStack {
                                     // Círculo de fondo con pulso sutil
                                     Circle()
-                                        .fill(buenFinRed.opacity(0.08))
+                                        .fill(themeManager.currentTheme.colors.primary.opacity(0.08))
                                         .frame(width: 400, height: 400)
                                         .scaleEffect(pulseScale)
                                         .animation(.easeInOut(duration: 2.0).repeatForever(autoreverses: true), value: pulseScale)
@@ -115,28 +112,28 @@ struct SplashScreenView: View {
                             VStack(spacing: 16) {
                                 VStack(spacing: 8) {
                                     Text("IMPULSANDO EL CRECIMIENTO")
-                                        .font(.system(size: 18, weight: .bold, design: .rounded))
-                                        .foregroundColor(buenFinGray)
+                                        .font(themeManager.currentTheme.fonts.headline)
+                                        .foregroundColor(themeManager.currentTheme.colors.textPrimary)
                                     
                                     Text("ECONÓMICO DE MÉXICO")
-                                        .font(.system(size: 18, weight: .bold, design: .rounded))
-                                        .foregroundColor(buenFinGray)
+                                        .font(themeManager.currentTheme.fonts.headline)
+                                        .foregroundColor(themeManager.currentTheme.colors.textPrimary)
                                 }
                                 
                                 VStack(spacing: 6) {
                                     Text("Conectamos consumidores con establecimientos")
-                                        .font(.system(size: 14, weight: .medium, design: .rounded))
-                                        .foregroundColor(buenFinGray.opacity(0.8))
+                                        .font(themeManager.currentTheme.fonts.caption)
+                                        .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                                     
                                     Text("para fortalecer la economía nacional")
-                                        .font(.system(size: 14, weight: .medium, design: .rounded))
-                                        .foregroundColor(buenFinGray.opacity(0.8))
+                                        .font(themeManager.currentTheme.fonts.caption)
+                                        .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                                 }
                                 
                                 // Etiqueta de desarrollador
                                 Text("Performed by: VAL Human Tech")
-                                    .font(.system(size: 10, weight: .light, design: .rounded))
-                                    .foregroundColor(buenFinGray.opacity(0.5))
+                                    .font(themeManager.currentTheme.fonts.footnote)
+                                    .foregroundColor(themeManager.currentTheme.colors.textSecondary.opacity(0.5))
                                     .padding(.top, 8)
                             }
                             .opacity(contentOpacity)
@@ -200,10 +197,10 @@ struct SplashScreenView: View {
     }
 }
 
-// MARK: - Componentes de Estilo El Buen Fin
+// MARK: - Componentes de Estilo con Temas Dinámicos
 
 // Los componentes de animación compleja han sido reemplazados por un diseño más limpio
-// inspirado en el estilo oficial de El Buen Fin
+// que se adapta dinámicamente al tema seleccionado (Claro, Oscuro, BuenFin)
 
 #Preview {
     SplashScreenView()

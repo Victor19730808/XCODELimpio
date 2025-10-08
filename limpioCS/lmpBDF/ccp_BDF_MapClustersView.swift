@@ -10,14 +10,16 @@
 //  • Clustering nativo de MapKit (agrupa establecimientos cercanos con contador).
 //  • Búsqueda global sobre toda la BD local (SIN radio).
 //  • Filtros colapsables: Categorías (multi-select con toggles + chips), Nombre, Municipio, Estado.
-//  • Sin etiquetas “flotantes” bajo pins/clusters (anti-parpadeo).
+//  • Sin etiquetas "flotantes" bajo pins/clusters (anti-parpadeo).
 //  • Solo se actualizan anotaciones si cambia la lista filtrada (no por pan/zoom).
-//  • Botones: Zoom (+/−), “Centrar en mí”, “Ver México”.
+//  • Botones: Zoom (+/−), "Centrar en mí", "Ver México".
 //  • Al tocar un pin individual → Sheet con detalle (SIN favoritos).
+//  • Migrado al sistema de temas dinámico
 //
 //  Requisitos: iOS 17+
 //
 //  Fecha: 2025-10-03
+//  Migrado: 2025-01-10
 //
 
 import SwiftUI
@@ -29,15 +31,11 @@ import CoreLocation
 
 struct ccp_BDF_MapClustersView: View {
     @Environment(\.dismiss) private var dismiss
+    @ObservedObject private var themeManager = ThemeManager.shared
 
     // Dependencias
     @EnvironmentObject private var location: LocationService
     @Environment(\.modelContext) private var context
-    
-    // Colores inspirados en El Buen Fin
-    private let buenFinRed = Color(red: 0.89, green: 0.12, blue: 0.14) // #E31E24
-    private let buenFinWhite = Color.white
-    private let buenFinGray = Color(red: 0.2, green: 0.2, blue: 0.2) // #333333
 
     /// SwiftData: todos los establecimientos locales (ordenados por nombre).
     @Query(sort: [SortDescriptor(\lmpBDF_EstablecimientoLocal.nombre, comparator: .localizedStandard)])
@@ -162,12 +160,12 @@ struct ccp_BDF_MapClustersView: View {
                             } label: {
                                 Image(systemName: "house.fill")
                                     .font(.title2)
-                                    .foregroundColor(buenFinWhite)
+                                    .foregroundColor(themeManager.currentTheme.colors.cardBackground)
                                     .padding(12)
                                     .background(
                                         Circle()
                                             .fill(Color.white.opacity(0.2))
-                                            .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+                                            .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
                                     )
                             }
                             .padding(.leading, 20)
@@ -177,43 +175,32 @@ struct ccp_BDF_MapClustersView: View {
                         .frame(maxWidth: .infinity)
                         
                         // Título "Mapa de la República" centrado
-                        Text("Mapa de la República")
-                            .font(.system(size: 18, weight: .bold, design: .rounded))
-                            .foregroundColor(buenFinWhite)
+                        HeaderView(
+                            text: "Mapa de la República",
+                            type: .main,
+                            textColor: themeManager.currentTheme.colors.cardBackground,
+                            backgroundColor: .clear
+                        )
                         
                         // Menú hamburguesa
                         HStack {
                             Spacer()
                             
-                            Menu {
-                                Button {
-                                    // Mis configuraciones
-                                } label: {
-                                    Label("Mis Configuraciones", systemImage: "gear")
-                                }
-                                
-                                Button {
-                                    // Búsquedas Avanzadas
-                                } label: {
-                                    Label("Búsquedas Avanzadas", systemImage: "magnifyingglass.circle")
-                                }
-                                
-                                Button {
-                                    // Admin Datos
-                                } label: {
-                                    Label("Admin Datos", systemImage: "wrench.and.screwdriver")
-                                }
-                            } label: {
-                                Image(systemName: "line.3.horizontal")
-                                    .font(.title2)
-                                    .foregroundColor(buenFinWhite)
-                                    .padding(12)
-                                    .background(
-                                        Circle()
-                                            .fill(Color.white.opacity(0.2))
-                                            .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
-                                    )
-                            }
+                            HamburgerMenuView.themed(
+                                viewType: .map,
+                                menuActions: [
+                                    .themes: { 
+                                        // Temas - implementar según necesidad
+                                    },
+                                    .advancedSearch: { 
+                                        // Búsquedas Avanzadas - implementar según necesidad
+                                    },
+                                    .mySettings: { 
+                                        // Mis Configuraciones - implementar según necesidad
+                                    }
+                                ],
+                                themeManager: themeManager
+                            )
                             .padding(.trailing, 20)
                         }
                         .frame(maxWidth: .infinity)
@@ -223,12 +210,12 @@ struct ccp_BDF_MapClustersView: View {
                     
                     // Línea divisoria
                     Rectangle()
-                        .fill(buenFinWhite.opacity(0.3))
+                        .fill(themeManager.currentTheme.colors.cardBackground.opacity(0.3))
                         .frame(height: 1)
                         .padding(.horizontal, 20)
                 }
                 .frame(height: 100)
-                .background(buenFinRed)
+                .background(themeManager.currentTheme.colors.primary)
                 
                 // Contenido principal
                 VStack(spacing: 0) {
@@ -243,18 +230,18 @@ struct ccp_BDF_MapClustersView: View {
                                 HStack(spacing: 8) {
                                     Image(systemName: "line.3.horizontal.decrease.circle")
                                         .font(.title3)
-                                        .foregroundColor(buenFinRed)
+                                        .foregroundColor(themeManager.currentTheme.colors.primary)
                                     
                                     Text(filtroCategorias.isEmpty ? "Todas" : "\(filtroCategorias.count) seleccionadas")
                                         .font(.system(size: 14, weight: .medium, design: .rounded))
-                                        .foregroundColor(buenFinGray)
+                                        .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                                 }
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 12)
                                 .background(
                                     RoundedRectangle(cornerRadius: 12)
-                                        .fill(buenFinWhite)
-                                        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                        .fill(themeManager.currentTheme.colors.cardBackground)
+                                        .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
                                 )
                             }
                             
@@ -266,12 +253,12 @@ struct ccp_BDF_MapClustersView: View {
                             } label: {
                                 Image(systemName: soloFavoritos ? "star.fill" : "star")
                                     .font(.title3)
-                                    .foregroundColor(soloFavoritos ? buenFinWhite : buenFinRed)
+                                    .foregroundColor(soloFavoritos ? themeManager.currentTheme.colors.textOnPrimary : themeManager.currentTheme.colors.primary)
                                     .padding(12)
                                     .background(
                                         Circle()
-                                            .fill(soloFavoritos ? buenFinRed : buenFinWhite)
-                                            .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                            .fill(soloFavoritos ? themeManager.currentTheme.colors.primary : themeManager.currentTheme.colors.cardBackground)
+                                            .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
                                     )
                             }
                             .accessibilityLabel(soloFavoritos ? "Mostrar todos" : "Solo favoritos")
@@ -284,12 +271,12 @@ struct ccp_BDF_MapClustersView: View {
                             } label: {
                                 Image(systemName: showStats ? "chart.bar.fill" : "chart.bar")
                                     .font(.title3)
-                                    .foregroundColor(showStats ? buenFinWhite : buenFinRed)
+                                    .foregroundColor(showStats ? themeManager.currentTheme.colors.textOnPrimary : themeManager.currentTheme.colors.primary)
                                     .padding(12)
                                     .background(
                                         Circle()
-                                            .fill(showStats ? buenFinRed : buenFinWhite)
-                                            .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                            .fill(showStats ? themeManager.currentTheme.colors.primary : themeManager.currentTheme.colors.cardBackground)
+                                            .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
                                     )
                             }
                         }
@@ -299,52 +286,52 @@ struct ccp_BDF_MapClustersView: View {
                             // Búsqueda por nombre
                             HStack {
                                 Image(systemName: "magnifyingglass")
-                                    .foregroundStyle(buenFinGray.opacity(0.6))
+                                    .foregroundStyle(themeManager.currentTheme.colors.textSecondary.opacity(0.6))
                                 
                                 TextField("Nombre contiene...", text: $filtroNombre)
                                     .textFieldStyle(.plain)
-                                    .foregroundStyle(buenFinGray)
+                                    .foregroundStyle(themeManager.currentTheme.colors.textSecondary)
                             }
                             .padding(.horizontal, 16)
                             .padding(.vertical, 12)
                             .background(
                                 RoundedRectangle(cornerRadius: 12)
-                                    .fill(buenFinWhite)
-                                    .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                    .fill(themeManager.currentTheme.colors.cardBackground)
+                                    .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
                             )
                             
                             // Búsqueda por ubicación
                             HStack(spacing: 12) {
                                 HStack {
                                     Image(systemName: "building.2")
-                                        .foregroundStyle(buenFinGray.opacity(0.6))
+                                        .foregroundStyle(themeManager.currentTheme.colors.textSecondary.opacity(0.6))
                                     
                                     TextField("Municipio...", text: $filtroMunicipio)
                                         .textFieldStyle(.plain)
-                                        .foregroundStyle(buenFinGray)
+                                        .foregroundStyle(themeManager.currentTheme.colors.textSecondary)
                                 }
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 12)
                                 .background(
                                     RoundedRectangle(cornerRadius: 12)
-                                        .fill(buenFinWhite)
-                                        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                        .fill(themeManager.currentTheme.colors.cardBackground)
+                                        .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
                                 )
                                 
                                 HStack {
                                     Image(systemName: "flag")
-                                        .foregroundStyle(buenFinGray.opacity(0.6))
+                                        .foregroundStyle(themeManager.currentTheme.colors.textSecondary.opacity(0.6))
                                     
                                     TextField("Estado...", text: $filtroEstado)
                                         .textFieldStyle(.plain)
-                                        .foregroundStyle(buenFinGray)
+                                        .foregroundStyle(themeManager.currentTheme.colors.textSecondary)
                                 }
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 12)
                                 .background(
                                     RoundedRectangle(cornerRadius: 12)
-                                        .fill(buenFinWhite)
-                                        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                        .fill(themeManager.currentTheme.colors.cardBackground)
+                                        .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
                                 )
                             }
                         }
@@ -355,14 +342,14 @@ struct ccp_BDF_MapClustersView: View {
                                 HStack(spacing: 6) {
                                     Text(cat)
                                         .font(.system(size: 12, weight: .medium, design: .rounded))
-                                        .foregroundColor(buenFinRed)
+                                        .foregroundColor(themeManager.currentTheme.colors.primary)
                                     
                                     Button {
                                         filtroCategorias.remove(cat)
                                     } label: {
                                         Image(systemName: "xmark.circle.fill")
                                             .font(.caption)
-                                            .foregroundColor(buenFinGray.opacity(0.6))
+                                            .foregroundColor(themeManager.currentTheme.colors.textSecondary.opacity(0.6))
                                     }
                                     .buttonStyle(.plain)
                                 }
@@ -370,10 +357,10 @@ struct ccp_BDF_MapClustersView: View {
                                 .padding(.horizontal, 12)
                                 .background(
                                     RoundedRectangle(cornerRadius: 16)
-                                        .fill(buenFinRed.opacity(0.1))
+                                        .fill(themeManager.currentTheme.colors.primary.opacity(0.1))
                                         .overlay(
                                             RoundedRectangle(cornerRadius: 16)
-                                                .stroke(buenFinRed.opacity(0.3), lineWidth: 1)
+                                                .stroke(themeManager.currentTheme.colors.primary.opacity(0.3), lineWidth: 1)
                                         )
                                 )
                             }
@@ -383,10 +370,7 @@ struct ccp_BDF_MapClustersView: View {
                         if showStats {
                             StatsPanelView(
                                 filtrados: filtrados,
-                                estadisticasPorCategoria: estadisticasPorCategoria,
-                                buenFinRed: buenFinRed,
-                                buenFinWhite: buenFinWhite,
-                                buenFinGray: buenFinGray
+                                estadisticasPorCategoria: estadisticasPorCategoria
                             )
                             .transition(.asymmetric(
                                 insertion: .opacity.combined(with: .scale(scale: 0.95)),
@@ -399,13 +383,13 @@ struct ccp_BDF_MapClustersView: View {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text("Mostrando: \(filtrados.count) · En BD: \(todos.count)")
                                     .font(.system(size: 14, weight: .medium, design: .rounded))
-                                    .foregroundColor(buenFinGray.opacity(0.7))
+                                    .foregroundColor(themeManager.currentTheme.colors.textSecondary.opacity(0.7))
                                 
                                 if soloFavoritos {
                                     let favoritosCount = todos.filter { $0.esFavorito }.count
                                     Text("⭐ \(favoritosCount) favoritos en total")
                                         .font(.system(size: 12, weight: .medium, design: .rounded))
-                                        .foregroundColor(buenFinRed.opacity(0.8))
+                                        .foregroundColor(themeManager.currentTheme.colors.primary.opacity(0.8))
                                 }
                             }
                             
@@ -415,7 +399,7 @@ struct ccp_BDF_MapClustersView: View {
                     .padding(.horizontal, 20)
                     .padding(.top, 20)
                     .padding(.bottom, 16)
-                    .background(buenFinWhite)
+                    .background(themeManager.currentTheme.colors.cardBackground)
                     
                     // Mapa con clusters
                     ClusterMap(
@@ -435,12 +419,12 @@ struct ccp_BDF_MapClustersView: View {
                             Button { zoomIn() } label: {
                                 Image(systemName: "plus.magnifyingglass")
                                     .font(.title2.bold())
-                                    .foregroundColor(buenFinWhite)
+                                    .foregroundColor(themeManager.currentTheme.colors.cardBackground)
                                     .padding(12)
                                     .background(
                                         Circle()
-                                            .fill(buenFinRed)
-                                            .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+                                            .fill(themeManager.currentTheme.colors.primary)
+                                            .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
                                     )
                             }
                             .buttonStyle(.plain)
@@ -448,12 +432,12 @@ struct ccp_BDF_MapClustersView: View {
                             Button { zoomOut() } label: {
                                 Image(systemName: "minus.magnifyingglass")
                                     .font(.title2.bold())
-                                    .foregroundColor(buenFinGray)
+                                    .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                                     .padding(12)
                                     .background(
                                         Circle()
-                                            .fill(buenFinWhite)
-                                            .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+                                            .fill(themeManager.currentTheme.colors.cardBackground)
+                                            .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
                                     )
                             }
                             .buttonStyle(.plain)
@@ -461,12 +445,12 @@ struct ccp_BDF_MapClustersView: View {
                             Button { zoomToMexico() } label: {
                                 Image(systemName: "globe.americas.fill")
                                     .font(.title2.bold())
-                                    .foregroundColor(buenFinGray)
+                                    .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                                     .padding(12)
                                     .background(
                                         Circle()
-                                            .fill(buenFinWhite)
-                                            .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+                                            .fill(themeManager.currentTheme.colors.cardBackground)
+                                            .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
                                     )
                             }
                             .buttonStyle(.plain)
@@ -479,12 +463,12 @@ struct ccp_BDF_MapClustersView: View {
                         Button { recenterOnUser() } label: {
                             Image(systemName: "location.circle.fill")
                                 .font(.title2)
-                                .foregroundColor(buenFinWhite)
+                                .foregroundColor(themeManager.currentTheme.colors.cardBackground)
                                 .padding(12)
                                 .background(
                                     Circle()
-                                        .fill(buenFinRed)
-                                        .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+                                        .fill(themeManager.currentTheme.colors.primary)
+                                        .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
                                 )
                         }
                         .buttonStyle(.plain)

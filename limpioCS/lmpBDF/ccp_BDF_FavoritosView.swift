@@ -8,14 +8,18 @@
 //  • Reutiliza el componente ccp_UI_EstablecimientoRow para cada fila.
 //  • Ordenado por nombre ascendente.
 //  • Muestra estado vacío si no hay favoritos.
+//  • Migrado al sistema de temas dinámico.
 //
 //  Fecha: 2025-10-04
+//  Migrado: 2025-01-10
 //
 
 import SwiftUI
 import SwiftData
 
 struct ccp_BDF_FavoritosView: View {
+    @ObservedObject private var themeManager = ThemeManager.shared
+    
     // Trae únicamente favoritos
     @Query(
         filter: #Predicate<lmpBDF_EstablecimientoLocal> { $0.esFavorito == true },
@@ -39,6 +43,7 @@ struct ccp_BDF_FavoritosView: View {
                 .listStyle(.insetGrouped)
             }
         }
+        .themed()
         .navigationTitle("Mis Favoritos")
     }
 }

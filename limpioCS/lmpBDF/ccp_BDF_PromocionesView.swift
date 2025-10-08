@@ -5,6 +5,7 @@
 //  Archivo: ccp_BDF_PromocionesView.swift
 //  Hora: 2025-10-07 11:05
 //  Estado: Limpio para pruebas
+//  Migrado: 2025-01-10
 //
 
 import SwiftUI
@@ -96,19 +97,15 @@ struct PromocionResponse: Codable {
 
 struct PromocionesMainView: View {
     let establecimientoId: Int
+    @ObservedObject private var themeManager = ThemeManager.shared
     @State private var promociones: [PromocionResponse] = []
     @State private var isLoading = true
     @State private var errorMessage: String?
     
-    // Colores inspirados en El Buen Fin
-    private let buenFinRed = Color(red: 0.89, green: 0.12, blue: 0.14) // #E31E24
-    private let buenFinWhite = Color.white
-    private let buenFinGray = Color(red: 0.2, green: 0.2, blue: 0.2) // #333333
-    
     var body: some View {
         ZStack {
-            // Fondo blanco forzado (sin importar modo día/noche)
-            Color.white
+            // Fondo usando el tema actual
+            themeManager.backgroundColor
                 .ignoresSafeArea()
             
             if isLoading {
@@ -116,8 +113,8 @@ struct PromocionesMainView: View {
                     ProgressView()
                         .scaleEffect(1.2)
                     Text("Cargando promociones...")
-                        .font(.system(size: 16, weight: .medium, design: .rounded))
-                        .foregroundColor(buenFinGray.opacity(0.7))
+                        .font(themeManager.currentTheme.fonts.body)
+                        .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                 }
             } else if let error = errorMessage {
                 VStack(spacing: 20) {
@@ -126,12 +123,12 @@ struct PromocionesMainView: View {
                         .foregroundColor(.red)
                     
                     Text("Error al cargar")
-                        .font(.system(size: 20, weight: .semibold, design: .rounded))
-                        .foregroundColor(buenFinGray)
+                        .font(themeManager.currentTheme.fonts.title)
+                        .foregroundColor(themeManager.currentTheme.colors.textPrimary)
                     
                     Text(error)
-                        .font(.system(size: 16, weight: .medium, design: .rounded))
-                        .foregroundColor(buenFinGray.opacity(0.7))
+                        .font(themeManager.currentTheme.fonts.body)
+                        .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                         .multilineTextAlignment(.center)
                 }
                 .padding()
@@ -139,15 +136,15 @@ struct PromocionesMainView: View {
                 VStack(spacing: 20) {
                     Image(systemName: "tag")
                         .font(.system(size: 50))
-                        .foregroundColor(buenFinGray.opacity(0.3))
+                        .foregroundColor(themeManager.currentTheme.colors.textSecondary.opacity(0.3))
                     
                     Text("Sin promociones")
-                        .font(.system(size: 20, weight: .semibold, design: .rounded))
-                        .foregroundColor(buenFinGray)
+                        .font(themeManager.currentTheme.fonts.title)
+                        .foregroundColor(themeManager.currentTheme.colors.textPrimary)
                     
                     Text("Este establecimiento no tiene promociones disponibles")
-                        .font(.system(size: 16, weight: .medium, design: .rounded))
-                        .foregroundColor(buenFinGray.opacity(0.7))
+                        .font(themeManager.currentTheme.fonts.body)
+                        .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                         .multilineTextAlignment(.center)
                 }
                 .padding()
@@ -166,8 +163,8 @@ struct PromocionesMainView: View {
                                 
                                 // Título de promociones
                                 Text("Promociones")
-                                    .font(.system(size: 20, weight: .bold, design: .rounded))
-                                    .foregroundColor(buenFinGray)
+                                    .font(themeManager.currentTheme.fonts.title)
+                                    .foregroundColor(themeManager.currentTheme.colors.textPrimary)
                                 
                                 Spacer()
                             }
@@ -248,11 +245,7 @@ struct PromocionesMainView: View {
 struct EstablecimientoHeaderView: View {
     let establecimiento: PromocionResponse
     @Environment(\.dismiss) private var dismiss
-    
-    // Colores inspirados en El Buen Fin
-    private let buenFinRed = Color(red: 0.89, green: 0.12, blue: 0.14) // #E31E24
-    private let buenFinWhite = Color.white
-    private let buenFinGray = Color(red: 0.2, green: 0.2, blue: 0.2) // #333333
+    @ObservedObject private var themeManager = ThemeManager.shared
     
     var body: some View {
         VStack(spacing: 16) {
@@ -267,11 +260,11 @@ struct EstablecimientoHeaderView: View {
                     } label: {
                         Image(systemName: "xmark.circle.fill")
                             .font(.title2)
-                            .foregroundColor(buenFinRed)
+                            .foregroundColor(themeManager.currentTheme.colors.primary)
                             .background(
                                 Circle()
-                                    .fill(buenFinWhite)
-                                    .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                                    .fill(themeManager.currentTheme.colors.cardBackground)
+                                    .shadow(color: themeManager.currentTheme.colors.shadow, radius: 2, x: 0, y: 1)
                             )
                     }
                 }
@@ -291,49 +284,49 @@ struct EstablecimientoHeaderView: View {
                                 .aspectRatio(contentMode: .fit)
                         } placeholder: {
                             RoundedRectangle(cornerRadius: 8)
-                                .fill(buenFinGray.opacity(0.1))
+                                .fill(themeManager.currentTheme.colors.surface)
                                 .overlay(
                                     Image(systemName: "building.2")
                                         .font(.title)
-                                        .foregroundColor(buenFinGray.opacity(0.3))
+                                        .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                                 )
                         }
                         .frame(width: 80, height: 80)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                     } else {
                         RoundedRectangle(cornerRadius: 8)
-                            .fill(buenFinGray.opacity(0.1))
+                            .fill(themeManager.currentTheme.colors.surface)
                             .overlay(
                                 Image(systemName: "building.2")
                                     .font(.title)
-                                    .foregroundColor(buenFinGray.opacity(0.3))
+                                    .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                             )
                             .frame(width: 80, height: 80)
                     }
                     
                     VStack(alignment: .leading, spacing: 8) {
                         Text(establecimiento.establecimiento_nombre ?? "Sin nombre")
-                            .font(.system(size: 20, weight: .bold, design: .rounded))
-                            .foregroundColor(buenFinGray)
+                            .font(themeManager.currentTheme.fonts.title)
+                            .foregroundColor(themeManager.currentTheme.colors.textPrimary)
                             .lineLimit(2)
                         
                         Text(establecimiento.categoria_nombre ?? "Sin categoría")
-                            .font(.system(size: 16, weight: .medium, design: .rounded))
-                            .foregroundColor(buenFinRed)
+                            .font(themeManager.currentTheme.fonts.body)
+                            .foregroundColor(themeManager.currentTheme.colors.primary)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
                             .background(
                                 RoundedRectangle(cornerRadius: 8)
-                                    .fill(buenFinRed.opacity(0.1))
+                                    .fill(themeManager.currentTheme.colors.primary.opacity(0.1))
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 8)
-                                            .stroke(buenFinRed.opacity(0.3), lineWidth: 1)
+                                            .stroke(themeManager.currentTheme.colors.primary.opacity(0.3), lineWidth: 1)
                                     )
                             )
                         
                         Text(establecimiento.establecimiento_actividad ?? "Sin actividad")
-                            .font(.system(size: 14, weight: .medium, design: .rounded))
-                            .foregroundColor(buenFinGray.opacity(0.7))
+                            .font(themeManager.currentTheme.fonts.caption)
+                            .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                     }
                     
                     Spacer()
@@ -342,8 +335,8 @@ struct EstablecimientoHeaderView: View {
                 // Descripción
                 if let descripcion = establecimiento.establecimiento_descripcion, !descripcion.isEmpty {
                     Text(descripcion)
-                        .font(.system(size: 14, weight: .medium, design: .rounded))
-                        .foregroundColor(buenFinGray.opacity(0.8))
+                        .font(themeManager.currentTheme.fonts.caption)
+                        .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                         .multilineTextAlignment(.leading)
                         .lineLimit(4)
                 }
@@ -352,31 +345,31 @@ struct EstablecimientoHeaderView: View {
                 HStack(spacing: 20) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Contacto")
-                            .font(.system(size: 12, weight: .semibold, design: .rounded))
-                            .foregroundColor(buenFinGray.opacity(0.6))
+                            .font(themeManager.currentTheme.fonts.footnote)
+                            .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                         
                         Text(establecimiento.display_name ?? "Sin contacto")
-                            .font(.system(size: 14, weight: .medium, design: .rounded))
-                            .foregroundColor(buenFinGray)
+                            .font(themeManager.currentTheme.fonts.caption)
+                            .foregroundColor(themeManager.currentTheme.colors.textPrimary)
                     }
                     
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Teléfono")
-                            .font(.system(size: 12, weight: .semibold, design: .rounded))
-                            .foregroundColor(buenFinGray.opacity(0.6))
+                            .font(themeManager.currentTheme.fonts.footnote)
+                            .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                         
                         Text(establecimiento.phone_number ?? "Sin teléfono")
-                            .font(.system(size: 14, weight: .medium, design: .rounded))
-                            .foregroundColor(buenFinGray)
+                            .font(themeManager.currentTheme.fonts.caption)
+                            .foregroundColor(themeManager.currentTheme.colors.textPrimary)
                     }
                     
                     Spacer()
                 }
             }
             .padding(20)
-            .background(buenFinWhite)
+            .background(themeManager.currentTheme.colors.cardBackground)
             .clipShape(RoundedRectangle(cornerRadius: 16))
-            .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 4)
+            .shadow(color: themeManager.currentTheme.colors.shadow, radius: 8, x: 0, y: 4)
         }
         .padding(.horizontal, 20)
     }
@@ -386,11 +379,7 @@ struct EstablecimientoHeaderView: View {
 
 struct PromocionCardView: View {
     let promocion: PromocionResponse
-    
-    // Colores inspirados en El Buen Fin
-    private let buenFinRed = Color(red: 0.89, green: 0.12, blue: 0.14) // #E31E24
-    private let buenFinWhite = Color.white
-    private let buenFinGray = Color(red: 0.2, green: 0.2, blue: 0.2) // #333333
+    @ObservedObject private var themeManager = ThemeManager.shared
     
     var body: some View {
         VStack(spacing: 16) {
@@ -402,7 +391,7 @@ struct PromocionCardView: View {
                         .aspectRatio(contentMode: .fill)
                 } placeholder: {
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(buenFinGray.opacity(0.1))
+                        .fill(themeManager.currentTheme.colors.surface)
                         .overlay(
                             ProgressView()
                                 .scaleEffect(0.8)
@@ -416,36 +405,36 @@ struct PromocionCardView: View {
             VStack(alignment: .leading, spacing: 12) {
                 // Título
                 Text(promocion.promocion_titulo ?? "Sin título")
-                    .font(.system(size: 18, weight: .bold, design: .rounded))
-                    .foregroundColor(buenFinGray)
+                    .font(themeManager.currentTheme.fonts.headline)
+                    .foregroundColor(themeManager.currentTheme.colors.textPrimary)
                     .lineLimit(2)
                 
                 // Descripción
                 Text(promocion.promocion_descripcion ?? "Sin descripción")
-                    .font(.system(size: 14, weight: .medium, design: .rounded))
-                    .foregroundColor(buenFinGray.opacity(0.8))
+                    .font(themeManager.currentTheme.fonts.caption)
+                    .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                     .lineLimit(3)
                 
                 // Fechas
                 HStack(spacing: 16) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Inicio")
-                            .font(.system(size: 12, weight: .semibold, design: .rounded))
-                            .foregroundColor(buenFinGray.opacity(0.6))
+                            .font(themeManager.currentTheme.fonts.footnote)
+                            .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                         
                         Text(formatDate(promocion.promocion_fi ?? ""))
-                            .font(.system(size: 14, weight: .medium, design: .rounded))
-                            .foregroundColor(buenFinGray)
+                            .font(themeManager.currentTheme.fonts.caption)
+                            .foregroundColor(themeManager.currentTheme.colors.textPrimary)
                     }
                     
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Fin")
-                            .font(.system(size: 12, weight: .semibold, design: .rounded))
-                            .foregroundColor(buenFinGray.opacity(0.6))
+                            .font(themeManager.currentTheme.fonts.footnote)
+                            .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                         
                         Text(formatDate(promocion.promocion_ff ?? ""))
-                            .font(.system(size: 14, weight: .medium, design: .rounded))
-                            .foregroundColor(buenFinGray)
+                            .font(themeManager.currentTheme.fonts.caption)
+                            .foregroundColor(themeManager.currentTheme.colors.textPrimary)
                     }
                     
                     Spacer()
@@ -455,20 +444,20 @@ struct PromocionCardView: View {
                 if let tyc = promocion.promocion_tyc, !tyc.isEmpty {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Términos y Condiciones")
-                            .font(.system(size: 12, weight: .semibold, design: .rounded))
-                            .foregroundColor(buenFinGray.opacity(0.6))
+                            .font(themeManager.currentTheme.fonts.footnote)
+                            .foregroundColor(themeManager.currentTheme.colors.textSecondary)
                         
                         Text(tyc)
-                            .font(.system(size: 14, weight: .medium, design: .rounded))
-                            .foregroundColor(buenFinRed)
+                            .font(themeManager.currentTheme.fonts.caption)
+                            .foregroundColor(themeManager.currentTheme.colors.primary)
                     }
                 }
             }
             .padding(16)
         }
-        .background(buenFinWhite)
+        .background(themeManager.currentTheme.colors.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
-        .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 4)
+        .shadow(color: themeManager.currentTheme.colors.shadow, radius: 8, x: 0, y: 4)
     }
     
     private func formatDate(_ dateString: String) -> String {

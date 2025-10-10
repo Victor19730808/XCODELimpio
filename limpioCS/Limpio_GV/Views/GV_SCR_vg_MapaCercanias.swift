@@ -120,22 +120,6 @@ struct GV_SCR_vg_MapaCercanias: View {
                 }
             }
             
-            // Filtro por radio (DESHABILITADO - comentado para simplificar)
-            /*
-            if !isShowingFullMexico {
-                if let lat = establecimiento.lat, let lon = establecimiento.lon {
-                    let estLocation = CLLocation(latitude: lat, longitude: lon)
-                    let mapCenter = CLLocation(latitude: mapRegion.center.latitude, longitude: mapRegion.center.longitude)
-                    let distance = estLocation.distance(from: mapCenter) / 1000.0 // convertir a km
-                    if distance > radioActual {
-                        return false
-                    }
-                } else {
-                    return false // Sin coordenadas válidas
-                }
-            }
-            */
-            
             return true
         }
     }
@@ -612,19 +596,6 @@ struct GV_SCR_vg_MapaCercanias: View {
         
         print("🔄 Zoom aplicado con span: \(finalSpan) (calculado: \(calculatedSpan))")
     }
-    
-    /// Reactiva el radio cuando el usuario mueve el mapa (DESHABILITADO)
-    /*
-    private func reactivateRadioIfNeeded() {
-        if isShowingFullMexico {
-            withAnimation(.easeInOut(duration: 0.3)) {
-                isShowingFullMexico = false
-                radioDisabled = false
-            }
-            print("🎚️ Radio reactivado - el usuario movió el mapa")
-        }
-    }
-    */
     
     // MARK: - Generación de Código QR
     

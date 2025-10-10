@@ -13,8 +13,7 @@ struct limpioCSApp: App {
         }
         // ✅ Registramos el contenedor con el nuevo modelo lmpBDF
         .modelContainer(for: [
-            lmpBDF_EstablecimientoLocal.self,
-            
+            lmpBDF_EstablecimientoLocal.self
         ])
     }
 }

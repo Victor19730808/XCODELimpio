@@ -167,28 +167,45 @@ struct PromocionesMainView: View {
                         }
                         
                         // Separador minimalista para promociones
-                        VStack(spacing: 16) {
+                        VStack(spacing: 0) {
+                            // Header de promociones como el del establecimiento
                             HStack {
                                 Spacer()
                                 
-                                // Título de promociones
                                 Text("Promociones")
-                                    .font(themeManager.title)
-                                    .foregroundColor(themeManager.textPrimary)
+                                    .font(themeManager.headline)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.white)
                                 
                                 Spacer()
                             }
                             .padding(.horizontal, 20)
-                        }
-                        .padding(.top, 24)
-                        .padding(.bottom, 8)
+                            .padding(.vertical, 16)
+                            .background(themeManager.primary)
+                            .clipShape(
+                                UnevenRoundedRectangle(
+                                    topLeadingRadius: themeManager.cornerRadius,
+                                    topTrailingRadius: themeManager.cornerRadius
+                                )
+                            )
                         
-                        // Lista de promociones
-                        LazyVStack(spacing: 16) {
-                            ForEach(promociones, id: \.promocion_id) { promocion in
-                                PromocionCardView(promocion: promocion)
+                            // Contenido de promociones
+                            VStack(spacing: 16) {
+                                ForEach(promociones, id: \.promocion_id) { promocion in
+                                    PromocionCardView(promocion: promocion)
+                                }
                             }
+                            .padding(20)
+                            .background(themeManager.cardBackground)
+                            .clipShape(
+                                UnevenRoundedRectangle(
+                                    bottomLeadingRadius: themeManager.cornerRadius,
+                                    bottomTrailingRadius: themeManager.cornerRadius
+                                )
+                            )
                         }
+                        .clipShape(RoundedRectangle(cornerRadius: themeManager.cornerRadius))
+                        .shadow(color: themeManager.shadow, radius: themeManager.shadowRadius, x: 0, y: 4)
                         .padding(.horizontal, 20)
                     }
                     .padding(.vertical, 20)

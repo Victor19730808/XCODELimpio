@@ -20,7 +20,7 @@ import SwiftUI
 
 struct PORT_PASO: View {
     @EnvironmentObject private var location: LocationService
-    @ObservedObject private var themeManager = ThemeManager.shared
+    // Referencias de diseño removidas
     @State private var scrollOffset: CGFloat = 0
     @State private var cardAnimations: [Bool] = Array(repeating: false, count: 4)
     @State private var showAdminDatos = false // Estado para mostrar la vista de administración
@@ -29,12 +29,12 @@ struct PORT_PASO: View {
     var body: some View {
         NavigationStack {
                 ZStack {
-                    // Fondo con gradiente usando el tema actual
+                    // Fondo con gradiente básico
                     LinearGradient(
                         gradient: Gradient(colors: [
-                            themeManager.currentTheme.colors.surface,
-                            themeManager.currentTheme.colors.background,
-                            themeManager.currentTheme.colors.background
+                            Color.gray.opacity(0.1),
+                            Color.white,
+                            Color.white
                         ]),
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
@@ -42,7 +42,7 @@ struct PORT_PASO: View {
                     .ignoresSafeArea()
                     
                     // Fondo sólido para asegurar contraste
-                    themeManager.backgroundColor
+                    Color.white
                         .ignoresSafeArea()
                         .opacity(0.95)
                 
@@ -57,42 +57,29 @@ struct PORT_PASO: View {
                             Spacer()
                             
                             // Etiqueta "Hecho en México" centrada
-                            HeaderView.themed(
-                                text: "Hecho en México",
-                                type: .main,
-                                themeManager: themeManager
-                            )
+                            Text("Hecho en México")
+                                .font(.body)
+                                .foregroundColor(.white)
                             
                             Spacer()
                             
-                            // Menú hamburguesa centralizado
-                            HamburgerMenuView.themed(
-                                viewType: .main,
-                                menuActions: [
-                                    .themes: { showThemeSelector = true },
-                                    .adminDatos: { showAdminDatos = true },
-                                    .advancedSearch: { 
-                                        // Búsquedas Avanzadas - implementar según necesidad
-                                    },
-                                    .mySettings: { 
-                                        // Mis Configuraciones - implementar según necesidad
-                                    }
-                                ],
-                                themeManager: themeManager
-                            )
-                            .padding(.trailing, 16)
+                            // Icono de menú (sin funcionalidad por ahora)
+                            Image(systemName: "line.3.horizontal")
+                                .font(.title2)
+                                .foregroundColor(.white)
+                                .padding(.trailing, 16)
                         }
                         .padding(.top, 20)
                         .padding(.bottom, 20)
                         
                         // Línea divisoria
                         Rectangle()
-                            .fill(themeManager.currentTheme.colors.textOnPrimary.opacity(0.3))
+                            .fill(Color.white.opacity(0.3))
                             .frame(height: 1)
                             .padding(.horizontal, 20)
                     }
                     .frame(height: 120)
-                    .background(themeManager.currentTheme.colors.primary) // Color primario del tema actual
+                    .background(Color.red) // Color básico
                     
                     ScrollView {
                         VStack(spacing: 30) {
@@ -134,7 +121,7 @@ struct PORT_PASO: View {
                                 icon: "location.fill",
                                 color: .green,
                                 items: [
-                                    MenuItem(title: "Mapa de Cercanías", subtitle: "Participantes cercanos", destination: AnyView(ccp_BDF_MapView()))
+                                    MenuItem(title: "Mapa de Cercanías", subtitle: "Participantes cercanos", destination: AnyView(GV_SCR_vg_MapaCercanias(isTodoMexico: false)))
                                 ]
                             )
                             .offset(x: cardAnimations[2] ? 0 : -50)
@@ -147,7 +134,7 @@ struct PORT_PASO: View {
                                 icon: "map.fill",
                                 color: .orange,
                                 items: [
-                                    MenuItem(title: "Mapa de la República", subtitle: "Vista de todo el país", destination: AnyView(ccp_BDF_MapClustersView()))
+                                    MenuItem(title: "Mapa de la República", subtitle: "Vista de todo el país", destination: AnyView(GV_SCR_vg_MapaCercanias(isTodoMexico: true)))
                                 ]
                             )
                             .offset(x: cardAnimations[3] ? 0 : 50)
@@ -190,7 +177,8 @@ struct PORT_PASO: View {
                 .environmentObject(location)
         }
         .sheet(isPresented: $showThemeSelector) {
-            ThemeSelectorView()
+            Text("Selector de Temas")
+                .padding()
         }
     }
 }
@@ -206,7 +194,7 @@ struct MenuCard: View {
     @State private var cardScale: CGFloat = 1.0
     @State private var shadowRadius: CGFloat = 8
     
-    @ObservedObject private var themeManager = ThemeManager.shared
+    // Referencias de diseño removidas
     
     var body: some View {
         VStack(alignment: .leading, spacing: 15) {
@@ -217,10 +205,10 @@ struct MenuCard: View {
                     .scaleEffect(isHovered ? 1.1 : 1.0)
                     .animation(.easeInOut(duration: 0.2), value: isHovered)
                 
-                HeaderView.sectionThemed(
-                    text: title,
-                    themeManager: themeManager
-                )
+                Text(title)
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.primary)
                 
                 Spacer()
             }
@@ -231,26 +219,26 @@ struct MenuCard: View {
                         HStack {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(items[index].title)
-                                    .font(themeManager.currentTheme.fonts.subheadline)
+                                    .font(.subheadline)
                                     .fontWeight(.medium)
-                                    .foregroundColor(themeManager.currentTheme.colors.textPrimary)
+                                    .foregroundColor(.primary)
                                 
                                 Text(items[index].subtitle)
-                                    .font(themeManager.currentTheme.fonts.caption)
-                                    .foregroundColor(themeManager.currentTheme.colors.textSecondary)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
                             }
                             
                             Spacer()
                             
                             Image(systemName: "chevron.right")
                                 .font(.caption)
-                                .foregroundColor(themeManager.currentTheme.colors.textSecondary)
+                                .foregroundColor(.secondary)
                                 .scaleEffect(isHovered ? 1.2 : 1.0)
                                 .animation(.easeInOut(duration: 0.2), value: isHovered)
                         }
                         .padding(.vertical, 8)
                         .padding(.horizontal, 12)
-                        .background(themeManager.currentTheme.colors.surface.opacity(isHovered ? 0.3 : 0.1))
+                        .background(Color.gray.opacity(0.1).opacity(isHovered ? 0.3 : 0.1))
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                     }
                     .buttonStyle(PlainButtonStyle())
@@ -258,9 +246,9 @@ struct MenuCard: View {
             }
         }
             .padding(20)
-            .background(themeManager.currentTheme.colors.cardBackground)
+            .background(Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 15))
-            .shadow(color: themeManager.currentTheme.colors.shadow, radius: shadowRadius, x: 0, y: 4)
+            .shadow(color: Color.black.opacity(0.1), radius: shadowRadius, x: 0, y: 4)
         .scaleEffect(cardScale)
         .onHover { hovering in
             withAnimation(.easeInOut(duration: 0.2)) {

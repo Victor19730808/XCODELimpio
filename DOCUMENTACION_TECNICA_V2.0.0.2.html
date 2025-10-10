@@ -1,0 +1,1799 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación Técnica V2.0.0.2 - Sistemas Centralizados</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #34495e;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        h3 {
+            color: #2980b9;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        h4 {
+            color: #7f8c8d;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        
+        .index {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        
+        .index h2 {
+            color: white;
+            border: none;
+            margin-top: 0;
+        }
+        
+        .index ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .index li {
+            margin: 10px 0;
+            padding: 8px 0;
+        }
+        
+        .index a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: block;
+            padding: 8px 15px;
+            border-radius: 6px;
+        }
+        
+        .index a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(5px);
+        }
+        
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 20px 0;
+            overflow-x: auto;
+            border-left: 4px solid #3498db;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .warning {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .file-structure {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: monospace;
+            margin: 15px 0;
+        }
+        
+        .example {
+            background: #e8f5e8;
+            border-left: 4px solid #27ae60;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .api-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .api-table th,
+        .api-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .api-table th {
+            background: #3498db;
+            color: white;
+        }
+        
+        .api-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        
+        .badge-new {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .badge-update {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .badge-fix {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .toc {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .toc ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .toc a {
+            color: #2980b9;
+            text-decoration: none;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Documentación Técnica V2.0.0.2</h1>
+        <p><strong>Sistemas Centralizados - limpioCS</strong></p>
+        <p>Esta documentación cubre los tres sistemas centralizados implementados en la versión V2.0.0.2: <strong>Sistema de Temas</strong>, <strong>Sistema de Encabezados</strong> y <strong>Sistema de Menús</strong>.</p>
+        
+        <div class="index">
+            <h2>📋 Índice General</h2>
+            <ul>
+                <li><a href="#introduccion">🚀 Introducción</a></li>
+                <li><a href="#sistema-temas">🎨 Sistema de Temas Dinámico</a>
+                    <ul style="margin-left: 20px; margin-top: 5px;">
+                        <li><a href="#temas-estructura">📁 Estructura de Archivos</a></li>
+                        <li><a href="#temas-protocolo">🔧 ThemeProtocol</a></li>
+                        <li><a href="#temas-manager">⚙️ ThemeManager</a></li>
+                        <li><a href="#temas-implementacion">🎯 Implementación de Temas</a></li>
+                        <li><a href="#temas-selector">🔄 ThemeSelectorView</a></li>
+                        <li><a href="#temas-migracion">📱 Migración de Vistas</a></li>
+                        <li><a href="#temas-personalizacion">🛠️ Personalización Avanzada</a></li>
+                    </ul>
+                </li>
+                <li><a href="#sistema-encabezados">📝 Sistema de Encabezados Responsive</a>
+                    <ul style="margin-left: 20px; margin-top: 5px;">
+                        <li><a href="#headers-estructura">📁 Estructura de Archivos</a></li>
+                        <li><a href="#headers-configuracion">⚙️ HeaderConfiguration</a></li>
+                        <li><a href="#headers-manager">🔧 HeaderManager</a></li>
+                        <li><a href="#headers-view">📱 HeaderView</a></li>
+                        <li><a href="#headers-tipos">🎯 Tipos de Encabezado</a></li>
+                        <li><a href="#headers-uso">💡 Uso y Ejemplos</a></li>
+                        <li><a href="#headers-personalizacion">🛠️ Personalización</a></li>
+                    </ul>
+                </li>
+                <li><a href="#sistema-menus">🍔 Sistema de Menús Centralizado</a>
+                    <ul style="margin-left: 20px; margin-top: 5px;">
+                        <li><a href="#menus-estructura">📁 Estructura de Archivos</a></li>
+                        <li><a href="#menus-configuracion">⚙️ MenuConfiguration</a></li>
+                        <li><a href="#menus-manager">🔧 MenuManager</a></li>
+                        <li><a href="#menus-view">📱 HamburgerMenuView</a></li>
+                        <li><a href="#menus-tipos">🎯 Tipos de Vista</a></li>
+                        <li><a href="#menus-opciones">📋 Opciones de Menú</a></li>
+                        <li><a href="#menus-personalizacion">🛠️ Personalización</a></li>
+                    </ul>
+                </li>
+                <li><a href="#ejemplos-completos">💡 Ejemplos Completos</a></li>
+                <li><a href="#troubleshooting">🔧 Troubleshooting</a></li>
+                <li><a href="#mejores-practicas">⭐ Mejores Prácticas</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 id="introduccion">🚀 Introducción</h2>
+        
+        <p>La versión V2.0.0.2 introduce tres sistemas centralizados que revolucionan la arquitectura de la aplicación:</p>
+        
+        <div class="highlight">
+            <h4>🎯 Objetivos de los Sistemas Centralizados:</h4>
+            <ul>
+                <li><strong>Consistencia Visual:</strong> Diseño unificado en toda la aplicación</li>
+                <li><strong>Mantenimiento Simplificado:</strong> Cambios centralizados en lugar de archivos dispersos</li>
+                <li><strong>Escalabilidad:</strong> Arquitectura preparada para crecimiento futuro</li>
+                <li><strong>Experiencia de Usuario:</strong> Interfaz responsive y adaptable</li>
+                <li><strong>Desarrollo Ágil:</strong> Componentes reutilizables y configurables</li>
+            </ul>
+        </div>
+        
+        <div class="file-structure">
+📁 limpioCS/
+├── 📁 GV_desig/           # Sistema de Temas Dinámico
+├── 📁 GV_headers/         # Sistema de Encabezados Responsive  
+├── 📁 GV_menu/           # Sistema de Menús Centralizado
+└── 📁 [vistas existentes] # Vistas migradas a los nuevos sistemas
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 id="sistema-temas">🎨 Sistema de Temas Dinámico</h2>
+        
+        <p>El Sistema de Temas permite cambiar la apariencia de toda la aplicación en tiempo real sin reiniciar. Incluye 3 temas predefinidos y arquitectura para agregar más.</p>
+        
+        <h3 id="temas-estructura">📁 Estructura de Archivos</h3>
+        
+        <div class="file-structure">
+📁 GV_desig/
+├── 📄 ThemeProtocol.swift      # Protocolo base para temas
+├── 📄 ThemeManager.swift       # Gestor singleton de temas
+├── 📄 ThemeViewModifier.swift  # Modificadores SwiftUI
+├── 📄 ThemeSelectorView.swift  # Selector de temas
+└── 📁 Themes/
+    ├── 📄 ClaroTheme.swift     # Tema claro (default)
+    ├── 📄 OscuroTheme.swift    # Tema oscuro
+    └── 📄 BuenFinTheme.swift   # Tema El Buen Fin
+        </div>
+        
+        <h3 id="temas-protocolo">🔧 ThemeProtocol</h3>
+        
+        <p>Define la estructura base que deben implementar todos los temas:</p>
+        
+        <div class="code-block">
+protocol Theme {
+    var name: String { get }
+    var colors: ColorTheme { get }
+    var fonts: FontTheme { get }
+}
+
+struct ColorTheme {
+    let primary: Color
+    let secondary: Color
+    let background: Color
+    let surface: Color
+    let cardBackground: Color
+    let textPrimary: Color
+    let textSecondary: Color
+    let textOnPrimary: Color
+    let shadow: Color
+}
+
+struct FontTheme {
+    let largeTitle: Font
+    let title: Font
+    let headline: Font
+    let body: Font
+    let subheadline: Font
+    let caption: Font
+}
+        </div>
+        
+        <h3 id="temas-manager">⚙️ ThemeManager</h3>
+        
+        <p>Gestor singleton que controla el tema activo y permite cambios dinámicos:</p>
+        
+        <div class="code-block">
+class ThemeManager: ObservableObject {
+    static let shared = ThemeManager()
+    
+    @Published var currentThemeType: ThemeType = .claro
+    @Published var currentTheme: Theme = ClaroTheme()
+    
+    private init() {
+        loadSavedTheme()
+    }
+    
+    func setTheme(_ type: ThemeType) {
+        currentThemeType = type
+        currentTheme = createTheme(for: type)
+        saveTheme()
+    }
+    
+    // Métodos privados para persistencia
+    private func loadSavedTheme() { /* ... */ }
+    private func saveTheme() { /* ... */ }
+    private func createTheme(for type: ThemeType) -> Theme { /* ... */ }
+}
+        </div>
+        
+        <div class="example">
+            <h4>💡 Ejemplo de Uso:</h4>
+            <div class="code-block">
+struct MyView: View {
+    @ObservedObject private var themeManager = ThemeManager.shared
+    
+    var body: some View {
+        VStack {
+            Text("Mi Título")
+                .font(themeManager.currentTheme.fonts.title)
+                .foregroundColor(themeManager.currentTheme.colors.textPrimary)
+            
+            Button("Cambiar Tema") {
+                themeManager.setTheme(.oscuro)
+            }
+            .background(themeManager.currentTheme.colors.primary)
+        }
+        .background(themeManager.currentTheme.colors.background)
+    }
+}
+            </div>
+        </div>
+        
+        <h3 id="temas-implementacion">🎯 Implementación de Temas</h3>
+        
+        <h4>Crear un Nuevo Tema:</h4>
+        
+        <div class="code-block">
+struct MiTemaPersonalizado: Theme {
+    let name = "Mi Tema Personalizado"
+    
+    let colors = ColorTheme(
+        primary: Color.blue,
+        secondary: Color.cyan,
+        background: Color.white,
+        surface: Color.gray.opacity(0.1),
+        cardBackground: Color.white,
+        textPrimary: Color.black,
+        textSecondary: Color.gray,
+        textOnPrimary: Color.white,
+        shadow: Color.black.opacity(0.1)
+    )
+    
+    let fonts = FontTheme(
+        largeTitle: .system(size: 34, weight: .bold),
+        title: .system(size: 28, weight: .bold),
+        headline: .system(size: 17, weight: .semibold),
+        body: .system(size: 17, weight: .regular),
+        subheadline: .system(size: 15, weight: .regular),
+        caption: .system(size: 12, weight: .regular)
+    )
+}
+        </div>
+        
+        <h4>Agregar el Tema al Enum:</h4>
+        
+        <div class="code-block">
+enum ThemeType: String, CaseIterable {
+    case claro = "claro"
+    case oscuro = "oscuro"
+    case buenFin = "buenFin"
+    case miTema = "miTema"  // ← Nuevo tema
+    
+    var displayName: String {
+        switch self {
+        case .claro: return "Modo Claro"
+        case .oscuro: return "Modo Oscuro"
+        case .buenFin: return "El Buen Fin"
+        case .miTema: return "Mi Tema Personalizado"
+        }
+    }
+}
+        </div>
+        
+        <h3 id="temas-selector">🔄 ThemeSelectorView</h3>
+        
+        <p>Interfaz para que los usuarios cambien de tema:</p>
+        
+        <div class="code-block">
+struct ThemeSelectorView: View {
+    @ObservedObject private var themeManager = ThemeManager.shared
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        NavigationView {
+            List {
+                ForEach(ThemeType.allCases, id: \.self) { themeType in
+                    Button {
+                        themeManager.setTheme(themeType)
+                        dismiss()
+                    } label: {
+                        HStack {
+                            Text(themeType.displayName)
+                            Spacer()
+                            if themeManager.currentThemeType == themeType {
+                                Image(systemName: "checkmark")
+                                    .foregroundColor(.blue)
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Temas")
+        }
+    }
+}
+        </div>
+        
+        <h3 id="temas-migracion">📱 Migración de Vistas</h3>
+        
+        <div class="warning">
+            <h4>⚠️ Antes de la Migración:</h4>
+            <div class="code-block">
+// ❌ Código antiguo con colores hardcodeados
+Text("Mi Título")
+    .font(.title)
+    .foregroundColor(.blue)
+    .background(Color.white)
+            </div>
+        </div>
+        
+        <div class="success">
+            <h4>✅ Después de la Migración:</h4>
+            <div class="code-block">
+// ✅ Código migrado usando el sistema de temas
+struct MyView: View {
+    @ObservedObject private var themeManager = ThemeManager.shared
+    
+    var body: some View {
+        Text("Mi Título")
+            .font(themeManager.currentTheme.fonts.title)
+            .foregroundColor(themeManager.currentTheme.colors.textPrimary)
+            .background(themeManager.currentTheme.colors.background)
+    }
+}
+            </div>
+        </div>
+        
+        <h4>Usando Modificadores de Tema:</h4>
+        
+        <div class="code-block">
+// Método 1: Modificador .themed()
+VStack {
+    // Contenido
+}
+.themed()  // Aplica colores de fondo del tema actual
+
+// Método 2: Modificador .cardStyle()
+VStack {
+    // Contenido
+}
+.cardStyle()  // Aplica estilo de card del tema actual
+        </div>
+        
+        <h3 id="temas-personalizacion">🛠️ Personalización Avanzada</h3>
+        
+        <h4>Crear Modificadores Personalizados:</h4>
+        
+        <div class="code-block">
+extension View {
+    func customCardStyle() -> some View {
+        self
+            .padding()
+            .background(ThemeManager.shared.currentTheme.colors.surface)
+            .cornerRadius(12)
+            .shadow(color: ThemeManager.shared.currentTheme.colors.shadow, 
+                   radius: 4, x: 0, y: 2)
+    }
+    
+    func primaryButtonStyle() -> some View {
+        self
+            .foregroundColor(ThemeManager.shared.currentTheme.colors.textOnPrimary)
+            .padding()
+            .background(ThemeManager.shared.currentTheme.colors.primary)
+            .cornerRadius(8)
+    }
+}
+
+// Uso:
+Button("Mi Botón") { }
+    .primaryButtonStyle()
+        </div>
+        
+        <h4>Reaccionar a Cambios de Tema:</h4>
+        
+        <div class="code-block">
+struct MyView: View {
+    @ObservedObject private var themeManager = ThemeManager.shared
+    
+    var body: some View {
+        VStack {
+            // El contenido se actualiza automáticamente
+            // cuando cambia el tema
+        }
+        .onChange(of: themeManager.currentThemeType) { newTheme in
+            // Acción personalizada cuando cambia el tema
+            print("Tema cambiado a: \(newTheme)")
+        }
+    }
+}
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 id="sistema-encabezados">📝 Sistema de Encabezados Responsive</h2>
+        
+        <p>El Sistema de Encabezados proporciona componentes que se adaptan automáticamente al espacio disponible, evitando cortes de texto y manteniendo consistencia visual.</p>
+        
+        <h3 id="headers-estructura">📁 Estructura de Archivos</h3>
+        
+        <div class="file-structure">
+📁 GV_headers/
+├── 📄 HeaderConfiguration.swift  # Configuración de estilos
+├── 📄 HeaderManager.swift        # Gestor singleton
+└── 📄 HeaderView.swift          # Componente responsive
+        </div>
+        
+        <h3 id="headers-configuracion">⚙️ HeaderConfiguration</h3>
+        
+        <p>Define los tipos de encabezado y sus configuraciones de estilo:</p>
+        
+        <div class="code-block">
+enum HeaderType: String, CaseIterable {
+    case main = "main"           // Encabezados principales
+    case section = "section"     // Encabezados de sección
+}
+
+struct HeaderStyle {
+    let fontSize: CGFloat
+    let fontWeight: Font.Weight
+    let maxLines: Int
+    let minScaleFactor: CGFloat
+    let lineLimit: Int?
+    let truncationMode: Text.TruncationMode
+    
+    static let main = HeaderStyle(
+        fontSize: 22,
+        fontWeight: .bold,
+        maxLines: 2,
+        minScaleFactor: 0.8,
+        lineLimit: 2,
+        truncationMode: .tail
+    )
+    
+    static let section = HeaderStyle(
+        fontSize: 18,
+        fontWeight: .semibold,
+        maxLines: 1,
+        minScaleFactor: 0.85,
+        lineLimit: 1,
+        truncationMode: .tail
+    )
+}
+        </div>
+        
+        <h4>Crear un Nuevo Tipo de Encabezado:</h4>
+        
+        <div class="code-block">
+// 1. Agregar al enum HeaderType
+enum HeaderType: String, CaseIterable {
+    case main = "main"
+    case section = "section"
+    case subtitle = "subtitle"  // ← Nuevo tipo
+}
+
+// 2. Agregar estilo correspondiente
+extension HeaderStyle {
+    static let subtitle = HeaderStyle(
+        fontSize: 16,
+        fontWeight: .medium,
+        maxLines: 1,
+        minScaleFactor: 0.9,
+        lineLimit: 1,
+        truncationMode: .tail
+    )
+}
+
+// 3. Actualizar la configuración
+class HeaderConfiguration {
+    private let styles: [HeaderType: HeaderStyle] = [
+        .main: .main,
+        .section: .section,
+        .subtitle: .subtitle  // ← Agregar aquí
+    ]
+}
+        </div>
+        
+        <h3 id="headers-manager">🔧 HeaderManager</h3>
+        
+        <p>Gestor singleton que proporciona acceso a las configuraciones:</p>
+        
+        <div class="code-block">
+class HeaderManager {
+    static let shared = HeaderManager()
+    
+    private let configuration = HeaderConfiguration()
+    
+    private init() {}
+    
+    func getStyle(for type: HeaderType) -> HeaderStyle {
+        return configuration.getStyle(for: type)
+    }
+    
+    func adaptiveFontSize(for type: HeaderType, 
+                         availableWidth: CGFloat, 
+                         text: String) -> CGFloat {
+        return configuration.adaptiveFontSize(for: type, 
+                                            availableWidth: availableWidth, 
+                                            text: text)
+    }
+}
+        </div>
+        
+        <h3 id="headers-view">📱 HeaderView</h3>
+        
+        <p>Componente principal que renderiza encabezados responsive:</p>
+        
+        <div class="code-block">
+struct HeaderView: View {
+    let text: String
+    let type: HeaderType
+    let textColor: Color
+    let backgroundColor: Color
+    
+    @State private var availableWidth: CGFloat = 0
+    private let headerManager = HeaderManager.shared
+    
+    var body: some View {
+        GeometryReader { geometry in
+            let style = headerManager.getStyle(for: type)
+            let adaptiveFontSize = headerManager.adaptiveFontSize(
+                for: type,
+                availableWidth: geometry.size.width,
+                text: text
+            )
+            
+            Text(text)
+                .font(.system(size: adaptiveFontSize, 
+                             weight: style.fontWeight, 
+                             design: .default))
+                .foregroundColor(textColor)
+                .lineLimit(style.lineLimit)
+                .truncationMode(style.truncationMode)
+                .minimumScaleFactor(style.minScaleFactor)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
+                .background(backgroundColor)
+        }
+    }
+}
+        </div>
+        
+        <h3 id="headers-tipos">🎯 Tipos de Encabezado</h3>
+        
+        <table class="api-table">
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Tamaño</th>
+                    <th>Peso</th>
+                    <th>Líneas</th>
+                    <th>Escalado</th>
+                    <th>Uso Recomendado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>.main</code></td>
+                    <td>22pt</td>
+                    <td>Bold</td>
+                    <td>2</td>
+                    <td>0.8</td>
+                    <td>Títulos principales de pantallas</td>
+                </tr>
+                <tr>
+                    <td><code>.section</code></td>
+                    <td>18pt</td>
+                    <td>Semibold</td>
+                    <td>1</td>
+                    <td>0.85</td>
+                    <td>Encabezados de secciones</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h3 id="headers-uso">💡 Uso y Ejemplos</h3>
+        
+        <h4>Uso Básico:</h4>
+        
+        <div class="code-block">
+// Encabezado principal
+HeaderView(
+    text: "Mapa de Cercanías",
+    type: .main,
+    textColor: .white,
+    backgroundColor: .clear
+)
+
+// Encabezado de sección
+HeaderView(
+    text: "Participantes",
+    type: .section,
+    textColor: .primary,
+    backgroundColor: .clear
+)
+        </div>
+        
+        <h4>Uso con Temas:</h4>
+        
+        <div class="code-block">
+// Método 1: Usando helper methods
+HeaderView.themed(
+    text: "Mi Título",
+    type: .main,
+    themeManager: themeManager
+)
+
+HeaderView.sectionThemed(
+    text: "Mi Sección",
+    themeManager: themeManager
+)
+
+// Método 2: Manual con colores de tema
+HeaderView(
+    text: "Mi Título",
+    type: .main,
+    textColor: themeManager.currentTheme.colors.textOnPrimary,
+    backgroundColor: themeManager.currentTheme.colors.primary
+)
+        </div>
+        
+        <h4>Integración en Vistas Existentes:</h4>
+        
+        <div class="code-block">
+struct MyView: View {
+    @ObservedObject private var themeManager = ThemeManager.shared
+    
+    var body: some View {
+        VStack {
+            // Reemplazar Text() con HeaderView
+            HeaderView.themed(
+                text: "Título de la Pantalla",
+                type: .main,
+                themeManager: themeManager
+            )
+            .frame(height: 60)
+            
+            // Contenido de la vista
+            ScrollView {
+                // ...
+            }
+        }
+    }
+}
+        </div>
+        
+        <h3 id="headers-personalizacion">🛠️ Personalización</h3>
+        
+        <h4>Modificar Estilos Existentes:</h4>
+        
+        <div class="code-block">
+// En HeaderConfiguration.swift
+extension HeaderStyle {
+    static let main = HeaderStyle(
+        fontSize: 24,        // ← Cambiar tamaño
+        fontWeight: .black,  // ← Cambiar peso
+        maxLines: 3,         // ← Cambiar líneas máximas
+        minScaleFactor: 0.7, // ← Cambiar escalado mínimo
+        lineLimit: 3,
+        truncationMode: .middle  // ← Cambiar modo de truncamiento
+    )
+}
+        </div>
+        
+        <h4>Crear Estilos Personalizados:</h4>
+        
+        <div class="code-block">
+extension View {
+    func customHeader(
+        text: String,
+        size: CGFloat = 20,
+        weight: Font.Weight = .semibold,
+        color: Color = .primary
+    ) -> some View {
+        Text(text)
+            .font(.system(size: size, weight: weight))
+            .foregroundColor(color)
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
+            .multilineTextAlignment(.center)
+    }
+}
+
+// Uso:
+VStack {
+    customHeader(text: "Mi Título Personalizado", size: 26, weight: .bold)
+    // ...
+}
+        </div>
+        
+        <h4>Encabezados con Iconos:</h4>
+        
+        <div class="code-block">
+struct IconHeader: View {
+    let icon: String
+    let text: String
+    let type: HeaderType
+    @ObservedObject private var themeManager = ThemeManager.shared
+    
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundColor(themeManager.currentTheme.colors.primary)
+            
+            HeaderView.themed(
+                text: text,
+                type: type,
+                themeManager: themeManager
+            )
+        }
+    }
+}
+
+// Uso:
+IconHeader(icon: "map.fill", text: "Mapa de Cercanías", type: .main)
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 id="sistema-menus">🍔 Sistema de Menús Centralizado</h2>
+        
+        <p>El Sistema de Menús permite configurar opciones de menú hamburguesa por tipo de vista, manteniendo consistencia y permitiendo personalización contextual.</p>
+        
+        <h3 id="menus-estructura">📁 Estructura de Archivos</h3>
+        
+        <div class="file-structure">
+📁 GV_menu/
+├── 📄 MenuConfiguration.swift  # Configuración de opciones por vista
+├── 📄 MenuItem.swift          # Estructura de opciones de menú
+├── 📄 MenuManager.swift       # Gestor singleton
+└── 📄 HamburgerMenuView.swift # Componente reutilizable
+        </div>
+        
+        <h3 id="menus-configuracion">⚙️ MenuConfiguration</h3>
+        
+        <p>Define qué opciones de menú están disponibles para cada tipo de vista:</p>
+        
+        <div class="code-block">
+enum ViewType: String, CaseIterable {
+    case main = "Main"                    // PORT_PASO, ContentView
+    case map = "Map"                      // MapView, MapClustersView
+    case list = "List"                    // EstablecimientosListaView
+    case favorites = "Favorites"          // FavoritosView
+    case promotions = "Promotions"        // PromocionesView
+}
+
+enum MenuOption: String, CaseIterable {
+    case themes = "themes"
+    case adminDatos = "adminDatos"
+    case advancedSearch = "advancedSearch"
+    case mySettings = "mySettings"
+}
+
+class MenuConfiguration {
+    private let configurations: [ViewType: [MenuOption]] = [
+        .main: [.themes, .adminDatos, .advancedSearch, .mySettings],
+        .map: [.themes, .advancedSearch, .mySettings],  // Sin Admin Datos
+        .list: [.themes, .adminDatos, .mySettings],     // Sin Búsquedas Avanzadas
+        .favorites: [.themes, .adminDatos, .advancedSearch, .mySettings],
+        .promotions: [.themes, .adminDatos, .advancedSearch, .mySettings]
+    ]
+}
+        </div>
+        
+        <h3 id="menus-manager">🔧 MenuManager</h3>
+        
+        <p>Gestor singleton que proporciona acceso a las configuraciones de menú:</p>
+        
+        <div class="code-block">
+class MenuManager {
+    static let shared = MenuManager()
+    
+    private let configuration = MenuConfiguration()
+    
+    private init() {}
+    
+    func getMenuOptions(for viewType: ViewType) -> [MenuOption] {
+        return configuration.getOptions(for: viewType)
+    }
+    
+    func isOptionEnabled(_ option: MenuOption, for viewType: ViewType) -> Bool {
+        return configuration.isOptionEnabled(option, for: viewType)
+    }
+    
+    func createMenuItems(for viewType: ViewType, 
+                        actions: [MenuOption: () -> Void]) -> [HamburgerMenuItem] {
+        let enabledOptions = getMenuOptions(for: viewType)
+        
+        return enabledOptions.compactMap { option in
+            guard let action = actions[option] else { return nil }
+            return HamburgerMenuItem(option: option, action: action)
+        }
+    }
+}
+        </div>
+        
+        <h3 id="menus-view">📱 HamburgerMenuView</h3>
+        
+        <p>Componente reutilizable que renderiza el menú hamburguesa:</p>
+        
+        <div class="code-block">
+struct HamburgerMenuView: View {
+    let viewType: ViewType
+    let menuActions: [MenuOption: () -> Void]
+    let iconColor: Color
+    let backgroundColor: Color
+    let shadowColor: Color
+    
+    private let menuManager = MenuManager.shared
+    
+    var body: some View {
+        Menu {
+            ForEach(menuManager.getMenuOptions(for: viewType), id: \.self) { option in
+                Button {
+                    menuActions[option]?()
+                } label: {
+                    Label(option.displayName, systemImage: option.iconName)
+                }
+            }
+        } label: {
+            Image(systemName: "line.3.horizontal")
+                .font(.title2)
+                .foregroundColor(iconColor)
+                .padding(12)
+                .background(
+                    Circle()
+                        .fill(backgroundColor)
+                        .shadow(color: shadowColor, radius: 4, x: 0, y: 2)
+                )
+        }
+    }
+}
+        </div>
+        
+        <h3 id="menus-tipos">🎯 Tipos de Vista</h3>
+        
+        <table class="api-table">
+            <thead>
+                <tr>
+                    <th>Tipo de Vista</th>
+                    <th>Archivos</th>
+                    <th>Opciones de Menú</th>
+                    <th>Descripción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>.main</code></td>
+                    <td>PORT_PASO, ContentView</td>
+                    <td>Todas las opciones</td>
+                    <td>Vistas principales con acceso completo</td>
+                </tr>
+                <tr>
+                    <td><code>.map</code></td>
+                    <td>MapView, MapClustersView</td>
+                    <td>Sin Admin Datos</td>
+                    <td>Mapas sin opciones administrativas</td>
+                </tr>
+                <tr>
+                    <td><code>.list</code></td>
+                    <td>EstablecimientosListaView</td>
+                    <td>Sin Búsquedas Avanzadas</td>
+                    <td>Listas con búsqueda propia</td>
+                </tr>
+                <tr>
+                    <td><code>.favorites</code></td>
+                    <td>FavoritosView</td>
+                    <td>Todas las opciones</td>
+                    <td>Vista de favoritos completa</td>
+                </tr>
+                <tr>
+                    <td><code>.promotions</code></td>
+                    <td>PromocionesView</td>
+                    <td>Todas las opciones</td>
+                    <td>Vista de promociones completa</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h3 id="menus-opciones">📋 Opciones de Menú</h3>
+        
+        <table class="api-table">
+            <thead>
+                <tr>
+                    <th>Opción</th>
+                    <th>Icono</th>
+                    <th>Descripción</th>
+                    <th>Acción Típica</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>.themes</code></td>
+                    <td>paintbrush</td>
+                    <td>Selector de temas</td>
+                    <td>Abrir ThemeSelectorView</td>
+                </tr>
+                <tr>
+                    <td><code>.adminDatos</code></td>
+                    <td>wrench.and.screwdriver</td>
+                    <td>Administración de datos</td>
+                    <td>Abrir vista de administración</td>
+                </tr>
+                <tr>
+                    <td><code>.advancedSearch</code></td>
+                    <td>magnifyingglass.circle</td>
+                    <td>Búsquedas avanzadas</td>
+                    <td>Abrir filtros avanzados</td>
+                </tr>
+                <tr>
+                    <td><code>.mySettings</code></td>
+                    <td>gear</td>
+                    <td>Configuraciones personales</td>
+                    <td>Abrir configuración</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h3 id="menus-uso">💡 Uso y Ejemplos</h3>
+        
+        <h4>Uso Básico:</h4>
+        
+        <div class="code-block">
+struct MyView: View {
+    @State private var showThemeSelector = false
+    @State private var showAdminDatos = false
+    @State private var showAdvancedSearch = false
+    @State private var showMySettings = false
+    
+    var body: some View {
+        NavigationView {
+            VStack {
+                // Contenido de la vista
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    HamburgerMenuView.themed(
+                        viewType: .main,
+                        menuActions: [
+                            .themes: { showThemeSelector = true },
+                            .adminDatos: { showAdminDatos = true },
+                            .advancedSearch: { showAdvancedSearch = true },
+                            .mySettings: { showMySettings = true }
+                        ],
+                        themeManager: themeManager
+                    )
+                }
+            }
+        }
+        .sheet(isPresented: $showThemeSelector) {
+            ThemeSelectorView()
+        }
+        .sheet(isPresented: $showAdminDatos) {
+            AdminDatosView()
+        }
+        // ... más sheets
+    }
+}
+        </div>
+        
+        <h4>Uso con Temas:</h4>
+        
+        <div class="code-block">
+// Método 1: Usando helper method
+HamburgerMenuView.themed(
+    viewType: .map,
+    menuActions: menuActions,
+    themeManager: themeManager
+)
+
+// Método 2: Personalizado
+HamburgerMenuView(
+    viewType: .list,
+    menuActions: menuActions,
+    iconColor: .white,
+    backgroundColor: .blue.opacity(0.8),
+    shadowColor: .black.opacity(0.2)
+)
+        </div>
+        
+        <h4>Integración en Vistas Existentes:</h4>
+        
+        <div class="code-block">
+// Antes (menú hardcodeado):
+Menu {
+    Button { /* ... */ } label: {
+        Label("Temas", systemImage: "paintbrush")
+    }
+    Button { /* ... */ } label: {
+        Label("Admin Datos", systemImage: "wrench.and.screwdriver")
+    }
+    // ...
+} label: {
+    Image(systemName: "line.3.horizontal")
+}
+
+// Después (menú centralizado):
+HamburgerMenuView.themed(
+    viewType: .main,
+    menuActions: [
+        .themes: { showThemeSelector = true },
+        .adminDatos: { showAdminDatos = true },
+        .advancedSearch: { showAdvancedSearch = true },
+        .mySettings: { showMySettings = true }
+    ],
+    themeManager: themeManager
+)
+        </div>
+        
+        <h3 id="menus-personalizacion">🛠️ Personalización</h3>
+        
+        <h4>Agregar Nuevo Tipo de Vista:</h4>
+        
+        <div class="code-block">
+// 1. Agregar al enum ViewType
+enum ViewType: String, CaseIterable {
+    case main = "Main"
+    case map = "Map"
+    case list = "List"
+    case favorites = "Favorites"
+    case promotions = "Promotions"
+    case profile = "Profile"  // ← Nuevo tipo
+}
+
+// 2. Configurar opciones en MenuConfiguration
+class MenuConfiguration {
+    private let configurations: [ViewType: [MenuOption]] = [
+        .main: [.themes, .adminDatos, .advancedSearch, .mySettings],
+        .map: [.themes, .advancedSearch, .mySettings],
+        .list: [.themes, .adminDatos, .mySettings],
+        .favorites: [.themes, .adminDatos, .advancedSearch, .mySettings],
+        .promotions: [.themes, .adminDatos, .advancedSearch, .mySettings],
+        .profile: [.themes, .mySettings]  // ← Solo temas y configuraciones
+    ]
+}
+        </div>
+        
+        <h4>Agregar Nueva Opción de Menú:</h4>
+        
+        <div class="code-block">
+// 1. Agregar al enum MenuOption
+enum MenuOption: String, CaseIterable {
+    case themes = "themes"
+    case adminDatos = "adminDatos"
+    case advancedSearch = "advancedSearch"
+    case mySettings = "mySettings"
+    case help = "help"  // ← Nueva opción
+}
+
+// 2. Agregar propiedades de visualización
+extension MenuOption {
+    var displayName: String {
+        switch self {
+        case .themes: return "Temas"
+        case .adminDatos: return "Admin Datos"
+        case .advancedSearch: return "Búsquedas Avanzadas"
+        case .mySettings: return "Mis Configuraciones"
+        case .help: return "Ayuda"  // ← Agregar aquí
+        }
+    }
+    
+    var iconName: String {
+        switch self {
+        case .themes: return "paintbrush"
+        case .adminDatos: return "wrench.and.screwdriver"
+        case .advancedSearch: return "magnifyingglass.circle"
+        case .mySettings: return "gear"
+        case .help: return "questionmark.circle"  // ← Agregar aquí
+        }
+    }
+}
+
+// 3. Configurar en qué vistas está disponible
+class MenuConfiguration {
+    private let configurations: [ViewType: [MenuOption]] = [
+        .main: [.themes, .adminDatos, .advancedSearch, .mySettings, .help],
+        .map: [.themes, .advancedSearch, .mySettings, .help],
+        // ... etc
+    ]
+}
+        </div>
+        
+        <h4>Menú Personalizado con Estilo:</h4>
+        
+        <div class="code-block">
+struct CustomHamburgerMenu: View {
+    let viewType: ViewType
+    let menuActions: [MenuOption: () -> Void]
+    @ObservedObject private var themeManager = ThemeManager.shared
+    
+    var body: some View {
+        Menu {
+            ForEach(MenuManager.shared.getMenuOptions(for: viewType), id: \.self) { option in
+                Button {
+                    menuActions[option]?()
+                } label: {
+                    HStack {
+                        Image(systemName: option.iconName)
+                            .foregroundColor(themeManager.currentTheme.colors.primary)
+                        Text(option.displayName)
+                        Spacer()
+                    }
+                }
+            }
+        } label: {
+            HStack(spacing: 8) {
+                Image(systemName: "line.3.horizontal")
+                    .font(.title2)
+                Text("Menú")
+                    .font(.caption)
+            }
+            .foregroundColor(themeManager.currentTheme.colors.textOnPrimary)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(themeManager.currentTheme.colors.primary)
+            )
+        }
+    }
+}
+        </div>
+        
+        <h4>Menú con Contador de Notificaciones:</h4>
+        
+        <div class="code-block">
+struct MenuWithBadge: View {
+    let viewType: ViewType
+    let menuActions: [MenuOption: () -> Void]
+    let badgeCount: Int
+    @ObservedObject private var themeManager = ThemeManager.shared
+    
+    var body: some View {
+        ZStack {
+            HamburgerMenuView.themed(
+                viewType: viewType,
+                menuActions: menuActions,
+                themeManager: themeManager
+            )
+            
+            if badgeCount > 0 {
+                Text("\(badgeCount)")
+                    .font(.caption2)
+                    .foregroundColor(.white)
+                    .padding(4)
+                    .background(Color.red)
+                    .clipShape(Circle())
+                    .offset(x: 12, y: -12)
+            }
+        }
+    }
+}
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 id="ejemplos-completos">💡 Ejemplos Completos</h2>
+        
+        <h3>Vista Principal con Todos los Sistemas</h3>
+        
+        <div class="code-block">
+struct MainView: View {
+    @ObservedObject private var themeManager = ThemeManager.shared
+    @State private var showThemeSelector = false
+    @State private var showAdminDatos = false
+    @State private var showAdvancedSearch = false
+    @State private var showMySettings = false
+    
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 20) {
+                // Header usando el sistema de encabezados
+                HeaderView.themed(
+                    text: "Mi Aplicación",
+                    type: .main,
+                    themeManager: themeManager
+                )
+                .frame(height: 60)
+                
+                // Contenido principal
+                ScrollView {
+                    LazyVStack(spacing: 16) {
+                        ForEach(0..<10) { index in
+                            CardView(title: "Tarjeta \(index + 1)")
+                        }
+                    }
+                    .padding()
+                }
+                .themed()  // Aplicar tema de fondo
+            }
+            .navigationTitle("")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    // Menú usando el sistema de menús
+                    HamburgerMenuView.themed(
+                        viewType: .main,
+                        menuActions: [
+                            .themes: { showThemeSelector = true },
+                            .adminDatos: { showAdminDatos = true },
+                            .advancedSearch: { showAdvancedSearch = true },
+                            .mySettings: { showMySettings = true }
+                        ],
+                        themeManager: themeManager
+                    )
+                }
+            }
+        }
+        .sheet(isPresented: $showThemeSelector) {
+            ThemeSelectorView()
+        }
+        .sheet(isPresented: $showAdminDatos) {
+            AdminDatosView()
+        }
+        .sheet(isPresented: $showAdvancedSearch) {
+            AdvancedSearchView()
+        }
+        .sheet(isPresented: $showMySettings) {
+            MySettingsView()
+        }
+    }
+}
+
+struct CardView: View {
+    let title: String
+    @ObservedObject private var themeManager = ThemeManager.shared
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // Header de sección usando el sistema de encabezados
+            HeaderView.sectionThemed(
+                text: title,
+                themeManager: themeManager
+            )
+            
+            Text("Contenido de la tarjeta")
+                .font(themeManager.currentTheme.fonts.body)
+                .foregroundColor(themeManager.currentTheme.colors.textSecondary)
+        }
+        .padding()
+        .cardStyle()  // Aplicar estilo de card del tema
+    }
+}
+        </div>
+        
+        <h3>Vista de Mapa con Configuración Específica</h3>
+        
+        <div class="code-block">
+struct MapView: View {
+    @ObservedObject private var themeManager = ThemeManager.shared
+    @State private var showThemeSelector = false
+    @State private var showAdvancedSearch = false
+    @State private var showMySettings = false
+    
+    var body: some View {
+        ZStack {
+            // Mapa de fondo
+            Map()
+                .ignoresSafeArea()
+            
+            VStack {
+                // Header específico para mapas
+                HeaderView(
+                    text: "Mapa de Cercanías",
+                    type: .main,
+                    textColor: themeManager.currentTheme.colors.textOnPrimary,
+                    backgroundColor: .clear
+                )
+                .frame(height: 60)
+                .background(
+                    LinearGradient(
+                        colors: [
+                            themeManager.currentTheme.colors.primary.opacity(0.9),
+                            themeManager.currentTheme.colors.primary.opacity(0.7)
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                
+                Spacer()
+                
+                // Controles del mapa
+                HStack {
+                    Spacer()
+                    VStack(spacing: 12) {
+                        Button { zoomIn() } label: {
+                            Image(systemName: "plus")
+                                .font(.title2)
+                                .foregroundColor(themeManager.currentTheme.colors.textOnPrimary)
+                                .frame(width: 44, height: 44)
+                                .background(themeManager.currentTheme.colors.primary)
+                                .clipShape(Circle())
+                        }
+                        
+                        Button { zoomOut() } label: {
+                            Image(systemName: "minus")
+                                .font(.title2)
+                                .foregroundColor(themeManager.currentTheme.colors.textOnPrimary)
+                                .frame(width: 44, height: 44)
+                                .background(themeManager.currentTheme.colors.primary)
+                                .clipShape(Circle())
+                        }
+                    }
+                    .padding()
+                }
+            }
+            .navigationTitle("")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    // Menú específico para mapas (sin Admin Datos)
+                    HamburgerMenuView.themed(
+                        viewType: .map,
+                        menuActions: [
+                            .themes: { showThemeSelector = true },
+                            .advancedSearch: { showAdvancedSearch = true },
+                            .mySettings: { showMySettings = true }
+                        ],
+                        themeManager: themeManager
+                    )
+                }
+            }
+        }
+        .sheet(isPresented: $showThemeSelector) {
+            ThemeSelectorView()
+        }
+        .sheet(isPresented: $showAdvancedSearch) {
+            AdvancedSearchView()
+        }
+        .sheet(isPresented: $showMySettings) {
+            MySettingsView()
+        }
+    }
+    
+    private func zoomIn() {
+        // Lógica de zoom in
+    }
+    
+    private func zoomOut() {
+        // Lógica de zoom out
+    }
+}
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 id="troubleshooting">🔧 Troubleshooting</h2>
+        
+        <h3>Problemas Comunes y Soluciones</h3>
+        
+        <div class="warning">
+            <h4>❌ Error: "Division by zero" en HeaderConfiguration</h4>
+            <p><strong>Causa:</strong> El ancho disponible es 0 cuando se calcula el tamaño de fuente adaptativo.</p>
+            <p><strong>Solución:</strong> Ya está corregido en V2.0.0.2 con validaciones:</p>
+            <div class="code-block">
+// El código ya incluye esta validación:
+guard availableWidth > 0 else {
+    return baseFontSize
+}
+            </div>
+        </div>
+        
+        <div class="warning">
+            <h4>❌ Error: "Cannot find 'ThemeManager' in scope"</h4>
+            <p><strong>Causa:</strong> Falta importar o inicializar ThemeManager.</p>
+            <p><strong>Solución:</strong></p>
+            <div class="code-block">
+// Agregar en la vista:
+@ObservedObject private var themeManager = ThemeManager.shared
+            </div>
+        </div>
+        
+        <div class="warning">
+            <h4>❌ Error: "Value of type 'View' has no member 'themed'"</h4>
+            <p><strong>Causa:</strong> Falta importar ThemeViewModifier.</p>
+            <p><strong>Solución:</strong> Asegurarse de que el archivo esté incluido en el target.</p>
+        </div>
+        
+        <div class="warning">
+            <h4>❌ Menú no muestra opciones</h4>
+            <p><strong>Causa:</strong> El ViewType no está configurado correctamente.</p>
+            <p><strong>Solución:</strong></p>
+            <div class="code-block">
+// Verificar que el ViewType esté en MenuConfiguration:
+private let configurations: [ViewType: [MenuOption]] = [
+    .miVista: [.themes, .mySettings]  // ← Agregar aquí
+]
+            </div>
+        </div>
+        
+        <div class="warning">
+            <h4>❌ Encabezado se corta</h4>
+            <p><strong>Causa:</strong> El texto es muy largo para el espacio disponible.</p>
+            <p><strong>Solución:</strong> El sistema ya maneja esto automáticamente con escalado, pero puedes:</p>
+            <div class="code-block">
+// 1. Cambiar el tipo de encabezado:
+HeaderView(text: "Texto muy largo", type: .section, ...)  // En lugar de .main
+
+// 2. Crear un tipo personalizado con más líneas:
+static let longText = HeaderStyle(
+    fontSize: 18,
+    fontWeight: .semibold,
+    maxLines: 3,  // ← Más líneas
+    minScaleFactor: 0.7,
+    lineLimit: 3,
+    truncationMode: .tail
+)
+            </div>
+        </div>
+        
+        <h3>Debugging y Logging</h3>
+        
+        <div class="code-block">
+// Para debuggear cambios de tema:
+struct DebugThemeView: View {
+    @ObservedObject private var themeManager = ThemeManager.shared
+    
+    var body: some View {
+        VStack {
+            Text("Tema actual: \(themeManager.currentThemeType.displayName)")
+                .font(.caption)
+                .foregroundColor(.secondary)
+            
+            // Tu contenido aquí
+        }
+        .onChange(of: themeManager.currentThemeType) { newTheme in
+            print("🔄 Tema cambiado a: \(newTheme)")
+        }
+    }
+}
+
+// Para debuggear opciones de menú:
+func debugMenuOptions(for viewType: ViewType) {
+    let options = MenuManager.shared.getMenuOptions(for: viewType)
+    print("📋 Opciones para \(viewType): \(options.map { $0.displayName })")
+}
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 id="mejores-practicas">⭐ Mejores Prácticas</h2>
+        
+        <h3>🎨 Sistema de Temas</h3>
+        
+        <div class="success">
+            <h4>✅ DO (Hacer):</h4>
+            <ul>
+                <li>Siempre usar <code>@ObservedObject private var themeManager = ThemeManager.shared</code></li>
+                <li>Aplicar colores y fuentes del tema: <code>themeManager.currentTheme.colors.primary</code></li>
+                <li>Usar modificadores cuando sea posible: <code>.themed()</code>, <code>.cardStyle()</code></li>
+                <li>Reaccionar a cambios de tema con <code>onChange</code></li>
+                <li>Probar todos los temas antes de hacer commit</li>
+            </ul>
+        </div>
+        
+        <div class="warning">
+            <h4>❌ DON'T (No hacer):</h4>
+            <ul>
+                <li>No usar colores hardcodeados: <code>Color.blue</code></li>
+                <li>No crear múltiples instancias de ThemeManager</li>
+                <li>No olvidar aplicar el tema a todos los elementos visuales</li>
+                <li>No usar fuentes hardcodeadas: <code>Font.title</code></li>
+            </ul>
+        </div>
+        
+        <h3>📝 Sistema de Encabezados</h3>
+        
+        <div class="success">
+            <h4>✅ DO (Hacer):</h4>
+            <ul>
+                <li>Usar <code>.main</code> para títulos de pantalla</li>
+                <li>Usar <code>.section</code> para encabezados de contenido</li>
+                <li>Combinar con temas: <code>HeaderView.themed()</code></li>
+                <li>Probar con textos largos y cortos</li>
+                <li>Verificar en diferentes tamaños de pantalla</li>
+            </ul>
+        </div>
+        
+        <div class="warning">
+            <h4>❌ DON'T (No hacer):</h4>
+            <ul>
+                <li>No usar <code>Text()</code> directamente para encabezados importantes</li>
+                <li>No ignorar el escalado automático</li>
+                <li>No mezclar tipos de encabezado sin razón</li>
+                <li>No olvidar el <code>GeometryReader</code> para el escalado</li>
+            </ul>
+        </div>
+        
+        <h3>🍔 Sistema de Menús</h3>
+        
+        <div class="success">
+            <h4>✅ DO (Hacer):</h4>
+            <ul>
+                <li>Usar el ViewType correcto para cada vista</li>
+                <li>Definir todas las acciones del menú</li>
+                <li>Usar <code>HamburgerMenuView.themed()</code> cuando sea posible</li>
+                <li>Agregar sheets para las acciones del menú</li>
+                <li>Mantener consistencia en las acciones entre vistas similares</li>
+            </ul>
+        </div>
+        
+        <div class="warning">
+            <h4>❌ DON'T (No hacer):</h4>
+            <ul>
+                <li>No hardcodear opciones de menú</li>
+                <li>No olvidar configurar las acciones</li>
+                <li>No usar ViewType incorrecto</li>
+                <li>No crear menús personalizados sin razón</li>
+            </ul>
+        </div>
+        
+        <h3>🏗️ Arquitectura General</h3>
+        
+        <div class="success">
+            <h4>✅ DO (Hacer):</h4>
+            <ul>
+                <li>Mantener la separación de responsabilidades</li>
+                <li>Usar los sistemas centralizados consistentemente</li>
+                <li>Documentar cambios importantes</li>
+                <li>Probar en diferentes temas y configuraciones</li>
+                <li>Mantener el código limpio y legible</li>
+            </ul>
+        </div>
+        
+        <div class="warning">
+            <h4>❌ DON'T (No hacer):</h4>
+            <ul>
+                <li>No modificar los archivos base sin documentar</li>
+                <li>No crear sistemas paralelos</li>
+                <li>No ignorar las mejores prácticas establecidas</li>
+                <li>No hacer cambios sin probar</li>
+            </ul>
+        </div>
+        
+        <h3>📱 Rendimiento</h3>
+        
+        <div class="code-block">
+// ✅ Usar @ObservedObject correctamente:
+struct MyView: View {
+    @ObservedObject private var themeManager = ThemeManager.shared
+    
+    var body: some View {
+        // Solo se re-renderiza cuando cambia el tema
+        VStack {
+            // Contenido
+        }
+    }
+}
+
+// ✅ Evitar recrear objetos innecesariamente:
+// ❌ Malo:
+Button {
+    ThemeManager().setTheme(.oscuro)  // Nueva instancia
+}
+
+// ✅ Bueno:
+Button {
+    ThemeManager.shared.setTheme(.oscuro)  // Instancia compartida
+}
+        </div>
+        
+        <h3>🧪 Testing</h3>
+        
+        <div class="code-block">
+// Probar todos los temas:
+func testAllThemes() {
+    for themeType in ThemeType.allCases {
+        ThemeManager.shared.setTheme(themeType)
+        // Verificar que la UI se actualiza correctamente
+    }
+}
+
+// Probar todos los tipos de encabezado:
+func testAllHeaderTypes() {
+    let testText = "Texto de prueba muy largo para verificar el escalado automático"
+    
+    for headerType in HeaderType.allCases {
+        let header = HeaderView(
+            text: testText,
+            type: headerType,
+            textColor: .primary,
+            backgroundColor: .clear
+        )
+        // Verificar que se renderiza correctamente
+    }
+}
+
+// Probar todas las configuraciones de menú:
+func testAllMenuConfigurations() {
+    for viewType in ViewType.allCases {
+        let options = MenuManager.shared.getMenuOptions(for: viewType)
+        print("\(viewType): \(options.count) opciones")
+        // Verificar que las opciones son las esperadas
+    }
+}
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>🎯 Conclusión</h2>
+        
+        <p>Los sistemas centralizados de la versión V2.0.0.2 proporcionan una base sólida y escalable para el desarrollo futuro de la aplicación. Con estos sistemas, los desarrolladores pueden:</p>
+        
+        <div class="highlight">
+            <ul>
+                <li><strong>🎨 Crear interfaces consistentes</strong> usando el sistema de temas</li>
+                <li><strong>📝 Implementar encabezados responsive</strong> que se adaptan automáticamente</li>
+                <li><strong>🍔 Configurar menús contextuales</strong> según el tipo de vista</li>
+                <li><strong>⚡ Desarrollar más rápido</strong> con componentes reutilizables</li>
+                <li><strong>🛠️ Mantener fácilmente</strong> el código con cambios centralizados</li>
+            </ul>
+        </div>
+        
+        <p>Esta documentación debe ser consultada cada vez que se trabaje con estos sistemas para mantener la consistencia y aprovechar al máximo sus capacidades.</p>
+        
+        <div class="success">
+            <h4>📞 Soporte</h4>
+            <p>Para dudas o problemas con estos sistemas, consultar esta documentación o revisar el código de ejemplo en las vistas ya migradas.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -5,7 +5,7 @@ import SwiftData
 struct ccp_BDF_DBIncrementalTestView: View {
     @EnvironmentObject private var location: LocationService
     @Environment(\.modelContext) private var context
-    @ObservedObject private var themeManager = ThemeManager.shared
+    // Referencias de diseño removidas
 
     // Listas separadas para mostrar la diferencia
     @State private var establecimientosConCoordenadas: [lmpBDF_EstablecimientoLocal] = []
@@ -340,7 +340,7 @@ struct ccp_BDF_DBIncrementalTestView: View {
             }
         }
         .padding()
-        .themed()
+        // Modifier de diseño removido
         .navigationTitle("DB MORSA ADM")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {

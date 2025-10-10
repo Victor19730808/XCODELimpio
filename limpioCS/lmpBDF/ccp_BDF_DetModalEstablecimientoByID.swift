@@ -26,7 +26,7 @@ import MapKit
 
 struct EstablecimientoDetalleSheetSimple: View {
     @Environment(\.modelContext) private var modelContext
-    @ObservedObject private var themeManager = ThemeManager.shared
+    // Referencias de diseño removidas
 
     // @Bindable para editar propiedades del modelo SwiftData desde aquí
     @Bindable var est: lmpBDF_EstablecimientoLocal
@@ -44,7 +44,7 @@ struct EstablecimientoDetalleSheetSimple: View {
             // Encabezado vistoso con gradiente + título + pill favorito
             ZStack(alignment: .bottomLeading) {
                 LinearGradient(
-                    colors: [themeManager.currentTheme.colors.primary.opacity(0.85), themeManager.currentTheme.colors.primary.opacity(0.55)],
+                    colors: [Color.red.opacity(0.85), Color.red.opacity(0.55)],
                     startPoint: .topLeading, endPoint: .bottomTrailing
                 )
                 .frame(height: 140)
@@ -56,24 +56,24 @@ struct EstablecimientoDetalleSheetSimple: View {
                         ZStack {
                             Circle().fill(Color.white.opacity(0.18)).frame(width: 48, height: 48)
                             Text(String(est.nombre.prefix(1)).uppercased())
-                                .font(themeManager.currentTheme.fonts.headline)
-                                .foregroundStyle(themeManager.currentTheme.colors.textOnPrimary)
+                                .font(.headline)
+                                .foregroundStyle(.white)
                         }
 
                         VStack(alignment: .leading, spacing: 4) {
                             Text(est.nombre)
-                                .font(themeManager.currentTheme.fonts.title)
-                                .foregroundStyle(themeManager.currentTheme.colors.textOnPrimary)
+                                .font(.title)
+                                .foregroundStyle(.white)
                                 .lineLimit(2)
 
                             // ID visible y legible
                             HStack(spacing: 6) {
                                 Text("ID:")
-                                    .font(themeManager.currentTheme.fonts.footnote)
-                                    .foregroundStyle(themeManager.currentTheme.colors.textOnPrimary.opacity(0.9))
+                                    .font(.footnote)
+                                    .foregroundStyle(.white.opacity(0.9))
                                 Text("\(est.id)")
-                                    .font(themeManager.currentTheme.fonts.footnote)
-                                    .foregroundStyle(themeManager.currentTheme.colors.textOnPrimary.opacity(0.9))
+                                    .font(.footnote)
+                                    .foregroundStyle(.white.opacity(0.9))
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 4)
                                     .background(
@@ -92,10 +92,10 @@ struct EstablecimientoDetalleSheetSimple: View {
                         } label: {
                             Image(systemName: est.esFavorito ? "star.fill" : "star")
                                 .font(.title3.weight(.semibold))
-                                .foregroundStyle(est.esFavorito ? .yellow : themeManager.currentTheme.colors.textOnPrimary)
+                                .foregroundStyle(est.esFavorito ? .yellow : .white)
                                 .padding(10)
                                 .background(
-                                    Circle().fill(themeManager.currentTheme.colors.textOnPrimary.opacity(0.15))
+                                    Circle().fill(.white.opacity(0.15))
                                 )
                                 .accessibilityLabel(est.esFavorito ? "Quitar de favoritos" : "Agregar a favoritos")
                         }
@@ -115,12 +115,12 @@ struct EstablecimientoDetalleSheetSimple: View {
                                 )
                         } else {
                             Label("No es favorito", systemImage: "star")
-                                .font(themeManager.currentTheme.fonts.caption)
-                                .foregroundStyle(themeManager.currentTheme.colors.textOnPrimary.opacity(0.9))
+                                .font(.caption)
+                                .foregroundStyle(.white.opacity(0.9))
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 6)
                                 .background(
-                                    Capsule().fill(themeManager.currentTheme.colors.textOnPrimary.opacity(0.12))
+                                    Capsule().fill(.white.opacity(0.12))
                                 )
                         }
                     }
@@ -214,16 +214,16 @@ struct EstablecimientoDetalleSheetSimple: View {
     // MARK: - UI helpers
     private func row(label: String, value: String?) -> some View {
         HStack(alignment: .firstTextBaseline) {
-            Text("\(label):").font(themeManager.currentTheme.fonts.subheadline)
-            Text(value ?? "—").font(themeManager.currentTheme.fonts.subheadline).foregroundStyle(themeManager.currentTheme.colors.textSecondary)
+            Text("\(label):").font(.subheadline)
+            Text(value ?? "—").font(.subheadline).foregroundStyle(.secondary)
             Spacer()
         }
     }
 
     private func rowMono(label: String, value: String) -> some View {
         HStack(alignment: .firstTextBaseline) {
-            Text("\(label):").font(themeManager.currentTheme.fonts.subheadline)
-            Text(value).font(themeManager.currentTheme.fonts.caption).foregroundStyle(themeManager.currentTheme.colors.textSecondary)
+            Text("\(label):").font(.subheadline)
+            Text(value).font(.caption).foregroundStyle(.secondary)
             Spacer()
         }
     }
@@ -233,7 +233,7 @@ struct EstablecimientoDetalleSheetSimple: View {
             Image(systemName: icon)
             Text(text).fontWeight(.semibold)
         }
-        .font(themeManager.currentTheme.fonts.subheadline)
+        .font(.subheadline)
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
         .background(Capsule().fill(tint.opacity(0.15)))

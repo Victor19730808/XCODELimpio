@@ -1,6 +1,20 @@
+//
+//  GV_SCR_tp_splash.swift
+//  limpioCS
+//
+//  Migrado: 2025-01-10
+//  Sistema: GV (Temas + Headers + Menús + ScreenTypes)
+//
+
 import SwiftUI
 
-struct SplashScreenView: View {
+struct GV_SCR_tp_splash: View {
+    // MARK: - Configuración del Sistema GV
+    private let screenType: ScreenType = .splash
+    private let myHeader: GV_HeaderType = .tipo1
+    @ObservedObject private var themeManager = GV_Temas_Manager.shared
+    
+    // MARK: - Estados de Animación
     @State private var isAnimating = false
     @State private var showMainApp = false
     @State private var logoScale: CGFloat = 0.8
@@ -10,51 +24,28 @@ struct SplashScreenView: View {
     @State private var contentOpacity: Double = 0.0
     @State private var pulseScale: CGFloat = 1.0
     
-    // Referencias de diseño removidas
-    
     var body: some View {
         ZStack {
-            // Fondo básico
-            Color.white
+            // Fondo temado
+            themeManager.background
                 .ignoresSafeArea()
                 .opacity(backgroundOpacity)
             
             VStack(spacing: 0) {
-                    // Header rojo minimalista
-                    VStack(spacing: 0) {
-                        HStack {
-                            Spacer()
-                            
-                            // Etiqueta "Hecho en México" centrada
-                            Text("Hecho en México")
-                                .font(.body)
-                                .foregroundColor(.white)
-                            
-                            Spacer()
-                        }
-                        .padding(.top, 20)
-                        .padding(.bottom, 20)
-                        
-                        // Línea divisoria
-                        Rectangle()
-                            .fill(Color.white.opacity(0.3))
-                            .frame(height: 1)
-                            .padding(.horizontal, 20)
-                    }
-                .frame(height: 120)
-                .background(Color.red)
-                .opacity(headerOpacity)
+                // Header con menú - TODO EN UNA SOLA LÍNEA! 🎯
+                myHeader.headerViewWithMenu("Hecho en México", nil, .principal)
+                    .opacity(headerOpacity)
                 
-                // Contenido principal con fondo gris
+                // Contenido principal con tema aplicado
                 VStack(spacing: 0) {
-                    // Fondo gris elegante
+                    // Fondo con gradiente temado
                     ZStack {
-                        // Fondo con gradiente básico
+                        // Gradiente basado en el tema actual
                         LinearGradient(
                             gradient: Gradient(colors: [
-                                Color.gray.opacity(0.1),
-                                Color.white,
-                                Color.white
+                                themeManager.surface,
+                                themeManager.background,
+                                themeManager.background
                             ]),
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
@@ -68,9 +59,9 @@ struct SplashScreenView: View {
                             VStack(spacing: 0) {
                                 // Composición triangular de las imágenes
                                 ZStack {
-                                    // Círculo de fondo con pulso sutil
+                                    // Círculo de fondo con pulso sutil temado
                                     Circle()
-                                        .fill(Color.red.opacity(0.08))
+                                        .fill(themeManager.primary.opacity(0.08))
                                         .frame(width: 400, height: 400)
                                         .scaleEffect(pulseScale)
                                         .animation(.easeInOut(duration: 2.0).repeatForever(autoreverses: true), value: pulseScale)
@@ -82,7 +73,7 @@ struct SplashScreenView: View {
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
                                             .frame(width: 140, height: 140)
-                                            .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 4)
+                                            .shadow(color: themeManager.shadow, radius: 8, x: 0, y: 4)
                                             .scaleEffect(logoScale)
                                         
                                         // Imágenes inferiores - HM y BF lado a lado
@@ -91,14 +82,14 @@ struct SplashScreenView: View {
                                                 .resizable()
                                                 .aspectRatio(contentMode: .fit)
                                                 .frame(width: 120, height: 120)
-                                                .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 4)
+                                                .shadow(color: themeManager.shadow, radius: 8, x: 0, y: 4)
                                                 .scaleEffect(logoScale)
                                             
                                             Image("BF")
                                                 .resizable()
                                                 .aspectRatio(contentMode: .fit)
                                                 .frame(width: 120, height: 120)
-                                                .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 4)
+                                                .shadow(color: themeManager.shadow, radius: 8, x: 0, y: 4)
                                                 .scaleEffect(logoScale)
                                         }
                                     }
@@ -108,54 +99,70 @@ struct SplashScreenView: View {
                             
                             Spacer()
                             
-                            // Footer con mensaje poderoso
+                            // Footer con mensaje poderoso temado
                             VStack(spacing: 16) {
                                 VStack(spacing: 8) {
                                     Text("IMPULSANDO EL CRECIMIENTO")
-                                        .font(.headline)
-                                        .foregroundColor(.primary)
+                                        .font(themeManager.headline)
+                                        .foregroundColor(themeManager.textPrimary)
                                     
                                     Text("ECONÓMICO DE MÉXICO")
-                                        .font(.headline)
-                                        .foregroundColor(.primary)
+                                        .font(themeManager.headline)
+                                        .foregroundColor(themeManager.textPrimary)
                                 }
                                 
                                 VStack(spacing: 6) {
                                     Text("Conectamos consumidores con establecimientos")
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
+                                        .font(themeManager.caption)
+                                        .foregroundColor(themeManager.textSecondary)
                                     
                                     Text("para fortalecer la economía nacional")
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
+                                        .font(themeManager.caption)
+                                        .foregroundColor(themeManager.textSecondary)
                                 }
                                 
                                 // Etiqueta de desarrollador
                                 Text("Performed by: VAL Human Tech")
-                                    .font(.footnote)
-                                    .foregroundColor(.secondary.opacity(0.5))
+                                    .font(themeManager.footnote)
+                                    .foregroundColor(themeManager.textSecondary.opacity(0.5))
                                     .padding(.top, 8)
                             }
                             .opacity(contentOpacity)
                             
                             Spacer()
+                            
+                            // MARK: - Debug Info (solo en desarrollo)
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("DEBUG - Información del Sistema")
+                                    .font(themeManager.caption)
+                                    .foregroundColor(themeManager.textSecondary)
+                                    .padding(.horizontal, themeManager.paddingMedium)
+                                
+                                Text(screenType.showAllFormattedAuto(filePath: #file))
+                                    .font(.system(.caption, design: .monospaced))
+                                    .foregroundColor(themeManager.textSecondary)
+                                    .multilineTextAlignment(.leading)
+                                    .padding(.horizontal, themeManager.paddingMedium)
+                                    .padding(.bottom, 20)
+                            }
+                            .opacity(0.6) // Más sutil en splash
                         }
                         .padding(.horizontal, 30)
                     }
                 }
-                .padding(.horizontal, 30)
             }
         }
+        .preferredColorScheme(themeManager.currentTheme.preferredColorScheme)
         .onAppear {
             startAnimation()
         }
         .fullScreenCover(isPresented: $showMainApp) {
-            PORT_PASO()
+            GV_SCR_tc_menuprincipal() // ✨ Navegar a Menú Principal migrado
         }
     }
     
     private func startAnimation() {
-        // Secuencia de animaciones estilo El Buen Fin
+        // Secuencia de animaciones estilo El Buen Fin con tema dinámico
         withAnimation(.easeInOut(duration: 0.6)) {
             backgroundOpacity = 1.0
         }
@@ -190,18 +197,13 @@ struct SplashScreenView: View {
             }
         }
         
-            // Transición a la app principal después de 5 segundos
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                showMainApp = true
-            }
+        // Transición a la app principal después de 5 segundos
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+            showMainApp = true
+        }
     }
 }
 
-// MARK: - Componentes de Estilo con Temas Dinámicos
-
-// Los componentes de animación compleja han sido reemplazados por un diseño más limpio
-// que se adapta dinámicamente al tema seleccionado (Claro, Oscuro, BuenFin)
-
 #Preview {
-    SplashScreenView()
+    GV_SCR_tp_splash()
 }

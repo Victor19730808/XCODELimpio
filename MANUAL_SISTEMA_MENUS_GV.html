@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Técnico - Sistema de Menús GV</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        nav {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            border-left: 5px solid #667eea;
+        }
+        
+        nav h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        nav ul {
+            list-style: none;
+        }
+        
+        nav li {
+            margin: 12px 0;
+        }
+        
+        nav a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 1.1em;
+            padding: 8px 15px;
+            display: inline-block;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        nav a:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(10px);
+        }
+        
+        section {
+            margin-bottom: 50px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #764ba2;
+        }
+        
+        h2 {
+            color: #764ba2;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        h3 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin: 30px 0 15px 0;
+            padding-left: 15px;
+            border-left: 4px solid #764ba2;
+        }
+        
+        h4 {
+            color: #555;
+            font-size: 1.2em;
+            margin: 20px 0 10px 0;
+        }
+        
+        p {
+            margin: 15px 0;
+            font-size: 1.05em;
+            line-height: 1.8;
+        }
+        
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.95em;
+            line-height: 1.5;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .code-block code {
+            color: #d4d4d4;
+        }
+        
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; font-style: italic; }
+        .function { color: #dcdcaa; }
+        .type { color: #4ec9b0; }
+        .number { color: #b5cea8; }
+        
+        .info-box {
+            background: #e3f2fd;
+            border-left: 5px solid #2196f3;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .success-box {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        tr:hover {
+            background: #f5f5f5;
+        }
+        
+        .step {
+            background: white;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-right: 15px;
+        }
+        
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+        
+        li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #667eea;
+            color: white;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin: 0 5px;
+        }
+        
+        .badge-new {
+            background: #28a745;
+        }
+        
+        .badge-modified {
+            background: #ffc107;
+            color: #333;
+        }
+        
+        .badge-required {
+            background: #dc3545;
+        }
+        
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .file-tree {
+            background: #2d2d2d;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            margin: 20px 0;
+        }
+        
+        .file-tree .folder { color: #569cd6; }
+        .file-tree .file { color: #4ec9b0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📱 Manual Técnico</h1>
+            <p>Sistema de Menús GV (General Views)</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">Versión 2.0 - Enero 2025</p>
+        </header>
+
+        <div class="content">
+            <!-- ÍNDICE -->
+            <nav id="indice">
+                <h2>📑 Índice</h2>
+                <ul>
+                    <li><a href="#introduccion">1. Introducción</a></li>
+                    <li><a href="#arquitectura">2. Arquitectura del Sistema</a></li>
+                    <li><a href="#archivos">3. Archivos del Sistema</a></li>
+                    <li><a href="#tipos-menu">4. Tipos de Menú</a></li>
+                    <li><a href="#opciones-menu">5. Opciones de Menú</a></li>
+                    <li><a href="#configuracion">6. Configuración de Menús</a></li>
+                    <li><a href="#navegacion">7. Sistema de Navegación</a></li>
+                    <li><a href="#uso-basico">8. Uso Básico</a></li>
+                    <li><a href="#agregar-tipo">9. Cómo Agregar un Nuevo Tipo de Menú</a></li>
+                    <li><a href="#agregar-opcion">10. Cómo Agregar una Nueva Opción</a></li>
+                    <li><a href="#personalizacion">11. Personalización Avanzada</a></li>
+                    <li><a href="#integracion-header">12. Integración con Headers</a></li>
+                    <li><a href="#ejemplos">13. Ejemplos Completos</a></li>
+                    <li><a href="#troubleshooting">14. Solución de Problemas</a></li>
+                </ul>
+            </nav>
+
+            <!-- 1. INTRODUCCIÓN -->
+            <section id="introduccion">
+                <h2>1. 📖 Introducción</h2>
+                
+                <p>El <strong>Sistema de Menús GV</strong> es un framework centralizado para gestionar menús hamburguesa en toda la aplicación de forma consistente, flexible y mantenible.</p>
+                
+                <h3>🎯 Objetivos</h3>
+                <ul>
+                    <li><strong>Centralización:</strong> Todas las configuraciones de menú en un solo lugar</li>
+                    <li><strong>Simplicidad:</strong> Una sola línea de código para implementar un menú completo</li>
+                    <li><strong>Flexibilidad:</strong> Diferentes tipos de menú según el contexto</li>
+                    <li><strong>Mantenibilidad:</strong> Fácil de actualizar y extender</li>
+                    <li><strong>Consistencia:</strong> Misma experiencia de usuario en toda la app</li>
+                </ul>
+                
+                <h3>✨ Características Principales</h3>
+                <ul>
+                    <li>5 tipos de menú predefinidos</li>
+                    <li>4 opciones de menú configurables</li>
+                    <li>Navegación automática (Sheet por defecto, Navigation opcional)</li>
+                    <li>Integración perfecta con el sistema de Headers</li>
+                    <li>Vistas destino configuradas centralmente</li>
+                    <li>Sin código repetitivo en las vistas</li>
+                </ul>
+                
+                <div class="success-box">
+                    <strong>✅ Ventaja Clave:</strong> Una vista solo necesita declarar qué tipo de menú quiere y el sistema maneja TODO automáticamente (estados, sheets, navegación, vistas destino).
+                </div>
+            </section>
+
+            <!-- 2. ARQUITECTURA -->
+            <section id="arquitectura">
+                <h2>2. 🏗️ Arquitectura del Sistema</h2>
+                
+                <h3>📊 Diagrama de Componentes</h3>
+                
+                <div class="info-box">
+                    <pre style="margin: 0;">
+┌─────────────────────────────────────────────────────────┐
+│                    Tu Vista SwiftUI                     │
+│                                                         │
+│  private let myHeader: GV_HeaderType = .tipo2          │
+│                                                         │
+│  myHeader.headerViewWithMenu("Caption", "BF", .simple) │
+└────────────────────┬────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────┐
+│              GV_HeaderConfig.swift                      │
+│                                                         │
+│  • GV_HeaderConfig (struct)                            │
+│  • GV_HeaderConfigManager (singleton)                  │
+│  • headerViewWithMenu() ◄─── Función principal         │
+│  • GV_HeaderWithMenuWrapper ◄─── Maneja @State         │
+└────────────────────┬────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────┐
+│              GV_MenuType.swift                          │
+│                                                         │
+│  • GV_MenuType (enum) ◄─── 5 tipos predefinidos        │
+│  • MenuOption (enum) ◄─── 4 opciones disponibles       │
+│  • GV_NavigationType (enum) ◄─── Sheet o Navigation    │
+│  • destinationView ◄─── Vistas destino                 │
+└────────────────────┬────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────┐
+│              GV_MenuConfig.swift                        │
+│                                                         │
+│  • GV_MenuConfig (struct)                              │
+│  • GV_MenuConfigManager (singleton)                    │
+│  • menuView() ◄─── Renderiza el menú                   │
+└─────────────────────────────────────────────────────────┘
+                    </pre>
+                </div>
+                
+                <h3>🔄 Flujo de Ejecución</h3>
+                <ol>
+                    <li><strong>Vista declara:</strong> <code>myHeader.headerViewWithMenu("Caption", "BF", .simple)</code></li>
+                    <li><strong>Wrapper crea:</strong> <code>@State</code> variables internas</li>
+                    <li><strong>MenuType provee:</strong> Opciones disponibles según tipo</li>
+                    <li><strong>MenuConfig renderiza:</strong> Icono y menú con opciones</li>
+                    <li><strong>Usuario hace click:</strong> Menú se despliega</li>
+                    <li><strong>Selecciona opción:</strong> Cambia @State a true</li>
+                    <li><strong>Sheet se activa:</strong> Muestra vista destino</li>
+                </ol>
+            </section>
+
+            <!-- 3. ARCHIVOS -->
+            <section id="archivos">
+                <h2>3. 📁 Archivos del Sistema</h2>
+                
+                <h3>📂 Estructura de Carpetas</h3>
+                
+                <div class="file-tree">
+<span class="folder">LAST_GV/</span>
+├── <span class="file">GV_ScreenTypes.swift</span>      (Sistema de tipos de pantalla)
+├── <span class="file">GV_HeaderType.swift</span>       (Tipos de header)
+├── <span class="file">GV_HeaderConfig.swift</span>     (Configuración de headers + Wrapper)
+├── <span class="file">GV_MenuType.swift</span>         (Tipos de menú + Opciones + Navegación)
+└── <span class="file">GV_MenuConfig.swift</span>       (Configuración de menús)
+                </div>
+                
+                <h3>📄 Descripción de Archivos</h3>
+                
+                <table>
+                    <tr>
+                        <th>Archivo</th>
+                        <th>Líneas</th>
+                        <th>Responsabilidad</th>
+                        <th>Componentes Clave</th>
+                    </tr>
+                    <tr>
+                        <td><strong>GV_MenuType.swift</strong></td>
+                        <td>~197</td>
+                        <td>Define tipos de menú, opciones y navegación</td>
+                        <td>
+                            • GV_MenuType (enum)<br>
+                            • MenuOption (enum)<br>
+                            • GV_NavigationType (enum)<br>
+                            • destinationView
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>GV_MenuConfig.swift</strong></td>
+                        <td>~139</td>
+                        <td>Gestiona configuraciones y renderiza menús</td>
+                        <td>
+                            • GV_MenuConfig (struct)<br>
+                            • GV_MenuConfigManager (singleton)<br>
+                            • menuView() (función)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>GV_HeaderConfig.swift</strong></td>
+                        <td>~229</td>
+                        <td>Integra headers con menús</td>
+                        <td>
+                            • GV_HeaderConfig (struct)<br>
+                            • headerViewWithMenu() (función)<br>
+                            • GV_HeaderWithMenuWrapper (wrapper)
+                        </td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- 4. TIPOS DE MENÚ -->
+            <section id="tipos-menu">
+                <h2>4. 🍔 Tipos de Menú</h2>
+                
+                <p>El sistema incluye 5 tipos de menú predefinidos:</p>
+                
+                <table>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>ID</th>
+                        <th>Descripción</th>
+                        <th>Opciones</th>
+                        <th>Icono</th>
+                    </tr>
+                    <tr>
+                        <td><strong>.principal</strong></td>
+                        <td>1</td>
+                        <td>Menú completo con todas las opciones</td>
+                        <td>4 opciones (Temas, Admin, Búsquedas, Config)</td>
+                        <td>line.3.horizontal</td>
+                    </tr>
+                    <tr>
+                        <td><strong>.mapa</strong></td>
+                        <td>2</td>
+                        <td>Menú para vistas de mapas</td>
+                        <td>3 opciones (sin Admin Datos)</td>
+                        <td>map</td>
+                    </tr>
+                    <tr>
+                        <td><strong>.lista</strong></td>
+                        <td>3</td>
+                        <td>Menú para vistas de listas</td>
+                        <td>3 opciones (sin Búsquedas Avanzadas)</td>
+                        <td>list.bullet</td>
+                    </tr>
+                    <tr>
+                        <td><strong>.simple</strong></td>
+                        <td>4</td>
+                        <td>Menú minimalista</td>
+                        <td>1 opción (solo Temas)</td>
+                        <td>gear</td>
+                    </tr>
+                    <tr>
+                        <td><strong>.ninguno</strong></td>
+                        <td>5</td>
+                        <td>Sin menú visible</td>
+                        <td>0 opciones</td>
+                        <td>-</td>
+                    </tr>
+                </table>
+                
+                <h3>💻 Código en GV_MenuType.swift</h3>
+                
+                <div class="code-block">
+<code><span class="keyword">enum</span> <span class="type">GV_MenuType</span>: <span class="type">Int</span>, <span class="type">CaseIterable</span>, <span class="type">Identifiable</span> {
+    <span class="keyword">case</span> principal = <span class="number">1</span>
+    <span class="keyword">case</span> mapa = <span class="number">2</span>
+    <span class="keyword">case</span> lista = <span class="number">3</span>
+    <span class="keyword">case</span> simple = <span class="number">4</span>
+    <span class="keyword">case</span> ninguno = <span class="number">5</span>
+    
+    <span class="keyword">var</span> id: <span class="type">Int</span> { <span class="keyword">self</span>.rawValue }
+    
+    <span class="keyword">var</span> displayName: <span class="type">String</span> {
+        <span class="keyword">switch</span> <span class="keyword">self</span> {
+        <span class="keyword">case</span> .principal:
+            <span class="keyword">return</span> <span class="string">"Menú Principal"</span>
+        <span class="keyword">case</span> .simple:
+            <span class="keyword">return</span> <span class="string">"Menú Simple"</span>
+        <span class="comment">// ...</span>
+        }
+    }
+}</code>
+                </div>
+            </section>
+
+            <!-- 5. OPCIONES DE MENÚ -->
+            <section id="opciones-menu">
+                <h2>5. 🎯 Opciones de Menú</h2>
+                
+                <p>El sistema incluye 4 opciones de menú configurables:</p>
+                
+                <table>
+                    <tr>
+                        <th>Opción</th>
+                        <th>Nombre</th>
+                        <th>Icono</th>
+                        <th>Navegación</th>
+                        <th>Vista Destino</th>
+                    </tr>
+                    <tr>
+                        <td><strong>.themes</strong></td>
+                        <td>Temas</td>
+                        <td>paintpalette</td>
+                        <td>.sheet</td>
+                        <td>Selector de Temas</td>
+                    </tr>
+                    <tr>
+                        <td><strong>.adminDatos</strong></td>
+                        <td>Admin Datos</td>
+                        <td>cylinder</td>
+                        <td>.sheet</td>
+                        <td>Administración de Datos</td>
+                    </tr>
+                    <tr>
+                        <td><strong>.advancedSearch</strong></td>
+                        <td>Búsquedas Avanzadas</td>
+                        <td>magnifyingglass.circle</td>
+                        <td>.sheet</td>
+                        <td>Búsquedas Avanzadas</td>
+                    </tr>
+                    <tr>
+                        <td><strong>.mySettings</strong></td>
+                        <td>Mis Configuraciones</td>
+                        <td>gearshape</td>
+                        <td>.sheet</td>
+                        <td>Configuraciones</td>
+                    </tr>
+                </table>
+                
+                <h3>💻 Código en GV_MenuType.swift</h3>
+                
+                <div class="code-block">
+<code><span class="keyword">enum</span> <span class="type">MenuOption</span>: <span class="type">String</span>, <span class="type">CaseIterable</span> {
+    <span class="keyword">case</span> themes = <span class="string">"Temas"</span>
+    <span class="keyword">case</span> adminDatos = <span class="string">"Admin Datos"</span>
+    <span class="keyword">case</span> advancedSearch = <span class="string">"Búsquedas Avanzadas"</span>
+    <span class="keyword">case</span> mySettings = <span class="string">"Mis Configuraciones"</span>
+    
+    <span class="keyword">var</span> icon: <span class="type">String</span> {
+        <span class="keyword">switch</span> <span class="keyword">self</span> {
+        <span class="keyword">case</span> .themes:
+            <span class="keyword">return</span> <span class="string">"paintpalette"</span>
+        <span class="comment">// ...</span>
+        }
+    }
+    
+    <span class="keyword">var</span> navigationType: <span class="type">GV_NavigationType</span> {
+        <span class="keyword">return</span> .sheet  <span class="comment">// Default para todas</span>
+    }
+    
+    <span class="keyword">@ViewBuilder</span>
+    <span class="keyword">var</span> destinationView: <span class="keyword">some</span> <span class="type">View</span> {
+        <span class="keyword">switch</span> <span class="keyword">self</span> {
+        <span class="keyword">case</span> .themes:
+            <span class="function">Text</span>(<span class="string">"Selector de Temas"</span>).<span class="function">padding</span>()
+        <span class="comment">// ...</span>
+        }
+    }
+}</code>
+                </div>
+            </section>
+
+            <!-- 6. CONFIGURACIÓN -->
+            <section id="configuracion">
+                <h2>6. ⚙️ Configuración de Menús</h2>
+                
+                <h3>📝 Estructura GV_MenuConfig</h3>
+                
+                <div class="code-block">
+<code><span class="keyword">struct</span> <span class="type">GV_MenuConfig</span> {
+    <span class="keyword">let</span> showMenu: <span class="type">Bool</span>           <span class="comment">// Si muestra el menú</span>
+    <span class="keyword">let</span> iconName: <span class="type">String</span>         <span class="comment">// Icono SF Symbol</span>
+    <span class="keyword">let</span> iconSize: <span class="type">CGFloat</span>        <span class="comment">// Tamaño del icono</span>
+    <span class="keyword">let</span> iconColor: <span class="type">Color</span>         <span class="comment">// Color del icono</span>
+    <span class="keyword">let</span> options: [<span class="type">MenuOption</span>]    <span class="comment">// Opciones disponibles</span>
+    <span class="keyword">let</span> backgroundColor: <span class="type">Color</span>   <span class="comment">// Fondo del menú</span>
+    <span class="keyword">let</span> padding: <span class="type">CGFloat</span>         <span class="comment">// Padding del icono</span>
+}</code>
+                </div>
+                
+                <h3>🎨 Configuraciones por Tipo</h3>
+                
+                <h4>.principal (Menú Principal)</h4>
+                <div class="code-block">
+<code><span class="keyword">case</span> .principal:
+    <span class="keyword">return</span> <span class="type">GV_MenuConfig</span>(
+        showMenu: <span class="keyword">true</span>,
+        iconName: <span class="string">"line.3.horizontal"</span>,
+        iconSize: <span class="number">24</span>,
+        iconColor: .white,
+        options: [.themes, .adminDatos, .advancedSearch, .mySettings],
+        backgroundColor: .clear,
+        padding: <span class="number">16</span>
+    )</code>
+                </div>
+                
+                <h4>.mapa (Menú Mapa)</h4>
+                <div class="code-block">
+<code><span class="keyword">case</span> .mapa:
+    <span class="keyword">return</span> <span class="type">GV_MenuConfig</span>(
+        showMenu: <span class="keyword">true</span>,
+        iconName: <span class="string">"map"</span>,
+        iconSize: <span class="number">22</span>,
+        iconColor: .white,
+        options: [.themes, .advancedSearch, .mySettings],  <span class="comment">// Sin adminDatos</span>
+        backgroundColor: .clear,
+        padding: <span class="number">20</span>
+    )</code>
+                </div>
+                
+                <h4>.simple (Menú Simple)</h4>
+                <div class="code-block">
+<code><span class="keyword">case</span> .simple:
+    <span class="keyword">return</span> <span class="type">GV_MenuConfig</span>(
+        showMenu: <span class="keyword">true</span>,
+        iconName: <span class="string">"gear"</span>,
+        iconSize: <span class="number">20</span>,
+        iconColor: .white,
+        options: [.themes],  <span class="comment">// Solo Temas</span>
+        backgroundColor: .clear,
+        padding: <span class="number">15</span>
+    )</code>
+                </div>
+                
+                <h4>.ninguno (Sin Menú)</h4>
+                <div class="code-block">
+<code><span class="keyword">case</span> .ninguno:
+    <span class="keyword">return</span> <span class="type">GV_MenuConfig</span>(
+        showMenu: <span class="keyword">false</span>,  <span class="comment">// No muestra menú</span>
+        iconName: <span class="string">""</span>,
+        iconSize: <span class="number">0</span>,
+        iconColor: .clear,
+        options: [],  <span class="comment">// Sin opciones</span>
+        backgroundColor: .clear,
+        padding: <span class="number">0</span>
+    )</code>
+                </div>
+            </section>
+
+            <!-- 7. NAVEGACIÓN -->
+            <section id="navegacion">
+                <h2>7. 🧭 Sistema de Navegación</h2>
+                
+                <h3>📱 Tipos de Navegación</h3>
+                
+                <div class="code-block">
+<code><span class="keyword">enum</span> <span class="type">GV_NavigationType</span> {
+    <span class="keyword">case</span> sheet       <span class="comment">// Modal con .sheet() - DEFAULT</span>
+    <span class="keyword">case</span> navigation  <span class="comment">// NavigationLink - Opcional</span>
+}</code>
+                </div>
+                
+                <h3>🔄 Cómo Funciona</h3>
+                
+                <table>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Implementación</th>
+                        <th>Cuándo Usar</th>
+                    </tr>
+                    <tr>
+                        <td><strong>.sheet</strong> (Default)</td>
+                        <td>
+                            <code>.sheet(isPresented: $show) { vista }</code>
+                        </td>
+                        <td>
+                            • Configuraciones<br>
+                            • Opciones de menú<br>
+                            • Acciones rápidas
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>.navigation</strong></td>
+                        <td>
+                            <code>NavigationLink(destination: vista)</code>
+                        </td>
+                        <td>
+                            • Flujos principales<br>
+                            • Navegación con historial<br>
+                            • Contenido principal
+                        </td>
+                    </tr>
+                </table>
+                
+                <h3>🎯 Configuración de Navegación</h3>
+                
+                <p>Cada opción de menú define su tipo de navegación:</p>
+                
+                <div class="code-block">
+<code><span class="keyword">var</span> navigationType: <span class="type">GV_NavigationType</span> {
+    <span class="keyword">switch</span> <span class="keyword">self</span> {
+    <span class="keyword">case</span> .themes:
+        <span class="keyword">return</span> .sheet  <span class="comment">// Modal para temas</span>
+    <span class="keyword">case</span> .adminDatos:
+        <span class="keyword">return</span> .sheet  <span class="comment">// Modal para admin</span>
+    <span class="keyword">case</span> .advancedSearch:
+        <span class="keyword">return</span> .sheet  <span class="comment">// Modal para búsquedas</span>
+    <span class="keyword">case</span> .mySettings:
+        <span class="keyword">return</span> .sheet  <span class="comment">// Modal para configuraciones</span>
+    }
+}</code>
+                </div>
+                
+                <div class="info-box">
+                    <strong>💡 Nota:</strong> Para cambiar a navegación normal, simplemente cambia <code>.sheet</code> por <code>.navigation</code> en la opción correspondiente.
+                </div>
+            </section>
+
+            <!-- 8. USO BÁSICO -->
+            <section id="uso-basico">
+                <h2>8. 🚀 Uso Básico</h2>
+                
+                <h3>📝 Implementación en una Vista</h3>
+                
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Declarar el tipo de header:</strong>
+                    
+                    <div class="code-block">
+<code><span class="keyword">private let</span> myHeader: <span class="type">GV_HeaderType</span> = .tipo2</code>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Usar la función headerViewWithMenu:</strong>
+                    
+                    <div class="code-block">
+<code><span class="comment">// Sin menú</span>
+myHeader.<span class="function">headerViewWithMenu</span>(<span class="string">"Mi Caption"</span>, <span class="string">"BF"</span>)
+
+<span class="comment">// Con menú simple</span>
+myHeader.<span class="function">headerViewWithMenu</span>(<span class="string">"Mi Caption"</span>, <span class="string">"BF"</span>, .simple)
+
+<span class="comment">// Con menú principal</span>
+myHeader.<span class="function">headerViewWithMenu</span>(<span class="string">"Mi Caption"</span>, <span class="string">"BF"</span>, .principal)</code>
+                    </div>
+                </div>
+                
+                <h3>✨ Ejemplo Completo</h3>
+                
+                <div class="code-block">
+<code><span class="keyword">import</span> SwiftUI
+
+<span class="keyword">struct</span> <span class="type">MiVista</span>: <span class="type">View</span> {
+    <span class="comment">// Configuración</span>
+    <span class="keyword">private let</span> screenType: <span class="type">ScreenType</span> = .content
+    <span class="keyword">private let</span> myHeader: <span class="type">GV_HeaderType</span> = .tipo2
+    
+    <span class="keyword">var</span> body: <span class="keyword">some</span> <span class="type">View</span> {
+        <span class="type">VStack</span>(spacing: <span class="number">0</span>) {
+            <span class="comment">// Header con menú - UNA SOLA LÍNEA! 🎯</span>
+            myHeader.<span class="function">headerViewWithMenu</span>(<span class="string">"Mi Vista"</span>, <span class="string">"BF"</span>, .principal)
+            
+            <span class="comment">// Tu contenido aquí</span>
+            <span class="type">VStack</span> {
+                <span class="function">Text</span>(<span class="string">"Contenido de la vista"</span>)
+                    .<span class="function">font</span>(.title)
+                
+                <span class="function">Spacer</span>()
+            }
+            .<span class="function">padding</span>()
+        }
+    }
+}</code>
+                </div>
+                
+                <div class="success-box">
+                    <strong>✅ ¡Eso es todo!</strong> El sistema maneja automáticamente:
+                    <ul style="margin-top: 10px;">
+                        <li>Los <code>@State</code> variables</li>
+                        <li>Los <code>.sheet()</code> modifiers</li>
+                        <li>Las vistas destino</li>
+                        <li>La navegación completa</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 9. AGREGAR NUEVO TIPO -->
+            <section id="agregar-tipo">
+                <h2>9. ➕ Cómo Agregar un Nuevo Tipo de Menú</h2>
+                
+                <div class="warning-box">
+                    <strong>⚠️ Importante:</strong> Seguir todos los pasos en orden para evitar errores de compilación.
+                </div>
+                
+                <h3>📋 Procedimiento Completo</h3>
+                
+                <!-- PASO 1 -->
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Agregar el caso en el enum</strong>
+                    <span class="badge badge-required">REQUERIDO</span>
+                    
+                    <p><strong>Archivo:</strong> <code>LAST_GV/GV_MenuType.swift</code></p>
+                    <p><strong>Ubicación:</strong> Línea ~15</p>
+                    
+                    <div class="code-block">
+<code><span class="keyword">enum</span> <span class="type">GV_MenuType</span>: <span class="type">Int</span>, <span class="type">CaseIterable</span>, <span class="type">Identifiable</span> {
+    <span class="keyword">case</span> principal = <span class="number">1</span>
+    <span class="keyword">case</span> mapa = <span class="number">2</span>
+    <span class="keyword">case</span> lista = <span class="number">3</span>
+    <span class="keyword">case</span> simple = <span class="number">4</span>
+    <span class="keyword">case</span> ninguno = <span class="number">5</span>
+    <span class="keyword">case</span> administrativo = <span class="number">6</span>  <span class="comment">// ✨ NUEVO</span>
+    
+    <span class="keyword">var</span> id: <span class="type">Int</span> { <span class="keyword">self</span>.rawValue }
+}</code>
+                    </div>
+                </div>
+                
+                <!-- PASO 2 -->
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Agregar displayName</strong>
+                    <span class="badge badge-required">REQUERIDO</span>
+                    
+                    <p><strong>Archivo:</strong> <code>LAST_GV/GV_MenuType.swift</code></p>
+                    <p><strong>Ubicación:</strong> Línea ~23, dentro de <code>var displayName</code></p>
+                    
+                    <div class="code-block">
+<code><span class="keyword">var</span> displayName: <span class="type">String</span> {
+    <span class="keyword">switch</span> <span class="keyword">self</span> {
+    <span class="keyword">case</span> .principal:
+        <span class="keyword">return</span> <span class="string">"Menú Principal"</span>
+    <span class="comment">// ... otros casos ...</span>
+    <span class="keyword">case</span> .administrativo:
+        <span class="keyword">return</span> <span class="string">"Menú Administrativo"</span>  <span class="comment">// ✨ AGREGAR</span>
+    }
+}</code>
+                    </div>
+                </div>
+                
+                <!-- PASO 3 -->
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Agregar description</strong>
+                    <span class="badge badge-required">REQUERIDO</span>
+                    
+                    <p><strong>Archivo:</strong> <code>LAST_GV/GV_MenuType.swift</code></p>
+                    <p><strong>Ubicación:</strong> Línea ~38, dentro de <code>var description</code></p>
+                    
+                    <div class="code-block">
+<code><span class="keyword">var</span> description: <span class="type">String</span> {
+    <span class="keyword">switch</span> <span class="keyword">self</span> {
+    <span class="keyword">case</span> .principal:
+        <span class="keyword">return</span> <span class="string">"Todas las opciones: Temas, Admin..."</span>
+    <span class="comment">// ... otros casos ...</span>
+    <span class="keyword">case</span> .administrativo:
+        <span class="keyword">return</span> <span class="string">"Solo opciones administrativas"</span>  <span class="comment">// ✨ AGREGAR</span>
+    }
+}</code>
+                    </div>
+                </div>
+                
+                <!-- PASO 4 -->
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Definir opciones disponibles</strong>
+                    <span class="badge badge-required">REQUERIDO</span>
+                    
+                    <p><strong>Archivo:</strong> <code>LAST_GV/GV_MenuType.swift</code></p>
+                    <p><strong>Ubicación:</strong> Línea ~64, dentro de <code>var availableOptions</code></p>
+                    
+                    <div class="code-block">
+<code><span class="keyword">var</span> availableOptions: [<span class="type">MenuOption</span>] {
+    <span class="keyword">switch</span> <span class="keyword">self</span> {
+    <span class="keyword">case</span> .principal:
+        <span class="keyword">return</span> [.themes, .adminDatos, .advancedSearch, .mySettings]
+    <span class="comment">// ... otros casos ...</span>
+    <span class="keyword">case</span> .administrativo:
+        <span class="keyword">return</span> [.adminDatos, .mySettings]  <span class="comment">// ✨ AGREGAR</span>
+    }
+}</code>
+                    </div>
+                    
+                    <div class="info-box">
+                        <strong>💡 Tip:</strong> Aquí defines QUÉ opciones aparecerán en este tipo de menú.
+                    </div>
+                </div>
+                
+                <!-- PASO 5 -->
+                <div class="step">
+                    <span class="step-number">5</span>
+                    <strong>Definir icono del menú</strong>
+                    <span class="badge badge-required">REQUERIDO</span>
+                    
+                    <p><strong>Archivo:</strong> <code>LAST_GV/GV_MenuType.swift</code></p>
+                    <p><strong>Ubicación:</strong> Línea ~82, dentro de <code>var icon</code></p>
+                    
+                    <div class="code-block">
+<code><span class="keyword">var</span> icon: <span class="type">String</span> {
+    <span class="keyword">switch</span> <span class="keyword">self</span> {
+    <span class="keyword">case</span> .principal:
+        <span class="keyword">return</span> <span class="string">"line.3.horizontal"</span>
+    <span class="comment">// ... otros casos ...</span>
+    <span class="keyword">case</span> .administrativo:
+        <span class="keyword">return</span> <span class="string">"shield.lefthalf.filled"</span>  <span class="comment">// ✨ AGREGAR (SF Symbol)</span>
+    }
+}</code>
+                    </div>
+                    
+                    <div class="info-box">
+                        <strong>💡 Tip:</strong> Busca iconos en <a href="https://developer.apple.com/sf-symbols/" target="_blank">SF Symbols</a>
+                    </div>
+                </div>
+                
+                <!-- PASO 6 -->
+                <div class="step">
+                    <span class="step-number">6</span>
+                    <strong>Crear configuración visual</strong>
+                    <span class="badge badge-required">REQUERIDO</span>
+                    
+                    <p><strong>Archivo:</strong> <code>LAST_GV/GV_MenuConfig.swift</code></p>
+                    <p><strong>Ubicación:</strong> Línea ~28, dentro de <code>getMenuConfig()</code></p>
+                    
+                    <div class="code-block">
+<code><span class="keyword">func</span> <span class="function">getMenuConfig</span>(for type: <span class="type">GV_MenuType</span>) -> <span class="type">GV_MenuConfig</span> {
+    <span class="keyword">switch</span> type {
+    <span class="keyword">case</span> .principal:
+        <span class="keyword">return</span> <span class="type">GV_MenuConfig</span>(
+            showMenu: <span class="keyword">true</span>,
+            iconName: <span class="string">"line.3.horizontal"</span>,
+            <span class="comment">// ...</span>
+        )
+    
+    <span class="comment">// ... otros casos ...</span>
+    
+    <span class="keyword">case</span> .administrativo:  <span class="comment">// ✨ AGREGAR TODO ESTO</span>
+        <span class="keyword">return</span> <span class="type">GV_MenuConfig</span>(
+            showMenu: <span class="keyword">true</span>,
+            iconName: <span class="string">"shield.lefthalf.filled"</span>,  <span class="comment">// Mismo que en icon</span>
+            iconSize: <span class="number">22</span>,                       <span class="comment">// Tamaño del icono</span>
+            iconColor: .white,                     <span class="comment">// Color del icono</span>
+            options: [.adminDatos, .mySettings],   <span class="comment">// Mismas que availableOptions</span>
+            backgroundColor: .clear,               <span class="comment">// Fondo del botón</span>
+            padding: <span class="number">18</span>                         <span class="comment">// Espaciado</span>
+        )
+    }
+}</code>
+                    </div>
+                </div>
+                
+                <!-- PASO 7 -->
+                <div class="step">
+                    <span class="step-number">7</span>
+                    <strong>Usar en tu vista</strong>
+                    <span class="badge badge-new">LISTO</span>
+                    
+                    <div class="code-block">
+<code><span class="keyword">struct</span> <span class="type">MiVistaAdmin</span>: <span class="type">View</span> {
+    <span class="keyword">private let</span> myHeader: <span class="type">GV_HeaderType</span> = .tipo2
+    
+    <span class="keyword">var</span> body: <span class="keyword">some</span> <span class="type">View</span> {
+        <span class="type">VStack</span> {
+            <span class="comment">// ¡TODO EN UNA LÍNEA! 🎯</span>
+            myHeader.<span class="function">headerViewWithMenu</span>(<span class="string">"Admin"</span>, <span class="string">"BF"</span>, .administrativo)
+            
+            <span class="comment">// Tu contenido...</span>
+        }
+    }
+}</code>
+                    </div>
+                </div>
+                
+                <div class="success-box">
+                    <strong>✅ ¡Listo!</strong> Tu nuevo tipo de menú está completamente funcional.
+                </div>
+            </section>
+
+            <!-- 10. AGREGAR NUEVA OPCIÓN -->
+            <section id="agregar-opcion">
+                <h2>10. ➕ Cómo Agregar una Nueva Opción de Menú</h2>
+                
+                <p>Si necesitas agregar una nueva opción (además de Temas, Admin Datos, Búsquedas, Configuraciones):</p>
+                
+                <!-- PASO 1 -->
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Agregar el caso en MenuOption</strong>
+                    
+                    <p><strong>Archivo:</strong> <code>LAST_GV/GV_MenuType.swift</code></p>
+                    <p><strong>Ubicación:</strong> Línea ~103</p>
+                    
+                    <div class="code-block">
+<code><span class="keyword">enum</span> <span class="type">MenuOption</span>: <span class="type">String</span>, <span class="type">CaseIterable</span> {
+    <span class="keyword">case</span> themes = <span class="string">"Temas"</span>
+    <span class="keyword">case</span> adminDatos = <span class="string">"Admin Datos"</span>
+    <span class="keyword">case</span> advancedSearch = <span class="string">"Búsquedas Avanzadas"</span>
+    <span class="keyword">case</span> mySettings = <span class="string">"Mis Configuraciones"</span>
+    <span class="keyword">case</span> reportes = <span class="string">"Reportes"</span>  <span class="comment">// ✨ NUEVO</span>
+}</code>
+                    </div>
+                </div>
+                
+                <!-- PASO 2 -->
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Agregar icono</strong>
+                    
+                    <p><strong>Ubicación:</strong> Línea ~109, dentro de <code>var icon</code></p>
+                    
+                    <div class="code-block">
+<code><span class="keyword">var</span> icon: <span class="type">String</span> {
+    <span class="keyword">switch</span> <span class="keyword">self</span> {
+    <span class="keyword">case</span> .themes:
+        <span class="keyword">return</span> <span class="string">"paintpalette"</span>
+    <span class="comment">// ... otros casos ...</span>
+    <span class="keyword">case</span> .reportes:
+        <span class="keyword">return</span> <span class="string">"chart.bar.fill"</span>  <span class="comment">// ✨ AGREGAR</span>
+    }
+}</code>
+                    </div>
+                </div>
+                
+                <!-- PASO 3 -->
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Definir tipo de navegación</strong>
+                    
+                    <p><strong>Ubicación:</strong> Línea ~123, dentro de <code>var navigationType</code></p>
+                    
+                    <div class="code-block">
+<code><span class="keyword">var</span> navigationType: <span class="type">GV_NavigationType</span> {
+    <span class="keyword">switch</span> <span class="keyword">self</span> {
+    <span class="keyword">case</span> .themes:
+        <span class="keyword">return</span> .sheet
+    <span class="comment">// ... otros casos ...</span>
+    <span class="keyword">case</span> .reportes:
+        <span class="keyword">return</span> .sheet  <span class="comment">// ✨ AGREGAR (.sheet o .navigation)</span>
+    }
+}</code>
+                    </div>
+                </div>
+                
+                <!-- PASO 4 -->
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Definir vista destino</strong>
+                    
+                    <p><strong>Ubicación:</strong> Línea ~137, dentro de <code>var destinationView</code></p>
+                    
+                    <div class="code-block">
+<code><span class="keyword">@ViewBuilder</span>
+<span class="keyword">var</span> destinationView: <span class="keyword">some</span> <span class="type">View</span> {
+    <span class="keyword">switch</span> <span class="keyword">self</span> {
+    <span class="keyword">case</span> .themes:
+        <span class="function">Text</span>(<span class="string">"Selector de Temas"</span>).<span class="function">padding</span>()
+    <span class="comment">// ... otros casos ...</span>
+    <span class="keyword">case</span> .reportes:
+        <span class="type">ReportesView</span>()  <span class="comment">// ✨ AGREGAR tu vista real</span>
+    }
+}</code>
+                    </div>
+                    
+                    <div class="warning-box">
+                        <strong>⚠️ Importante:</strong> Aquí defines la vista REAL que se mostrará. Reemplaza <code>Text("...")</code> con tu vista personalizada.
+                    </div>
+                </div>
+                
+                <!-- PASO 5 -->
+                <div class="step">
+                    <span class="step-number">5</span>
+                    <strong>Actualizar GV_MenuConfig.swift</strong>
+                    
+                    <p><strong>Archivo:</strong> <code>LAST_GV/GV_MenuConfig.swift</code></p>
+                    <p><strong>Ubicación:</strong> Línea ~100, dentro de <code>menuView()</code></p>
+                    
+                    <div class="code-block">
+<code><span class="keyword">func</span> <span class="function">menuView</span>(
+    showThemes: <span class="type">Binding</span>&lt;<span class="type">Bool</span>&gt;,
+    showAdminDatos: <span class="type">Binding</span>&lt;<span class="type">Bool</span>&gt;,
+    showAdvancedSearch: <span class="type">Binding</span>&lt;<span class="type">Bool</span>&gt;,
+    showMySettings: <span class="type">Binding</span>&lt;<span class="type">Bool</span>&gt;,
+    showReportes: <span class="type">Binding</span>&lt;<span class="type">Bool</span>&gt; = .<span class="function">constant</span>(<span class="keyword">false</span>)  <span class="comment">// ✨ AGREGAR parámetro</span>
+) -> <span class="keyword">some</span> <span class="type">View</span> {
+    <span class="comment">// ...</span>
+    <span class="keyword">switch</span> option {
+    <span class="keyword">case</span> .themes:
+        showThemes.wrappedValue = <span class="keyword">true</span>
+    <span class="comment">// ... otros casos ...</span>
+    <span class="keyword">case</span> .reportes:
+        showReportes.wrappedValue = <span class="keyword">true</span>  <span class="comment">// ✨ AGREGAR acción</span>
+    }
+}</code>
+                    </div>
+                </div>
+                
+                <!-- PASO 6 -->
+                <div class="step">
+                    <span class="step-number">6</span>
+                    <strong>Actualizar GV_HeaderWithMenuWrapper</strong>
+                    
+                    <p><strong>Archivo:</strong> <code>LAST_GV/GV_HeaderConfig.swift</code></p>
+                    <p><strong>Ubicación:</strong> Línea ~176 y ~221</p>
+                    
+                    <div class="code-block">
+<code><span class="keyword">private struct</span> <span class="type">GV_HeaderWithMenuWrapper</span>: <span class="type">View</span> {
+    <span class="comment">// ...</span>
+    
+    <span class="keyword">@State private var</span> showThemes = <span class="keyword">false</span>
+    <span class="comment">// ... otros estados ...</span>
+    <span class="keyword">@State private var</span> showReportes = <span class="keyword">false</span>  <span class="comment">// ✨ AGREGAR estado</span>
+    
+    <span class="keyword">var</span> body: <span class="keyword">some</span> <span class="type">View</span> {
+        <span class="comment">// ... header ...</span>
+        
+        <span class="comment">// Sheets automáticos</span>
+        .<span class="function">sheet</span>(isPresented: $showThemes) {
+            <span class="type">MenuOption</span>.themes.destinationView
+        }
+        <span class="comment">// ... otros sheets ...</span>
+        .<span class="function">sheet</span>(isPresented: $showReportes) {  <span class="comment">// ✨ AGREGAR sheet</span>
+            <span class="type">MenuOption</span>.reportes.destinationView
+        }
+    }
+}</code>
+                    </div>
+                </div>
+                
+                <!-- PASO 7 -->
+                <div class="step">
+                    <span class="step-number">7</span>
+                    <strong>Agregar a tipos de menú que la necesiten</strong>
+                    
+                    <p>Vuelve al <strong>Paso 4</strong> y agrega la nueva opción a los tipos de menú que la necesiten:</p>
+                    
+                    <div class="code-block">
+<code><span class="keyword">case</span> .administrativo:
+    <span class="keyword">return</span> [.adminDatos, .mySettings, .reportes]  <span class="comment">// ✨ AGREGAR aquí</span></code>
+                    </div>
+                </div>
+                
+                <div class="success-box">
+                    <strong>✅ ¡Completado!</strong> Tu nueva opción está lista para usarse en cualquier tipo de menú.
+                </div>
+            </section>
+
+            <!-- 11. PERSONALIZACIÓN -->
+            <section id="personalizacion">
+                <h2>11. 🎨 Personalización Avanzada</h2>
+                
+                <h3>🔧 Modificar Tamaño de Icono</h3>
+                
+                <p><strong>Archivo:</strong> <code>GV_MenuConfig.swift</code>, dentro de <code>getMenuConfig()</code></p>
+                
+                <div class="code-block">
+<code><span class="keyword">case</span> .miTipoMenu:
+    <span class="keyword">return</span> <span class="type">GV_MenuConfig</span>(
+        showMenu: <span class="keyword">true</span>,
+        iconName: <span class="string">"star.fill"</span>,
+        iconSize: <span class="number">28</span>,  <span class="comment">// ⬅️ Cambiar aquí (default: 20-24)</span>
+        <span class="comment">// ...</span>
+    )</code>
+                </div>
+                
+                <h3>🎨 Modificar Color de Icono</h3>
+                
+                <div class="code-block">
+<code>iconColor: .red,      <span class="comment">// Rojo</span>
+iconColor: .white,    <span class="comment">// Blanco (default)</span>
+iconColor: .yellow,   <span class="comment">// Amarillo</span>
+iconColor: <span class="function">Color</span>(hex: <span class="string">"#FF6B6B"</span>),  <span class="comment">// Color personalizado</span></code>
+                </div>
+                
+                <h3>📏 Modificar Espaciado</h3>
+                
+                <div class="code-block">
+<code>padding: <span class="number">10</span>,  <span class="comment">// Compacto</span>
+padding: <span class="number">16</span>,  <span class="comment">// Normal (default)</span>
+padding: <span class="number">25</span>,  <span class="comment">// Espacioso</span></code>
+                </div>
+                
+                <h3>🔄 Cambiar Tipo de Navegación</h3>
+                
+                <p>Para cambiar una opción de <code>.sheet</code> a <code>.navigation</code>:</p>
+                
+                <p><strong>Archivo:</strong> <code>GV_MenuType.swift</code>, línea ~123</p>
+                
+                <div class="code-block">
+<code><span class="keyword">var</span> navigationType: <span class="type">GV_NavigationType</span> {
+    <span class="keyword">switch</span> <span class="keyword">self</span> {
+    <span class="keyword">case</span> .themes:
+        <span class="keyword">return</span> .navigation  <span class="comment">// ⬅️ Cambiar de .sheet a .navigation</span>
+    <span class="keyword">case</span> .adminDatos:
+        <span class="keyword">return</span> .sheet       <span class="comment">// Mantener como sheet</span>
+    <span class="comment">// ...</span>
+    }
+}</code>
+                </div>
+                
+                <div class="warning-box">
+                    <strong>⚠️ Nota:</strong> Si usas <code>.navigation</code>, asegúrate de que la vista esté dentro de un <code>NavigationStack</code>.
+                </div>
+            </section>
+
+            <!-- 12. INTEGRACIÓN CON HEADERS -->
+            <section id="integracion-header">
+                <h2>12. 🔗 Integración con Headers</h2>
+                
+                <h3>🎯 headerViewWithMenu()</h3>
+                
+                <p>Esta función combina header y menú en una sola llamada:</p>
+                
+                <div class="code-block">
+<code><span class="keyword">func</span> <span class="function">headerViewWithMenu</span>(
+    _ caption: <span class="type">String</span>,                    <span class="comment">// Texto del header</span>
+    _ imagen: <span class="type">String</span>? = <span class="keyword">nil</span>,           <span class="comment">// Imagen opcional (de Assets)</span>
+    _ menuType: <span class="type">GV_MenuType</span> = .ninguno   <span class="comment">// Tipo de menú (default: sin menú)</span>
+) -> <span class="keyword">some</span> <span class="type">View</span></code>
+                </div>
+                
+                <h3>📋 Ejemplos de Uso</h3>
+                
+                <h4>Sin menú (default):</h4>
+                <div class="code-block">
+<code>myHeader.<span class="function">headerViewWithMenu</span>(<span class="string">"Mi Vista"</span>, <span class="string">"BF"</span>)</code>
+                </div>
+                
+                <h4>Con menú simple:</h4>
+                <div class="code-block">
+<code>myHeader.<span class="function">headerViewWithMenu</span>(<span class="string">"Mi Vista"</span>, <span class="string">"BF"</span>, .simple)</code>
+                </div>
+                
+                <h4>Con menú principal:</h4>
+                <div class="code-block">
+<code>myHeader.<span class="function">headerViewWithMenu</span>(<span class="string">"Mi Vista"</span>, <span class="string">"BF"</span>, .principal)</code>
+                </div>
+                
+                <h4>Sin imagen, con menú:</h4>
+                <div class="code-block">
+<code>myHeader.<span class="function">headerViewWithMenu</span>(<span class="string">"Mi Vista"</span>, <span class="keyword">nil</span>, .mapa)</code>
+                </div>
+                
+                <h3>🔍 Qué Hace Internamente</h3>
+                
+                <ol>
+                    <li>Crea <strong>GV_HeaderWithMenuWrapper</strong> (view wrapper)</li>
+                    <li>Declara <strong>@State variables</strong> internas para cada opción</li>
+                    <li>Renderiza el <strong>header</strong> con imagen, caption y menú</li>
+                    <li>Agrega <strong>.sheet() modifiers</strong> para cada opción</li>
+                    <li>Conecta cada opción con su <strong>vista destino</strong></li>
+                </ol>
+                
+                <div class="info-box">
+                    <strong>💡 Ventaja:</strong> La vista NO necesita declarar estados ni sheets. Todo es automático.
+                </div>
+            </section>
+
+            <!-- 13. EJEMPLOS COMPLETOS -->
+            <section id="ejemplos">
+                <h2>13. 💡 Ejemplos Completos</h2>
+                
+                <h3>Ejemplo 1: Vista Simple Sin Menú</h3>
+                
+                <div class="code-block">
+<code><span class="keyword">import</span> SwiftUI
+
+<span class="keyword">struct</span> <span class="type">VistaSimple</span>: <span class="type">View</span> {
+    <span class="keyword">private let</span> screenType: <span class="type">ScreenType</span> = .general
+    <span class="keyword">private let</span> myHeader: <span class="type">GV_HeaderType</span> = .tipo1
+    
+    <span class="keyword">var</span> body: <span class="keyword">some</span> <span class="type">View</span> {
+        <span class="type">VStack</span>(spacing: <span class="number">0</span>) {
+            <span class="comment">// Header sin menú</span>
+            myHeader.<span class="function">headerViewWithMenu</span>(<span class="string">"Vista Simple"</span>, <span class="string">"BF"</span>)
+            
+            <span class="type">VStack</span> {
+                <span class="function">Text</span>(<span class="string">"Contenido de mi vista"</span>)
+                    .<span class="function">font</span>(.title)
+                
+                <span class="function">Spacer</span>()
+            }
+            .<span class="function">padding</span>()
+        }
+    }
+}
+
+<span class="comment">// ✅ Sin @State, sin .sheet(), súper limpio!</span></code>
+                </div>
+                
+                <h3>Ejemplo 2: Vista con Menú Principal</h3>
+                
+                <div class="code-block">
+<code><span class="keyword">import</span> SwiftUI
+
+<span class="keyword">struct</span> <span class="type">VistaPrincipal</span>: <span class="type">View</span> {
+    <span class="keyword">private let</span> screenType: <span class="type">ScreenType</span> = .content
+    <span class="keyword">private let</span> myHeader: <span class="type">GV_HeaderType</span> = .tipo2
+    
+    <span class="keyword">var</span> body: <span class="keyword">some</span> <span class="type">View</span> {
+        <span class="type">VStack</span>(spacing: <span class="number">0</span>) {
+            <span class="comment">// Header con menú principal (4 opciones)</span>
+            myHeader.<span class="function">headerViewWithMenu</span>(<span class="string">"Inicio"</span>, <span class="string">"BF"</span>, .principal)
+            
+            <span class="type">ScrollView</span> {
+                <span class="comment">// Tu contenido aquí</span>
+                <span class="type">VStack</span>(spacing: <span class="number">20</span>) {
+                    <span class="function">Text</span>(<span class="string">"Dashboard Principal"</span>)
+                        .<span class="function">font</span>(.title)
+                    
+                    <span class="comment">// Más contenido...</span>
+                }
+                .<span class="function">padding</span>()
+            }
+        }
+    }
+}
+
+<span class="comment">// ✅ El menú automáticamente muestra:</span>
+<span class="comment">//    • Temas (sheet)</span>
+<span class="comment">//    • Admin Datos (sheet)</span>
+<span class="comment">//    • Búsquedas Avanzadas (sheet)</span>
+<span class="comment">//    • Mis Configuraciones (sheet)</span></code>
+                </div>
+                
+                <h3>Ejemplo 3: Vista de Mapa con Menú Específico</h3>
+                
+                <div class="code-block">
+<code><span class="keyword">import</span> SwiftUI
+
+<span class="keyword">struct</span> <span class="type">MapaView</span>: <span class="type">View</span> {
+    <span class="keyword">private let</span> screenType: <span class="type">ScreenType</span> = .general
+    <span class="keyword">private let</span> myHeader: <span class="type">GV_HeaderType</span> = .tipo2
+    
+    <span class="keyword">var</span> body: <span class="keyword">some</span> <span class="type">View</span> {
+        <span class="type">VStack</span>(spacing: <span class="number">0</span>) {
+            <span class="comment">// Header con menú de mapa (sin Admin Datos)</span>
+            myHeader.<span class="function">headerViewWithMenu</span>(<span class="string">"Mapa de Cercanías"</span>, <span class="keyword">nil</span>, .mapa)
+            
+            <span class="comment">// Tu mapa aquí</span>
+            <span class="type">Map</span> {
+                <span class="comment">// Contenido del mapa...</span>
+            }
+        }
+    }
+}
+
+<span class="comment">// ✅ El menú automáticamente muestra solo:</span>
+<span class="comment">//    • Temas (sheet)</span>
+<span class="comment">//    • Búsquedas Avanzadas (sheet)</span>
+<span class="comment">//    • Mis Configuraciones (sheet)</span>
+<span class="comment">//    (Sin Admin Datos)</span></code>
+                </div>
+                
+                <h3>Ejemplo 4: Agregar Nuevo Tipo "Administrativo"</h3>
+                
+                <div class="code-block">
+<code><span class="comment">// 1️⃣ En GV_MenuType.swift - Agregar caso</span>
+<span class="keyword">enum</span> <span class="type">GV_MenuType</span>: <span class="type">Int</span>, <span class="type">CaseIterable</span> {
+    <span class="comment">// ... casos existentes ...</span>
+    <span class="keyword">case</span> administrativo = <span class="number">6</span>  <span class="comment">// ✨ NUEVO</span>
+}
+
+<span class="comment">// 2️⃣ Agregar displayName</span>
+<span class="keyword">var</span> displayName: <span class="type">String</span> {
+    <span class="keyword">switch</span> <span class="keyword">self</span> {
+    <span class="comment">// ...</span>
+    <span class="keyword">case</span> .administrativo:
+        <span class="keyword">return</span> <span class="string">"Menú Administrativo"</span>  <span class="comment">// ✨</span>
+    }
+}
+
+<span class="comment">// 3️⃣ Agregar description</span>
+<span class="keyword">var</span> description: <span class="type">String</span> {
+    <span class="keyword">switch</span> <span class="keyword">self</span> {
+    <span class="comment">// ...</span>
+    <span class="keyword">case</span> .administrativo:
+        <span class="keyword">return</span> <span class="string">"Opciones de administración"</span>  <span class="comment">// ✨</span>
+    }
+}
+
+<span class="comment">// 4️⃣ Agregar opciones disponibles</span>
+<span class="keyword">var</span> availableOptions: [<span class="type">MenuOption</span>] {
+    <span class="keyword">switch</span> <span class="keyword">self</span> {
+    <span class="comment">// ...</span>
+    <span class="keyword">case</span> .administrativo:
+        <span class="keyword">return</span> [.adminDatos, .mySettings]  <span class="comment">// ✨</span>
+    }
+}
+
+<span class="comment">// 5️⃣ Agregar icono</span>
+<span class="keyword">var</span> icon: <span class="type">String</span> {
+    <span class="keyword">switch</span> <span class="keyword">self</span> {
+    <span class="comment">// ...</span>
+    <span class="keyword">case</span> .administrativo:
+        <span class="keyword">return</span> <span class="string">"shield.lefthalf.filled"</span>  <span class="comment">// ✨</span>
+    }
+}
+
+<span class="comment">// 6️⃣ En GV_MenuConfig.swift - Agregar configuración</span>
+<span class="keyword">func</span> <span class="function">getMenuConfig</span>(for type: <span class="type">GV_MenuType</span>) -> <span class="type">GV_MenuConfig</span> {
+    <span class="keyword">switch</span> type {
+    <span class="comment">// ...</span>
+    <span class="keyword">case</span> .administrativo:  <span class="comment">// ✨ NUEVO</span>
+        <span class="keyword">return</span> <span class="type">GV_MenuConfig</span>(
+            showMenu: <span class="keyword">true</span>,
+            iconName: <span class="string">"shield.lefthalf.filled"</span>,
+            iconSize: <span class="number">22</span>,
+            iconColor: .white,
+            options: [.adminDatos, .mySettings],
+            backgroundColor: .clear,
+            padding: <span class="number">18</span>
+        )
+    }
+}
+
+<span class="comment">// 7️⃣ Usar en tu vista</span>
+myHeader.<span class="function">headerViewWithMenu</span>(<span class="string">"Admin"</span>, <span class="string">"BF"</span>, .administrativo)  <span class="comment">// ✨</span></code>
+                </div>
+            </section>
+
+            <!-- 14. TROUBLESHOOTING -->
+            <section id="troubleshooting">
+                <h2>14. 🔧 Solución de Problemas</h2>
+                
+                <h3>❌ Error: "Cannot find 'MenuOption' in scope"</h3>
+                
+                <div class="code-block">
+<code><span class="comment">// ❌ Error</span>
+<span class="keyword">case</span> .miNuevoTipo:
+    <span class="keyword">return</span> [.miNuevaOpcion]  <span class="comment">// MenuOption no existe</span>
+
+<span class="comment">// ✅ Solución</span>
+<span class="comment">// 1. Agregar primero el caso en MenuOption (línea ~103)</span>
+<span class="keyword">enum</span> <span class="type">MenuOption</span>: <span class="type">String</span> {
+    <span class="keyword">case</span> miNuevaOpcion = <span class="string">"Mi Nueva Opción"</span>  <span class="comment">// ✨ Agregar aquí primero</span>
+}
+
+<span class="comment">// 2. Luego usarla en availableOptions</span>
+<span class="keyword">case</span> .miNuevoTipo:
+    <span class="keyword">return</span> [.miNuevaOpcion]  <span class="comment">// ✅ Ahora funciona</span></code>
+                </div>
+                
+                <h3>❌ Error: "Missing argument label 'showThemes:'"</h3>
+                
+                <div class="info-box">
+                    <strong>Causa:</strong> Estás usando la versión antigua de <code>menuView()</code> con closures.
+                </div>
+                
+                <div class="code-block">
+<code><span class="comment">// ❌ Versión antigua</span>
+menuType.<span class="function">menuView</span>(
+    onThemes: { <span class="function">print</span>(<span class="string">"Temas"</span>) }  <span class="comment">// Ya no existe</span>
+)
+
+<span class="comment">// ✅ Solución: Usar headerViewWithMenu</span>
+myHeader.<span class="function">headerViewWithMenu</span>(<span class="string">"Caption"</span>, <span class="string">"BF"</span>, .principal)
+<span class="comment">// El sistema maneja todo automáticamente</span></code>
+                </div>
+                
+                <h3>❌ El menú no se muestra</h3>
+                
+                <div class="code-block">
+<code><span class="comment">// ❌ Problema</span>
+myHeader.<span class="function">headerViewWithMenu</span>(<span class="string">"Caption"</span>, <span class="string">"BF"</span>)  <span class="comment">// Sin tercer parámetro</span>
+
+<span class="comment">// ✅ Solución</span>
+myHeader.<span class="function">headerViewWithMenu</span>(<span class="string">"Caption"</span>, <span class="string">"BF"</span>, .principal)  <span class="comment">// Con tipo de menú</span></code>
+                </div>
+                
+                <div class="info-box">
+                    <strong>💡 Explicación:</strong> El tercer parámetro tiene default <code>.ninguno</code>, por lo que si no lo pasas, no muestra menú. Pasa explícitamente el tipo que necesitas.
+                </div>
+                
+                <h3>❌ La vista destino no se muestra</h3>
+                
+                <div class="warning-box">
+                    <strong>Verificar:</strong>
+                    <ol>
+                        <li>¿Agregaste la opción en <code>MenuOption.destinationView</code>?</li>
+                        <li>¿Agregaste el caso en <code>menuView()</code> switch?</li>
+                        <li>¿Agregaste el <code>@State</code> en <code>GV_HeaderWithMenuWrapper</code>?</li>
+                        <li>¿Agregaste el <code>.sheet()</code> en el wrapper?</li>
+                    </ol>
+                </div>
+                
+                <h3>❌ Error de compilación en GV_MenuConfig</h3>
+                
+                <div class="code-block">
+<code><span class="comment">// ❌ Error: "Missing argument in call"</span>
+<span class="keyword">case</span> .miNuevoTipo:
+    <span class="keyword">return</span> <span class="type">GV_MenuConfig</span>(
+        showMenu: <span class="keyword">true</span>,
+        <span class="comment">// Falta algún parámetro</span>
+    )
+
+<span class="comment">// ✅ Solución: Incluir TODOS los parámetros</span>
+<span class="keyword">case</span> .miNuevoTipo:
+    <span class="keyword">return</span> <span class="type">GV_MenuConfig</span>(
+        showMenu: <span class="keyword">true</span>,           <span class="comment">// ✅</span>
+        iconName: <span class="string">"icon"</span>,       <span class="comment">// ✅</span>
+        iconSize: <span class="number">22</span>,           <span class="comment">// ✅</span>
+        iconColor: .white,       <span class="comment">// ✅</span>
+        options: [.themes],      <span class="comment">// ✅</span>
+        backgroundColor: .clear, <span class="comment">// ✅</span>
+        padding: <span class="number">16</span>             <span class="comment">// ✅</span>
+    )</code>
+                </div>
+            </section>
+
+            <!-- RESUMEN RÁPIDO -->
+            <section style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+                <h2 style="color: white; border-bottom-color: rgba(255,255,255,0.3);">📌 Resumen Rápido</h2>
+                
+                <h3 style="color: white;">Para usar el sistema:</h3>
+                <div class="code-block">
+<code><span class="comment">// 1. Declarar header</span>
+<span class="keyword">private let</span> myHeader: <span class="type">GV_HeaderType</span> = .tipo2
+
+<span class="comment">// 2. Usar en una sola línea</span>
+myHeader.<span class="function">headerViewWithMenu</span>(<span class="string">"Caption"</span>, <span class="string">"Imagen"</span>, .tipoMenu)</code>
+                </div>
+                
+                <h3 style="color: white;">Para agregar nuevo tipo de menú:</h3>
+                <ol style="color: white;">
+                    <li><strong>GV_MenuType.swift:</strong> Agregar caso + 4 propiedades (displayName, description, availableOptions, icon)</li>
+                    <li><strong>GV_MenuConfig.swift:</strong> Agregar configuración visual en <code>getMenuConfig()</code></li>
+                    <li><strong>Usar:</strong> <code>.miNuevoTipo</code></li>
+                </ol>
+                
+                <h3 style="color: white;">Para agregar nueva opción:</h3>
+                <ol style="color: white;">
+                    <li><strong>MenuOption:</strong> Agregar caso + icon + navigationType + destinationView</li>
+                    <li><strong>menuView():</strong> Agregar binding + case en switch</li>
+                    <li><strong>Wrapper:</strong> Agregar @State + .sheet()</li>
+                </ol>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin-top: 20px;">
+                    <strong style="font-size: 1.2em;">✨ Total de líneas necesarias en tu vista:</strong>
+                    <h1 style="font-size: 3em; margin: 10px 0; color: #fff;">1</h1>
+                    <p style="font-size: 1.1em;">Una sola línea para header completo con menú funcional!</p>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <p><strong>Manual Técnico - Sistema de Menús GV</strong></p>
+            <p>Versión 2.0 - Enero 2025</p>
+            <p style="margin-top: 10px; opacity: 0.8;">Desarrollado por VAL Human Tech</p>
+        </footer>
+    </div>
+</body>
+</html>
+

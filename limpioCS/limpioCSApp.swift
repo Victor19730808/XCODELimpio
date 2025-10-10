@@ -8,7 +8,7 @@ struct limpioCSApp: App {
 
     var body: some Scene {
         WindowGroup {
-            SplashScreenView()
+           GV_SCR_tp_splash()  // ✨ Empezar con splash migrada
                 .environmentObject(locationService)
         }
         // ✅ Registramos el contenedor con el nuevo modelo lmpBDF

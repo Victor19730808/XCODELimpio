@@ -1,0 +1,96 @@
+//
+//  GV_SCR_vg_FavoritosView.swift
+//  limpioCS
+//
+//  Migrado: 2025-01-10
+//  Sistema: GV (Temas + Headers + Menús + ScreenTypes)
+//
+
+import SwiftUI
+import SwiftData
+
+struct GV_SCR_vg_FavoritosView: View {
+    // MARK: - Configuración del Sistema GV
+    private let screenType: ScreenType = .general
+    private let myHeader: GV_HeaderType = .tipo2
+    @ObservedObject private var themeManager = GV_Temas_Manager.shared
+    
+    // MARK: - Environment
+    @Environment(\.dismiss) private var dismiss
+    
+    // Trae únicamente favoritos
+    @Query(
+        filter: #Predicate<lmpBDF_EstablecimientoLocal> { $0.esFavorito == true },
+        sort: \.nombre,
+        order: .forward
+    )
+    private var favoritos: [lmpBDF_EstablecimientoLocal]
+
+    var body: some View {
+        VStack(spacing: 0) {
+            // Header con menú - TODO EN UNA SOLA LÍNEA! 🎯
+            myHeader.headerViewWithMenu("Mis Favoritos", nil, .principal)
+            
+            // Contenido principal con tema aplicado
+            VStack(spacing: 0) {
+                if favoritos.isEmpty {
+                    VStack(spacing: 20) {
+                        Spacer()
+                        
+                        Image(systemName: "star")
+                            .font(.system(size: 60))
+                            .foregroundColor(themeManager.textSecondary.opacity(0.3))
+                        
+                        VStack(spacing: 8) {
+                            Text("Aún no tienes favoritos")
+                                .font(themeManager.title)
+                                .foregroundColor(themeManager.textPrimary)
+                            
+                            Text("Marca establecimientos con la estrella para verlos aquí.")
+                                .font(themeManager.body)
+                                .foregroundColor(themeManager.textSecondary)
+                                .multilineTextAlignment(.center)
+                        }
+                        
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    ScrollView {
+                        LazyVStack(spacing: themeManager.spacing) {
+                            ForEach(favoritos) { est in
+                                ccp_UI_EstablecimientoRow(est: est)
+                                    .padding(.horizontal, themeManager.paddingMedium)
+                            }
+                        }
+                        .padding(.vertical, themeManager.spacing)
+                    }
+                }
+                
+                // MARK: - Debug Info (solo en desarrollo) - OCULTO
+                // VStack(alignment: .leading, spacing: 8) {
+                //     Text("DEBUG - Información del Sistema")
+                //         .font(themeManager.caption)
+                //         .foregroundColor(themeManager.textSecondary)
+                //         .padding(.horizontal, themeManager.paddingMedium)
+                //     
+                //     Text(screenType.showAllFormattedAuto(filePath: #file))
+                //         .font(.system(.caption, design: .monospaced))
+                //         .foregroundColor(themeManager.textSecondary)
+                //         .multilineTextAlignment(.leading)
+                //         .padding(.horizontal, themeManager.paddingMedium)
+                //         .padding(.bottom, 20)
+                // }
+            }
+        }
+        .background(themeManager.background)
+        .preferredColorScheme(themeManager.currentTheme.preferredColorScheme)
+        .navigationBarHidden(true)
+    }
+}
+
+#Preview {
+    NavigationStack {
+        GV_SCR_vg_FavoritosView()
+    }
+}

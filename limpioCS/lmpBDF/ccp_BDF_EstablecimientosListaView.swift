@@ -3,7 +3,7 @@ import SwiftData
 
 struct ccp_BDF_EstablecimientosListaView: View {
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject private var themeManager = ThemeManager.shared
+    // Referencias de diseño removidas
     @State private var searchText = ""
     @State private var showFavoritesOnly = false
 
@@ -38,8 +38,8 @@ struct ccp_BDF_EstablecimientosListaView: View {
             // Fondo con gradiente sutil usando el tema actual
             LinearGradient(
                 gradient: Gradient(colors: [
-                    themeManager.currentTheme.colors.surface,
-                    themeManager.currentTheme.colors.background
+                    Color.gray.opacity(0.1),
+                    Color.white
                 ]),
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
@@ -57,12 +57,12 @@ struct ccp_BDF_EstablecimientosListaView: View {
                             } label: {
                                 Image(systemName: "house.fill")
                                     .font(.title2)
-                                    .foregroundColor(themeManager.currentTheme.colors.textOnPrimary)
+                                    .foregroundColor(.white)
                                     .padding(12)
                                     .background(
                                         Circle()
-                                            .fill(themeManager.currentTheme.colors.textOnPrimary.opacity(0.2))
-                                            .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
+                                            .fill(.white.opacity(0.2))
+                                            .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
                                     )
                             }
                             .padding(.leading, 20)
@@ -72,32 +72,20 @@ struct ccp_BDF_EstablecimientosListaView: View {
                         .frame(maxWidth: .infinity)
                         
                         // Título "Participantes" centrado
-                        HeaderView.themed(
-                            text: "Participantes",
-                            type: .section,
-                            themeManager: themeManager
-                        )
+                            Text("Participantes")
+                                .font(.headline)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.primary)
                         
                         // Menú hamburguesa
                         HStack {
                             Spacer()
                             
-                            HamburgerMenuView.themed(
-                                viewType: .list,
-                                menuActions: [
-                                    .themes: { 
-                                        // Temas - implementar según necesidad
-                                    },
-                                    .adminDatos: { 
-                                        // Admin Datos - implementar según necesidad
-                                    },
-                                    .mySettings: { 
-                                        // Mis Configuraciones - implementar según necesidad
-                                    }
-                                ],
-                                themeManager: themeManager
-                            )
-                            .padding(.trailing, 20)
+                            // Icono de menú (sin funcionalidad por ahora)
+                            Image(systemName: "line.3.horizontal")
+                                .font(.title2)
+                                .foregroundColor(.white)
+                                .padding(.trailing, 20)
                         }
                         .frame(maxWidth: .infinity)
                     }
@@ -106,12 +94,12 @@ struct ccp_BDF_EstablecimientosListaView: View {
                     
                     // Línea divisoria
                     Rectangle()
-                        .fill(themeManager.currentTheme.colors.textOnPrimary.opacity(0.3))
+                        .fill(.white.opacity(0.3))
                         .frame(height: 1)
                         .padding(.horizontal, 20)
                 }
                 .frame(height: 100)
-                .background(themeManager.currentTheme.colors.primary)
+                .background(Color.red)
                 
                 // Contenido principal
                 VStack(spacing: 0) {
@@ -121,18 +109,18 @@ struct ccp_BDF_EstablecimientosListaView: View {
                             // Barra de búsqueda
                             HStack {
                                 Image(systemName: "magnifyingglass")
-                                    .foregroundStyle(themeManager.currentTheme.colors.textSecondary)
+                                    .foregroundStyle(.secondary)
                                 
                                 TextField("Buscar por nombre o categoría...", text: $searchText)
                                     .textFieldStyle(.plain)
-                                    .foregroundStyle(themeManager.currentTheme.colors.textPrimary)
+                                    .foregroundStyle(.primary)
                                 
                                 if !searchText.isEmpty {
                                     Button {
                                         searchText = ""
                                     } label: {
                                         Image(systemName: "xmark.circle.fill")
-                                            .foregroundStyle(themeManager.currentTheme.colors.textSecondary)
+                                            .foregroundStyle(.secondary)
                                     }
                                 }
                             }
@@ -140,8 +128,8 @@ struct ccp_BDF_EstablecimientosListaView: View {
                             .padding(.vertical, 12)
                             .background(
                                 RoundedRectangle(cornerRadius: 12)
-                                    .fill(themeManager.currentTheme.colors.cardBackground)
-                                    .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
+                                    .fill(Color.white)
+                                    .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
                             )
                             
                             // Toggle de favoritos
@@ -152,12 +140,12 @@ struct ccp_BDF_EstablecimientosListaView: View {
                             } label: {
                                 Image(systemName: showFavoritesOnly ? "star.fill" : "star")
                                     .font(.title2)
-                                    .foregroundStyle(showFavoritesOnly ? .yellow : themeManager.currentTheme.colors.textSecondary)
+                                    .foregroundStyle(showFavoritesOnly ? .yellow : .secondary)
                                     .padding(12)
                                     .background(
                                         Circle()
-                                            .fill(themeManager.currentTheme.colors.cardBackground)
-                                            .shadow(color: themeManager.currentTheme.colors.shadow, radius: 4, x: 0, y: 2)
+                                            .fill(Color.white)
+                                            .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
                                     )
                             }
                         }
@@ -166,7 +154,7 @@ struct ccp_BDF_EstablecimientosListaView: View {
                     .padding(.horizontal, 20)
                     .padding(.top, 20)
                     .padding(.bottom, 16)
-                    .background(themeManager.currentTheme.colors.background)
+                    .background(Color.white)
                     
                     // Lista de participantes
                     Group {
@@ -178,20 +166,20 @@ struct ccp_BDF_EstablecimientosListaView: View {
                                     (showFavoritesOnly ? "star" : "building.2") :
                                     "magnifyingglass")
                                     .font(.system(size: 60))
-                                    .foregroundStyle(themeManager.currentTheme.colors.textSecondary.opacity(0.3))
+                                    .foregroundStyle(.secondary.opacity(0.3))
                                 
                                 VStack(spacing: 8) {
                                     Text(searchText.isEmpty ? 
                                         (showFavoritesOnly ? "Aún no tienes favoritos" : "Sin registros") :
                                         "Sin resultados")
-                                        .font(themeManager.currentTheme.fonts.title)
-                                        .foregroundStyle(themeManager.currentTheme.colors.textPrimary)
+                                        .font(.title)
+                                        .foregroundStyle(.primary)
                                     
                                     Text(searchText.isEmpty ? 
                                         (showFavoritesOnly ? "Marca participantes con la estrella para verlos aquí." : "Aún no hay participantes en la base local.") :
                                         "Intenta con otros términos de búsqueda.")
-                                        .font(themeManager.currentTheme.fonts.body)
-                                        .foregroundStyle(themeManager.currentTheme.colors.textSecondary)
+                                        .font(.body)
+                                        .foregroundStyle(.secondary)
                                         .multilineTextAlignment(.center)
                                 }
                                 

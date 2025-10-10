@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Configuración para Menú Principal -->
+	<key>1</key>
+	<dict>
+		<key>showMenu</key>
+		<true/>
+		<key>iconName</key>
+		<string>line.3.horizontal</string>
+		<key>iconSize</key>
+		<real>24</real>
+		<key>padding</key>
+		<real>16</real>
+		<key>options</key>
+		<array>
+			<string>themes</string>
+			<string>adminDatos</string>
+			<string>advancedSearch</string>
+			<string>mySettings</string>
+			<string>exit</string>
+			<string>goToPortada</string>
+		</array>
+	</dict>
+	
+	<!-- Configuración para Menú Mapa -->
+	<key>2</key>
+	<dict>
+		<key>showMenu</key>
+		<true/>
+		<key>iconName</key>
+		<string>map</string>
+		<key>iconSize</key>
+		<real>22</real>
+		<key>padding</key>
+		<real>20</real>
+		<key>options</key>
+		<array>
+			<string>themes</string>
+			<string>advancedSearch</string>
+			<string>mySettings</string>
+			<string>exit</string>
+			<string>goToPortada</string>
+		</array>
+	</dict>
+	
+	<!-- Configuración para Menú Lista -->
+	<key>3</key>
+	<dict>
+		<key>showMenu</key>
+		<true/>
+		<key>iconName</key>
+		<string>list.bullet</string>
+		<key>iconSize</key>
+		<real>22</real>
+		<key>padding</key>
+		<real>20</real>
+		<key>options</key>
+		<array>
+			<string>themes</string>
+			<string>adminDatos</string>
+			<string>mySettings</string>
+			<string>exit</string>
+			<string>goToPortada</string>
+		</array>
+	</dict>
+	
+	<!-- Configuración para Menú Simple -->
+	<key>4</key>
+	<dict>
+		<key>showMenu</key>
+		<true/>
+		<key>iconName</key>
+		<string>gear</string>
+		<key>iconSize</key>
+		<real>20</real>
+		<key>padding</key>
+		<real>15</real>
+		<key>options</key>
+		<array>
+			<string>themes</string>
+			<string>exit</string>
+			<string>goToPortada</string>
+		</array>
+	</dict>
+	
+	<!-- Configuración para Sin Menú -->
+	<key>5</key>
+	<dict>
+		<key>showMenu</key>
+		<false/>
+		<key>iconName</key>
+		<string></string>
+		<key>iconSize</key>
+		<real>0</real>
+		<key>padding</key>
+		<real>0</real>
+		<key>options</key>
+		<array/>
+	</dict>
+
+	<!-- Configuración para My Prueba -->
+	<key>6</key>
+	<dict>
+		<key>showMenu</key>
+		<true/>
+		<key>iconName</key>
+		<string>folder.fill</string>
+		<key>iconSize</key>
+		<real>22</real>
+		<key>padding</key>
+		<real>18</real>
+		<key>options</key>
+		<array>
+			<string>adminDatos</string>
+			<string>exit</string>
+			<string>goToPortada</string>
+		</array>
+	</dict>
+</dict>
+</plist>

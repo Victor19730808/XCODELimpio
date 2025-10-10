@@ -25,7 +25,7 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject private var location: LocationService
-    @ObservedObject private var themeManager = ThemeManager.shared
+    // Referencias de diseño removidas
 
     var body: some View {
         NavigationStack {
@@ -57,15 +57,15 @@ struct ContentView: View {
                 // MARK: - Mapas
                 Section("Mapa") {
                     NavigationLink {
-                        ccp_BDF_MapView()
+                        GV_SCR_vg_MapaCercanias(isTodoMexico: false)
                     } label: {
-                        Label("Mapa de BD local", systemImage: "map.fill")
+                        Label("Mapa de Cercanías", systemImage: "map.fill")
                     }
 
                     NavigationLink {
-                        ccp_BDF_MapClustersView()
+                        GV_SCR_vg_MapaCercanias(isTodoMexico: true)
                     } label: {
-                        Label("Mapa (clusters de establecimientos)", systemImage: "square.stack.3d.up.fill")
+                        Label("Mapa de la República", systemImage: "square.stack.3d.up.fill")
                     }
                 }
 
@@ -79,7 +79,7 @@ struct ContentView: View {
                     }
                 }
             }
-            .themed()
+            // Modifier de diseño removido
             .navigationTitle("Portada")
             .onAppear {
                 // Inicia ubicación al entrar a la portada (útil para mapas, etc.)

@@ -19,7 +19,8 @@ struct GV_SCR_tc_menuprincipal: View {
     
     // MARK: - Estados de Animación
     @State private var scrollOffset: CGFloat = 0
-    @State private var cardAnimations: [Bool] = Array(repeating: false, count: 4)
+    @State private var cardAnimations: [Bool] = Array(repeating: false, count: 3)  // Cambiado de 4 a 3
+    @State private var bannerAnimation: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -62,50 +63,28 @@ struct GV_SCR_tc_menuprincipal: View {
                         .opacity(cardAnimations[1] ? 1 : 0)
                         .animation(.easeOut(duration: 0.6).delay(0.3), value: cardAnimations[1])
                         
-                        // Cerca de Mi
+                        // Mapa (Unificado - Cercanías + Todo México)
                         GV_MenuCard(
-                            title: "Cerca de Mi",
-                            icon: "location.fill",
+                            title: "Mapa",
+                            icon: "map.fill",
                             color: themeManager.cardSuccess,
                             items: [
-                                GV_MenuItem(title: "Mapa de Cercanías", subtitle: "Participantes cercanos", destination: AnyView(GV_SCR_vg_MapaCercanias(isTodoMexico: false)))
+                                GV_MenuItem(title: "Mapa de Establecimientos", subtitle: "Cercanías y todo México", destination: AnyView(GV_SCR_vg_MapaCercanias(isTodoMexico: false)))
                             ]
                         )
                         .offset(x: cardAnimations[2] ? 0 : -50)
                         .opacity(cardAnimations[2] ? 1 : 0)
                         .animation(.easeOut(duration: 0.6).delay(0.5), value: cardAnimations[2])
                         
-                        // Todo México
-                        GV_MenuCard(
-                            title: "Todo México",
-                            icon: "map.fill",
-                            color: themeManager.cardWarning,
-                            items: [
-                                GV_MenuItem(title: "Mapa de la República", subtitle: "Vista de todo el país", destination: AnyView(GV_SCR_vg_MapaCercanias(isTodoMexico: true)))
-                            ]
-                        )
-                        .offset(x: cardAnimations[3] ? 0 : 50)
-                        .opacity(cardAnimations[3] ? 1 : 0)
-                        .animation(.easeOut(duration: 0.6).delay(0.7), value: cardAnimations[3])
+                        // Banner de Patrocinadores (reemplaza "Todo México")
+                        GV_Banner_Manager.shared.showGVBanner()
+                            .offset(y: bannerAnimation ? 0 : 50)
+                            .opacity(bannerAnimation ? 1 : 0)
+                            .animation(.easeOut(duration: 0.6).delay(0.7), value: bannerAnimation)
                     }
                     .padding(.horizontal, themeManager.paddingMedium)
                     
                     Spacer(minLength: 50)
-                    
-                    // MARK: - Debug Info (solo en desarrollo)
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("DEBUG - Información del Sistema")
-                            .font(themeManager.caption)
-                            .foregroundColor(themeManager.textSecondary)
-                            .padding(.horizontal, themeManager.paddingMedium)
-                        
-                        Text(screenType.showAllFormattedAuto(filePath: #file))
-                            .font(.system(.caption, design: .monospaced))
-                            .foregroundColor(themeManager.textSecondary)
-                            .multilineTextAlignment(.leading)
-                            .padding(.horizontal, themeManager.paddingMedium)
-                            .padding(.bottom, 20)
-                    }
                 }
             }
             .background(
@@ -130,7 +109,14 @@ struct GV_SCR_tc_menuprincipal: View {
                     }
                 }
             }
+            
+            // Animar banner después de las cards
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                withAnimation(.easeOut(duration: 0.6)) {
+                    bannerAnimation = true
+                }
             }
+        }
         }
     }
 }

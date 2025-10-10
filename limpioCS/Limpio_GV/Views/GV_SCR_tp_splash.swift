@@ -130,22 +130,6 @@ struct GV_SCR_tp_splash: View {
                             .opacity(contentOpacity)
                             
                             Spacer()
-                            
-                            // MARK: - Debug Info (solo en desarrollo)
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("DEBUG - Información del Sistema")
-                                    .font(themeManager.caption)
-                                    .foregroundColor(themeManager.textSecondary)
-                                    .padding(.horizontal, themeManager.paddingMedium)
-                                
-                                Text(screenType.showAllFormattedAuto(filePath: #file))
-                                    .font(.system(.caption, design: .monospaced))
-                                    .foregroundColor(themeManager.textSecondary)
-                                    .multilineTextAlignment(.leading)
-                                    .padding(.horizontal, themeManager.paddingMedium)
-                                    .padding(.bottom, 20)
-                            }
-                            .opacity(0.6) // Más sutil en splash
                         }
                         .padding(.horizontal, 30)
                     }

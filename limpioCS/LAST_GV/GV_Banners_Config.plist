@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>banners</key>
+	<array>
+		<!-- Banner 1: El Buen Fin -->
+		<dict>
+			<key>nombre</key>
+			<string>El Buen Fin 2025</string>
+			<key>fotografiaAssets</key>
+			<string>BF</string>
+			<key>fotografiaURL</key>
+			<string></string>
+			<key>textoAlternativo</key>
+			<string>El Buen Fin</string>
+			<key>tiempoExposicionSegundos</key>
+			<integer>4</integer>
+			<key>fechaInicio</key>
+			<string>2025-01-01</string>
+			<key>fechaFin</key>
+			<string>2025-12-31</string>
+			<key>tieneEnlace</key>
+			<true/>
+			<key>url</key>
+			<string>https://www.elbuenfin.org/inicio</string>
+			<key>abrirFueraDeApp</key>
+			<true/>
+		</dict>
+		
+		<!-- Banner 2: Hecho en México (IMPI) -->
+		<dict>
+			<key>nombre</key>
+			<string>Hecho en México</string>
+			<key>fotografiaAssets</key>
+			<string>HM</string>
+			<key>fotografiaURL</key>
+			<string></string>
+			<key>textoAlternativo</key>
+			<string>Hecho en México</string>
+			<key>tiempoExposicionSegundos</key>
+			<integer>5</integer>
+			<key>fechaInicio</key>
+			<string>2025-01-01</string>
+			<key>fechaFin</key>
+			<string>2025-12-31</string>
+			<key>tieneEnlace</key>
+			<true/>
+			<key>url</key>
+			<string>https://www.gob.mx/impi/articulos/impi-y-concanaco-servytur-mexico-refuerzan-acciones-contra-lapirateria-y-la-informalidad-en-favor-de-la-marca-hecho-enmexico-399610?idiom=es</string>
+			<key>abrirFueraDeApp</key>
+			<true/>
+		</dict>
+		
+		<!-- Banner 3: Compras Locales -->
+		<dict>
+			<key>nombre</key>
+			<string>Compra Local</string>
+			<key>fotografiaAssets</key>
+			<string>CO</string>
+			<key>fotografiaURL</key>
+			<string></string>
+			<key>textoAlternativo</key>
+			<string>Compra Local</string>
+			<key>tiempoExposicionSegundos</key>
+			<integer>4</integer>
+			<key>fechaInicio</key>
+			<string>2025-01-01</string>
+			<key>fechaFin</key>
+			<string>2025-12-31</string>
+			<key>tieneEnlace</key>
+			<false/>
+			<key>url</key>
+			<string></string>
+			<key>abrirFueraDeApp</key>
+			<false/>
+		</dict>
+		
+		<!-- Banner 4: Ejemplo con URL remota (si no tuvieras Assets) -->
+		<dict>
+			<key>nombre</key>
+			<string>Banner Remoto Ejemplo</string>
+			<key>fotografiaAssets</key>
+			<string></string>
+			<key>fotografiaURL</key>
+			<string>https://via.placeholder.com/800x400/FF6B6B/FFFFFF?text=Patrocinador+4</string>
+			<key>textoAlternativo</key>
+			<string>Patrocinador 4</string>
+			<key>tiempoExposicionSegundos</key>
+			<integer>3</integer>
+			<key>fechaInicio</key>
+			<string>2025-01-01</string>
+			<key>fechaFin</key>
+			<string>2025-12-31</string>
+			<key>tieneEnlace</key>
+			<true/>
+			<key>url</key>
+			<string>https://www.ejemplo.com</string>
+			<key>abrirFueraDeApp</key>
+			<true/>
+		</dict>
+	</array>
+</dict>
+</plist>
+

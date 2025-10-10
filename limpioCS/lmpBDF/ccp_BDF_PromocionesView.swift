@@ -4,11 +4,13 @@
 //
 //  Archivo: ccp_BDF_PromocionesView.swift
 //  Hora: 2025-10-07 11:05
-//  Estado: Limpio para pruebas
+//  Estado: Refinado con sistema de temas GV y funcionalidad de favoritos
 //  Migrado: 2025-01-10
+//  Refinado: 2025-01-10
 //
 
 import SwiftUI
+import SwiftData
 
 struct ccp_BDF_PromocionesView: View {
     let establecimientoIdInicial: Int
@@ -97,38 +99,42 @@ struct PromocionResponse: Codable {
 
 struct PromocionesMainView: View {
     let establecimientoId: Int
-    // Referencias de diseño removidas
+    @Environment(\.modelContext) private var modelContext
+    @ObservedObject private var themeManager = GV_Temas_Manager.shared
     @State private var promociones: [PromocionResponse] = []
     @State private var isLoading = true
     @State private var errorMessage: String?
+    @State private var establecimientoLocal: lmpBDF_EstablecimientoLocal?
+    @State private var showFavoritoConfirmation = false
     
     var body: some View {
         ZStack {
             // Fondo usando el tema actual
-            Color.white
+            themeManager.background
                 .ignoresSafeArea()
             
             if isLoading {
                 VStack(spacing: 20) {
                     ProgressView()
                         .scaleEffect(1.2)
+                        .tint(themeManager.primary)
                     Text("Cargando promociones...")
-                        .font(.body)
-                        .foregroundColor(.secondary)
+                        .font(themeManager.body)
+                        .foregroundColor(themeManager.textSecondary)
                 }
             } else if let error = errorMessage {
                 VStack(spacing: 20) {
                     Image(systemName: "exclamationmark.triangle")
                         .font(.system(size: 50))
-                        .foregroundColor(.red)
+                        .foregroundColor(themeManager.error)
                     
                     Text("Error al cargar")
-                        .font(.title)
-                        .foregroundColor(.primary)
+                        .font(themeManager.title)
+                        .foregroundColor(themeManager.textPrimary)
                     
                     Text(error)
-                        .font(.body)
-                        .foregroundColor(.secondary)
+                        .font(themeManager.body)
+                        .foregroundColor(themeManager.textSecondary)
                         .multilineTextAlignment(.center)
                 }
                 .padding()
@@ -136,15 +142,15 @@ struct PromocionesMainView: View {
                 VStack(spacing: 20) {
                     Image(systemName: "tag")
                         .font(.system(size: 50))
-                        .foregroundColor(.secondary.opacity(0.3))
+                        .foregroundColor(themeManager.textSecondary.opacity(0.3))
                     
                     Text("Sin promociones")
-                        .font(.title)
-                        .foregroundColor(.primary)
+                        .font(themeManager.title)
+                        .foregroundColor(themeManager.textPrimary)
                     
                     Text("Este establecimiento no tiene promociones disponibles")
-                        .font(.body)
-                        .foregroundColor(.secondary)
+                        .font(themeManager.body)
+                        .foregroundColor(themeManager.textSecondary)
                         .multilineTextAlignment(.center)
                 }
                 .padding()
@@ -153,7 +159,11 @@ struct PromocionesMainView: View {
                     VStack(spacing: 20) {
                         // Cabecera del establecimiento
                         if let primeraPromocion = promociones.first {
-                            EstablecimientoHeaderView(establecimiento: primeraPromocion)
+                            EstablecimientoHeaderView(
+                                establecimiento: primeraPromocion,
+                                establecimientoLocal: $establecimientoLocal,
+                                showFavoritoConfirmation: $showFavoritoConfirmation
+                            )
                         }
                         
                         // Separador minimalista para promociones
@@ -163,8 +173,8 @@ struct PromocionesMainView: View {
                                 
                                 // Título de promociones
                                 Text("Promociones")
-                                    .font(.title)
-                                    .foregroundColor(.primary)
+                                    .font(themeManager.title)
+                                    .foregroundColor(themeManager.textPrimary)
                                 
                                 Spacer()
                             }
@@ -189,6 +199,17 @@ struct PromocionesMainView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             loadPromociones()
+            loadEstablecimientoLocal()
+        }
+        .alert("Favoritos", isPresented: $showFavoritoConfirmation) {
+            Button("Cancelar", role: .cancel) { }
+            Button(establecimientoLocal?.esFavorito == true ? "Quitar" : "Agregar") {
+                toggleFavorito()
+            }
+        } message: {
+            Text(establecimientoLocal?.esFavorito == true ? 
+                "¿Quieres quitar \"\(establecimientoLocal?.nombre ?? "este establecimiento")\" de tus favoritos?" :
+                "¿Quieres agregar \"\(establecimientoLocal?.nombre ?? "este establecimiento")\" a tus favoritos?")
         }
     }
     
@@ -238,45 +259,77 @@ struct PromocionesMainView: View {
             }
         }.resume()
     }
+    
+    private func loadEstablecimientoLocal() {
+        // Buscar el establecimiento en la base de datos local
+        let descriptor = FetchDescriptor<lmpBDF_EstablecimientoLocal>(
+            predicate: #Predicate { $0.id == establecimientoId }
+        )
+        
+        do {
+            let establecimientos = try modelContext.fetch(descriptor)
+            establecimientoLocal = establecimientos.first
+        } catch {
+            print("⚠️ Error al cargar establecimiento local:", error.localizedDescription)
+        }
+    }
+    
+    private func toggleFavorito() {
+        guard let establecimiento = establecimientoLocal else { return }
+        
+        withAnimation(.easeInOut(duration: 0.2)) {
+            establecimiento.esFavorito.toggle()
+        }
+        
+        do {
+            try modelContext.save()
+        } catch {
+            print("⚠️ Error al guardar favorito:", error.localizedDescription)
+        }
+    }
 }
 
 // MARK: - Cabecera del Establecimiento
 
 struct EstablecimientoHeaderView: View {
     let establecimiento: PromocionResponse
+    @Binding var establecimientoLocal: lmpBDF_EstablecimientoLocal?
+    @Binding var showFavoritoConfirmation: Bool
     @Environment(\.dismiss) private var dismiss
-    // Referencias de diseño removidas
+    @ObservedObject private var themeManager = GV_Temas_Manager.shared
     
     var body: some View {
-        VStack(spacing: 16) {
-            // Header minimalista con solo botón cerrar
-            VStack(spacing: 16) {
-                HStack {
-                    Spacer()
-                    
-                    // Botón cerrar
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title2)
-                            .foregroundColor(Color.red)
-                            .background(
-                                Circle()
-                                    .fill(Color.white)
-                                    .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 1)
-                            )
-                    }
+        VStack(spacing: 0) {
+            // Header rojo como en la imagen
+            HStack {
+                Spacer()
+                
+                Text("Participantes")
+                    .font(themeManager.headline)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                
+                Spacer()
+                
+                // Botón cerrar
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
                 }
-                .padding(.horizontal, 20)
             }
-            .padding(.top, 24)
-            .padding(.bottom, 8)
+            .padding(.horizontal, 20)
+            .padding(.vertical, 16)
+            .background(themeManager.primary)
             
             // Contenido del establecimiento
             VStack(spacing: 16) {
                 // Logo y nombre
                 HStack(spacing: 16) {
+                    // Logo del establecimiento
                     if let logoURL = establecimiento.establecimiento_logo, !logoURL.isEmpty {
                         AsyncImage(url: URL(string: logoURL)) { image in
                             image
@@ -284,49 +337,52 @@ struct EstablecimientoHeaderView: View {
                                 .aspectRatio(contentMode: .fit)
                         } placeholder: {
                             RoundedRectangle(cornerRadius: 8)
-                                .fill(Color.gray.opacity(0.1))
+                                .fill(themeManager.surface)
                                 .overlay(
                                     Image(systemName: "building.2")
                                         .font(.title)
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(themeManager.textSecondary)
                                 )
                         }
                         .frame(width: 80, height: 80)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                     } else {
+                        // Logo placeholder con letra estilizada
                         RoundedRectangle(cornerRadius: 8)
-                            .fill(Color.gray.opacity(0.1))
+                            .fill(themeManager.primary)
                             .overlay(
-                                Image(systemName: "building.2")
+                                Text(String(establecimiento.establecimiento_nombre?.prefix(2) ?? "A").uppercased())
                                     .font(.title)
-                                    .foregroundColor(.secondary)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.white)
                             )
                             .frame(width: 80, height: 80)
                     }
                     
                     VStack(alignment: .leading, spacing: 8) {
+                        // Nombre del establecimiento
                         Text(establecimiento.establecimiento_nombre ?? "Sin nombre")
-                            .font(.title)
-                            .foregroundColor(.primary)
+                            .font(themeManager.title)
+                            .foregroundColor(themeManager.textPrimary)
                             .lineLimit(2)
                         
-                        Text(establecimiento.categoria_nombre ?? "Sin categoría")
-                            .font(.body)
-                            .foregroundColor(Color.red)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .background(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .fill(Color.red.opacity(0.1))
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .stroke(Color.red.opacity(0.3), lineWidth: 1)
-                                    )
-                            )
+                        // Categoría con estilo como en la imagen
+                        if let categoria = establecimiento.categoria_nombre {
+                            Text(categoria)
+                                .font(themeManager.callout)
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .fill(Color.pink)
+                                )
+                        }
                         
-                        Text(establecimiento.establecimiento_actividad ?? "Sin actividad")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                        // Tipo de comercio
+                        Text("Comercio")
+                            .font(themeManager.caption)
+                            .foregroundColor(themeManager.textSecondary)
                     }
                     
                     Spacer()
@@ -335,8 +391,8 @@ struct EstablecimientoHeaderView: View {
                 // Descripción
                 if let descripcion = establecimiento.establecimiento_descripcion, !descripcion.isEmpty {
                     Text(descripcion)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                        .font(themeManager.body)
+                        .foregroundColor(themeManager.textSecondary)
                         .multilineTextAlignment(.leading)
                         .lineLimit(4)
                 }
@@ -345,31 +401,41 @@ struct EstablecimientoHeaderView: View {
                 HStack(spacing: 20) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Contacto")
-                            .font(.footnote)
-                            .foregroundColor(.secondary)
+                            .font(themeManager.footnote)
+                            .foregroundColor(themeManager.textSecondary)
                         
                         Text(establecimiento.display_name ?? "Sin contacto")
-                            .font(.caption)
-                            .foregroundColor(.primary)
+                            .font(themeManager.caption)
+                            .foregroundColor(themeManager.textPrimary)
                     }
                     
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Teléfono")
-                            .font(.footnote)
-                            .foregroundColor(.secondary)
+                            .font(themeManager.footnote)
+                            .foregroundColor(themeManager.textSecondary)
                         
                         Text(establecimiento.phone_number ?? "Sin teléfono")
-                            .font(.caption)
-                            .foregroundColor(.primary)
+                            .font(themeManager.caption)
+                            .foregroundColor(themeManager.textPrimary)
                     }
                     
                     Spacer()
+                    
+                    // Botón de favoritos
+                    Button {
+                        showFavoritoConfirmation = true
+                    } label: {
+                        Image(systemName: establecimientoLocal?.esFavorito == true ? "star.fill" : "star")
+                            .font(.title2)
+                            .foregroundColor(establecimientoLocal?.esFavorito == true ? themeManager.warning : themeManager.textSecondary)
+                    }
+                    .buttonStyle(.plain)
                 }
             }
             .padding(20)
-            .background(Color.white)
-            .clipShape(RoundedRectangle(cornerRadius: 16))
-            .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
+            .background(themeManager.cardBackground)
+            .clipShape(RoundedRectangle(cornerRadius: themeManager.cornerRadius))
+            .shadow(color: themeManager.shadow, radius: themeManager.shadowRadius, x: 0, y: 4)
         }
         .padding(.horizontal, 20)
     }
@@ -379,7 +445,7 @@ struct EstablecimientoHeaderView: View {
 
 struct PromocionCardView: View {
     let promocion: PromocionResponse
-    // Referencias de diseño removidas
+    @ObservedObject private var themeManager = GV_Temas_Manager.shared
     
     var body: some View {
         VStack(spacing: 16) {
@@ -390,51 +456,52 @@ struct PromocionCardView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                 } placeholder: {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.gray.opacity(0.1))
+                    RoundedRectangle(cornerRadius: themeManager.cornerRadius)
+                        .fill(themeManager.surface)
                         .overlay(
                             ProgressView()
                                 .scaleEffect(0.8)
+                                .tint(themeManager.primary)
                         )
                 }
                 .frame(height: 200)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .clipShape(RoundedRectangle(cornerRadius: themeManager.cornerRadius))
             }
             
             // Contenido de la promoción
             VStack(alignment: .leading, spacing: 12) {
                 // Título
                 Text(promocion.promocion_titulo ?? "Sin título")
-                    .font(.headline)
-                    .foregroundColor(.primary)
+                    .font(themeManager.headline)
+                    .foregroundColor(themeManager.textPrimary)
                     .lineLimit(2)
                 
                 // Descripción
                 Text(promocion.promocion_descripcion ?? "Sin descripción")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                    .font(themeManager.body)
+                    .foregroundColor(themeManager.textSecondary)
                     .lineLimit(3)
                 
                 // Fechas
                 HStack(spacing: 16) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Inicio")
-                            .font(.footnote)
-                            .foregroundColor(.secondary)
+                            .font(themeManager.footnote)
+                            .foregroundColor(themeManager.textSecondary)
                         
                         Text(formatDate(promocion.promocion_fi ?? ""))
-                            .font(.caption)
-                            .foregroundColor(.primary)
+                            .font(themeManager.caption)
+                            .foregroundColor(themeManager.textPrimary)
                     }
                     
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Fin")
-                            .font(.footnote)
-                            .foregroundColor(.secondary)
+                            .font(themeManager.footnote)
+                            .foregroundColor(themeManager.textSecondary)
                         
                         Text(formatDate(promocion.promocion_ff ?? ""))
-                            .font(.caption)
-                            .foregroundColor(.primary)
+                            .font(themeManager.caption)
+                            .foregroundColor(themeManager.textPrimary)
                     }
                     
                     Spacer()
@@ -444,20 +511,20 @@ struct PromocionCardView: View {
                 if let tyc = promocion.promocion_tyc, !tyc.isEmpty {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Términos y Condiciones")
-                            .font(.footnote)
-                            .foregroundColor(.secondary)
+                            .font(themeManager.footnote)
+                            .foregroundColor(themeManager.textSecondary)
                         
                         Text(tyc)
-                            .font(.caption)
-                            .foregroundColor(Color.red)
+                            .font(themeManager.caption)
+                            .foregroundColor(themeManager.error)
                     }
                 }
             }
             .padding(16)
         }
-        .background(Color.white)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
+        .background(themeManager.cardBackground)
+        .clipShape(RoundedRectangle(cornerRadius: themeManager.cornerRadius))
+        .shadow(color: themeManager.shadow, radius: themeManager.shadowRadius, x: 0, y: 4)
     }
     
     private func formatDate(_ dateString: String) -> String {

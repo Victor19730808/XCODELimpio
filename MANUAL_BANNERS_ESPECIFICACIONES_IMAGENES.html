@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Especificaciones - Imágenes de Banners | Sistema GV</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+        
+        .header .version {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 0.9em;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 50px;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        .specs-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .specs-box h4 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+        
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .spec-item:last-child {
+            border-bottom: none;
+        }
+        
+        .spec-label {
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .spec-value {
+            font-weight: 700;
+            color: #667eea;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .highlight-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .success-box {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .danger-box {
+            background: #f8d7da;
+            border-left: 5px solid #dc3545;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .visual-example {
+            border: 3px dashed #667eea;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            background: #f8f9fa;
+            text-align: center;
+        }
+        
+        .banner-mockup {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+        }
+        
+        .mockup-image {
+            width: 100%;
+            aspect-ratio: 2.22 / 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2em;
+            font-weight: 700;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .safe-area-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 40px solid rgba(255,255,255,0.3);
+            pointer-events: none;
+        }
+        
+        .text-zone {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .checklist li {
+            padding: 12px;
+            margin: 8px 0;
+            background: white;
+            border-left: 4px solid #28a745;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .checklist li:before {
+            content: "✅ ";
+            margin-right: 10px;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin: 5px;
+        }
+        
+        .badge-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .badge-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .badge-warning {
+            background: #ffc107;
+            color: #333;
+        }
+        
+        .footer {
+            background: #2d3436;
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .dimension-visual {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .dimension-box {
+            width: 100%;
+            aspect-ratio: 2.22 / 1;
+            border: 3px dashed #667eea;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #667eea;
+            position: relative;
+        }
+        
+        .dimension-label {
+            position: absolute;
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.7em;
+            font-weight: 600;
+        }
+        
+        .dimension-label.top {
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .dimension-label.left {
+            left: -15px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>📐 Manual de Especificaciones</h1>
+            <div class="subtitle">Imágenes para Banners de Patrocinadores</div>
+            <div class="version">Sistema GV_Banner | Grupo VAL | Versión 1.0 | Octubre 2025</div>
+        </div>
+        
+        <!-- CONTENIDO -->
+        <div class="content">
+            
+            <!-- SECCIÓN 1: ESPECIFICACIONES PRINCIPALES -->
+            <div class="section">
+                <h2>🎯 Especificaciones Principales</h2>
+                
+                <div class="specs-box">
+                    <h4>Tamaño Óptimo de Imagen</h4>
+                    
+                    <div class="spec-item">
+                        <span class="spec-label">📏 Resolución Recomendada:</span>
+                        <span class="spec-value">1200 × 540 píxeles</span>
+                    </div>
+                    
+                    <div class="spec-item">
+                        <span class="spec-label">📐 Aspect Ratio:</span>
+                        <span class="spec-value">2.22:1 (ancho:alto)</span>
+                    </div>
+                    
+                    <div class="spec-item">
+                        <span class="spec-label">📁 Formato:</span>
+                        <span class="spec-value">PNG (preferido) o JPG</span>
+                    </div>
+                    
+                    <div class="spec-item">
+                        <span class="spec-label">💾 Peso Máximo:</span>
+                        <span class="spec-value">500 KB</span>
+                    </div>
+                    
+                    <div class="spec-item">
+                        <span class="spec-label">🎨 Color Mode:</span>
+                        <span class="spec-value">RGB (sRGB)</span>
+                    </div>
+                    
+                    <div class="spec-item">
+                        <span class="spec-label">🔍 DPI:</span>
+                        <span class="spec-value">72-150 DPI</span>
+                    </div>
+                </div>
+                
+                <div class="success-box">
+                    <strong>✅ Recomendación:</strong> Solicitar imágenes en formato PNG con fondo transparente para mayor flexibilidad. Si el diseño requiere fondo, usar JPG para menor peso.
+                </div>
+            </div>
+            
+            <!-- SECCIÓN 2: VISUALIZACIÓN -->
+            <div class="section">
+                <h2>📱 Cómo se Verá en la App</h2>
+                
+                <div class="banner-mockup">
+                    <div class="mockup-image">
+                        <div class="safe-area-grid"></div>
+                        1200 × 540 px
+                        <div class="text-zone"></div>
+                    </div>
+                    <p style="margin-top: 15px; text-align: center; color: #666;">
+                        <strong>Ejemplo:</strong> La imagen ocupará todo el ancho del banner con altura fija de 180 puntos (~540px @3x)
+                    </p>
+                </div>
+                
+                <div class="dimension-visual">
+                    <h4 style="margin-bottom: 15px;">Dimensiones Visuales:</h4>
+                    <div class="dimension-box">
+                        <span class="dimension-label top">1200 px de ancho</span>
+                        <span class="dimension-label left">540 px de alto</span>
+                        ÁREA DE DISEÑO
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SECCIÓN 3: TABLA DE RESOLUCIONES -->
+            <div class="section">
+                <h2>📊 Tabla de Resoluciones por Dispositivo</h2>
+                
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Escala</th>
+                            <th>Resolución</th>
+                            <th>Dispositivos</th>
+                            <th>Prioridad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>@1x</strong></td>
+                            <td>400 × 180 px</td>
+                            <td>iPad mini, modelos antiguos</td>
+                            <td><span class="badge badge-warning">Opcional</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>@2x</strong></td>
+                            <td>800 × 360 px</td>
+                            <td>iPhone estándar, iPad</td>
+                            <td><span class="badge badge-success">Importante</span></td>
+                        </tr>
+                        <tr style="background: #e8f5e9;">
+                            <td><strong>@3x ⭐</strong></td>
+                            <td><strong>1200 × 540 px</strong></td>
+                            <td><strong>iPhone retina HD (mayoría)</strong></td>
+                            <td><span class="badge badge-primary">CRÍTICA</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="highlight-box">
+                    <strong>⚡ Nota Importante:</strong> Si solo puedes proporcionar UNA resolución, que sea <strong>1200 × 540 px (@3x)</strong>. iOS hará el downscale automáticamente para dispositivos de menor resolución.
+                </div>
+            </div>
+            
+            <!-- SECCIÓN 4: ÁREA SEGURA -->
+            <div class="section">
+                <h2>🛡️ Área Segura de Diseño</h2>
+                
+                <p style="margin-bottom: 20px;">Para garantizar que los elementos importantes sean visibles:</p>
+                
+                <div class="visual-example">
+                    <svg width="100%" height="300" viewBox="0 0 1200 540" style="max-width: 100%;">
+                        <!-- Canvas completo -->
+                        <rect width="1200" height="540" fill="#f0f0f0" stroke="#333" stroke-width="2"/>
+                        
+                        <!-- Área segura (con márgenes) -->
+                        <rect x="40" y="40" width="1120" height="460" fill="none" stroke="#28a745" stroke-width="4" stroke-dasharray="10,5"/>
+                        <text x="600" y="270" text-anchor="middle" font-size="40" font-weight="bold" fill="#28a745">ÁREA SEGURA</text>
+                        <text x="600" y="310" text-anchor="middle" font-size="24" fill="#666">1120 × 460 px</text>
+                        
+                        <!-- Zona de texto inferior -->
+                        <rect x="0" y="440" width="1200" height="100" fill="rgba(0,0,0,0.3)"/>
+                        <text x="600" y="490" text-anchor="middle" font-size="28" font-weight="bold" fill="white">Zona de Texto (100px reservados)</text>
+                        
+                        <!-- Etiquetas de dimensiones -->
+                        <text x="600" y="30" text-anchor="middle" font-size="20" fill="#667eea">1200 px</text>
+                        <text x="20" y="270" text-anchor="middle" font-size="20" fill="#667eea" transform="rotate(-90 20 270)">540 px</text>
+                        
+                        <!-- Márgenes -->
+                        <text x="20" y="60" font-size="18" fill="#dc3545">40px margen</text>
+                        <line x1="0" y1="40" x2="40" y2="40" stroke="#dc3545" stroke-width="2"/>
+                    </svg>
+                </div>
+                
+                <div class="specs-box">
+                    <h4>Márgenes de Seguridad</h4>
+                    <div class="spec-item">
+                        <span class="spec-label">🔹 Margen Superior:</span>
+                        <span class="spec-value">40 px</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">🔹 Margen Inferior:</span>
+                        <span class="spec-value">40 px (Reservar 100px para texto)</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">🔹 Margen Izquierdo:</span>
+                        <span class="spec-value">40 px</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">🔹 Margen Derecho:</span>
+                        <span class="spec-value">40 px</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">🎯 Área de Contenido Segura:</span>
+                        <span class="spec-value">1120 × 460 px</span>
+                    </div>
+                </div>
+                
+                <div class="danger-box">
+                    <strong>⚠️ IMPORTANTE:</strong>
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li>NO colocar logos o texto importante en los márgenes (40px)</li>
+                        <li>Reservar la parte INFERIOR (100px) para nombre y URL</li>
+                        <li>Elementos críticos deben estar en el CENTRO</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- SECCIÓN 5: SOLICITUD PARA PATROCINADORES -->
+            <div class="section">
+                <h2>📧 Plantilla de Solicitud para Patrocinadores</h2>
+                
+                <div class="code-block">Estimado Patrocinador,
+
+Para que su imagen promocional se visualice de manera óptima en nuestra 
+aplicación móvil "Hecho en México", por favor proporcione:
+
+═══════════════════════════════════════════════════════════════
+
+📐 ESPECIFICACIONES TÉCNICAS REQUERIDAS:
+
+Dimensiones:        1200 × 540 píxeles (ancho × alto)
+Aspect Ratio:       2.22:1 (horizontal)
+Formato:            PNG con transparencia (preferido) o JPG
+Resolución:         72-150 DPI
+Peso máximo:        500 KB por imagen
+Modo de color:      RGB (sRGB)
+
+═══════════════════════════════════════════════════════════════
+
+🎨 RECOMENDACIONES DE DISEÑO:
+
+✅ Logos/textos importantes centrados
+✅ Evitar elementos críticos en los bordes (40px de margen)
+✅ Reservar parte inferior para nombre y URL (100px)
+✅ Colores vibrantes y contraste alto
+✅ Fondos no muy oscuros (se añade overlay negro inferior)
+✅ Legibilidad en pantallas pequeñas
+
+═══════════════════════════════════════════════════════════════
+
+📤 ENTREGA:
+
+Formato de archivo: [NombrePatrocinador]_Banner_1200x540.png
+Enviar a:          [tu-email@ejemplo.com]
+
+═══════════════════════════════════════════════════════════════
+
+Gracias por su colaboración.
+
+Atentamente,
+Equipo Grupo VAL</div>
+            </div>
+            
+            <!-- SECCIÓN 6: CHECKLIST -->
+            <div class="section">
+                <h2>✅ Checklist de Validación de Imágenes</h2>
+                
+                <p style="margin-bottom: 20px;">Antes de agregar una imagen a la app, verificar:</p>
+                
+                <ul class="checklist">
+                    <li><strong>Dimensiones correctas:</strong> 1200 × 540 px exactos</li>
+                    <li><strong>Formato adecuado:</strong> PNG o JPG</li>
+                    <li><strong>Peso optimizado:</strong> Menor a 500 KB</li>
+                    <li><strong>Resolución suficiente:</strong> 72 DPI mínimo</li>
+                    <li><strong>Elementos importantes centrados</strong></li>
+                    <li><strong>Sin elementos críticos en márgenes</strong></li>
+                    <li><strong>Legible en pantalla pequeña</strong></li>
+                    <li><strong>Colores con buen contraste</strong></li>
+                    <li><strong>Logo/marca visible y claro</strong></li>
+                    <li><strong>Compatible con overlay oscuro inferior</strong></li>
+                </ul>
+            </div>
+            
+            <!-- SECCIÓN 7: EJEMPLOS DE USO EN ASSETS -->
+            <div class="section">
+                <h2>🖼️ Cómo Agregar a Assets.xcassets</h2>
+                
+                <h3>Estructura Recomendada:</h3>
+                
+                <div class="code-block">Assets.xcassets/
+├── BF.imageset/
+│   ├── Contents.json
+│   ├── BF@1x.png          (400 × 180)
+│   ├── BF@2x.png          (800 × 360)
+│   └── BF@3x.png          (1200 × 540) ⭐ CRÍTICA
+│
+├── HM.imageset/
+│   ├── Contents.json
+│   ├── HM@1x.png
+│   ├── HM@2x.png
+│   └── HM@3x.png
+│
+└── [Patrocinador].imageset/
+    └── ...</div>
+                
+                <h3>Pasos para Agregar:</h3>
+                <ol style="margin-left: 30px; margin-top: 15px;">
+                    <li style="margin: 10px 0;"><strong>Abrir Xcode</strong> → Assets.xcassets</li>
+                    <li style="margin: 10px 0;"><strong>Click derecho</strong> → "New Image Set"</li>
+                    <li style="margin: 10px 0;"><strong>Nombrar</strong> el imageset (ej: "PatrocinadorX")</li>
+                    <li style="margin: 10px 0;"><strong>Arrastrar imágenes</strong> a cada escala (@1x, @2x, @3x)</li>
+                    <li style="margin: 10px 0;"><strong>Actualizar Plist</strong> con el nombre del imageset</li>
+                </ol>
+            </div>
+            
+            <!-- SECCIÓN 8: CONFIGURACIÓN EN PLIST -->
+            <div class="section">
+                <h2>⚙️ Configuración en GV_Banners_Config.plist</h2>
+                
+                <h3>Ejemplo Completo de Banner:</h3>
+                
+                <div class="code-block">&lt;dict&gt;
+    &lt;key&gt;nombre&lt;/key&gt;
+    &lt;string&gt;El Buen Fin 2025&lt;/string&gt;
+    
+    &lt;!-- HEADER (usar VG_NO_PATROCINADOR para ocultar) --&gt;
+    &lt;key&gt;headerTitulo&lt;/key&gt;
+    &lt;string&gt;VG_NO_PATROCINADOR&lt;/string&gt;
+    &lt;key&gt;headerIcono&lt;/key&gt;
+    &lt;string&gt;megaphone.fill&lt;/string&gt;
+    
+    &lt;!-- IMAGEN (Assets tiene preferencia sobre URL) --&gt;
+    &lt;key&gt;fotografiaAssets&lt;/key&gt;
+    &lt;string&gt;BF&lt;/string&gt;
+    &lt;key&gt;fotografiaURL&lt;/key&gt;
+    &lt;string&gt;&lt;/string&gt;
+    
+    &lt;key&gt;textoAlternativo&lt;/key&gt;
+    &lt;string&gt;El Buen Fin&lt;/string&gt;
+    
+    &lt;key&gt;tiempoExposicionSegundos&lt;/key&gt;
+    &lt;integer&gt;4&lt;/integer&gt;
+    
+    &lt;!-- FECHAS DE VALIDEZ --&gt;
+    &lt;key&gt;fechaInicio&lt;/key&gt;
+    &lt;string&gt;2025-01-01&lt;/string&gt;
+    &lt;key&gt;fechaFin&lt;/key&gt;
+    &lt;string&gt;2025-12-31&lt;/string&gt;
+    
+    &lt;!-- ENLACE --&gt;
+    &lt;key&gt;tieneEnlace&lt;/key&gt;
+    &lt;true/&gt;
+    &lt;key&gt;url&lt;/key&gt;
+    &lt;string&gt;https://www.elbuenfin.org/inicio&lt;/string&gt;
+    &lt;key&gt;abrirFueraDeApp&lt;/key&gt;
+    &lt;true/&gt;
+&lt;/dict&gt;</div>
+            </div>
+            
+            <!-- SECCIÓN 9: CASOS DE USO -->
+            <div class="section">
+                <h2>💼 Casos de Uso Comunes</h2>
+                
+                <h3>📌 Caso 1: Banner con Imagen desde Assets (Recomendado)</h3>
+                <div class="specs-box">
+                    <p><strong>Usar cuando:</strong> Tienes la imagen localmente</p>
+                    <p style="margin-top: 10px;"><strong>Ventajas:</strong> Carga instantánea, no requiere internet, control total</p>
+                    <div class="code-block" style="margin-top: 15px; background: #1e1e1e;">&lt;key&gt;fotografiaAssets&lt;/key&gt;
+&lt;string&gt;BF&lt;/string&gt;
+&lt;key&gt;fotografiaURL&lt;/key&gt;
+&lt;string&gt;&lt;/string&gt;  &lt;!-- Vacío --&gt;</div>
+                </div>
+                
+                <h3>🌐 Caso 2: Banner con Imagen desde URL</h3>
+                <div class="specs-box">
+                    <p><strong>Usar cuando:</strong> La imagen cambia frecuentemente o está en servidor</p>
+                    <p style="margin-top: 10px;"><strong>Ventajas:</strong> Actualización sin rebuild, reduce tamaño de app</p>
+                    <div class="code-block" style="margin-top: 15px; background: #1e1e1e;">&lt;key&gt;fotografiaAssets&lt;/key&gt;
+&lt;string&gt;&lt;/string&gt;  &lt;!-- Vacío para usar URL --&gt;
+&lt;key&gt;fotografiaURL&lt;/key&gt;
+&lt;string&gt;https://cdn.ejemplo.com/banner.png&lt;/string&gt;</div>
+                </div>
+                
+                <h3>💬 Caso 3: Banner Solo Texto (Fallback)</h3>
+                <div class="specs-box">
+                    <p><strong>Usar cuando:</strong> No hay imagen disponible temporalmente</p>
+                    <p style="margin-top: 10px;"><strong>Comportamiento:</strong> Muestra texto alternativo con gradiente de color accent</p>
+                    <div class="code-block" style="margin-top: 15px; background: #1e1e1e;">&lt;key&gt;fotografiaAssets&lt;/key&gt;
+&lt;string&gt;&lt;/string&gt;
+&lt;key&gt;fotografiaURL&lt;/key&gt;
+&lt;string&gt;&lt;/string&gt;
+&lt;key&gt;textoAlternativo&lt;/key&gt;
+&lt;string&gt;Próximamente...&lt;/string&gt;</div>
+                </div>
+            </div>
+            
+            <!-- SECCIÓN 10: TIPS DE DISEÑO -->
+            <div class="section">
+                <h2>🎨 Tips de Diseño para Diseñadores</h2>
+                
+                <div class="highlight-box">
+                    <h4 style="margin-bottom: 15px;">✨ Mejores Prácticas:</h4>
+                    <ol style="margin-left: 25px;">
+                        <li style="margin: 8px 0;"><strong>Centrar elementos importantes:</strong> Logo y mensaje principal en el centro del canvas</li>
+                        <li style="margin: 8px 0;"><strong>Usar colores vibrantes:</strong> La imagen debe destacar entre los cards</li>
+                        <li style="margin: 8px 0;"><strong>Alto contraste:</strong> Asegurar que logos/textos sean claramente visibles</li>
+                        <li style="margin: 8px 0;"><strong>Tipografía legible:</strong> Fuentes grandes (min 40pt) para pantallas pequeñas</li>
+                        <li style="margin: 8px 0;"><strong>Evitar saturación excesiva:</strong> En la parte inferior (se añade overlay oscuro)</li>
+                        <li style="margin: 8px 0;"><strong>Optimizar peso:</strong> Comprimir sin perder calidad visible</li>
+                        <li style="margin: 8px 0;"><strong>Probar en móvil:</strong> Verificar en dispositivo real antes de entregar</li>
+                    </ol>
+                </div>
+                
+                <h3>🚫 Errores Comunes a Evitar:</h3>
+                
+                <div class="danger-box">
+                    <ul style="margin-left: 20px;">
+                        <li style="margin: 8px 0;">❌ Logos muy pequeños (mínimo 200px de ancho)</li>
+                        <li style="margin: 8px 0;">❌ Texto en los bordes que se cortará</li>
+                        <li style="margin: 8px 0;">❌ Fondos totalmente negros (conflicto con overlay)</li>
+                        <li style="margin: 8px 0;">❌ Imágenes de baja resolución escaladas</li>
+                        <li style="margin: 8px 0;">❌ Formatos raros (WebP, TIFF, SVG no soportados directamente)</li>
+                        <li style="margin: 8px 0;">❌ Archivos muy pesados (&gt;1 MB afecta rendimiento)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- SECCIÓN 11: HERRAMIENTAS RECOMENDADAS -->
+            <div class="section">
+                <h2>🛠️ Herramientas Recomendadas</h2>
+                
+                <h3>Para Crear/Editar Imágenes:</h3>
+                <ul style="margin-left: 30px; margin-top: 15px;">
+                    <li style="margin: 10px 0;"><strong>Adobe Photoshop</strong> - Profesional, control total</li>
+                    <li style="margin: 10px 0;"><strong>Figma</strong> - Online, colaborativo, gratis</li>
+                    <li style="margin: 10px 0;"><strong>Canva</strong> - Fácil, plantillas prediseñadas</li>
+                    <li style="margin: 10px 0;"><strong>Sketch</strong> - macOS, diseño de interfaces</li>
+                </ul>
+                
+                <h3>Para Optimizar Peso:</h3>
+                <ul style="margin-left: 30px; margin-top: 15px;">
+                    <li style="margin: 10px 0;"><strong>TinyPNG</strong> - https://tinypng.com (PNG compression)</li>
+                    <li style="margin: 10px 0;"><strong>ImageOptim</strong> - macOS app, drag & drop</li>
+                    <li style="margin: 10px 0;"><strong>Squoosh</strong> - https://squoosh.app (Google, online)</li>
+                </ul>
+            </div>
+            
+            <!-- SECCIÓN 12: FAQ -->
+            <div class="section">
+                <h2>❓ Preguntas Frecuentes (FAQ)</h2>
+                
+                <h3>¿Puedo usar otros aspect ratios?</h3>
+                <p style="margin: 10px 0 10px 20px;">No recomendado. La app está optimizada para 2.22:1. Otras proporciones se verán recortadas o distorsionadas.</p>
+                
+                <h3>¿Qué pasa si mi imagen es más grande?</h3>
+                <p style="margin: 10px 0 10px 20px;">Se escalará automáticamente, pero puede afectar el rendimiento. Mejor entregar en tamaño exacto.</p>
+                
+                <h3>¿Puedo usar GIF o videos?</h3>
+                <p style="margin: 10px 0 10px 20px;">Actualmente no soportado. Solo imágenes estáticas PNG/JPG.</p>
+                
+                <h3>¿Cuántos banners puedo agregar?</h3>
+                <p style="margin: 10px 0 10px 20px;">Ilimitados, pero se recomienda 4-8 para evitar sobrecarga visual.</p>
+                
+                <h3>¿Cómo oculto el header "PATROCINADORES"?</h3>
+                <p style="margin: 10px 0 10px 20px;">En el Plist, configurar: <code style="background: #f0f0f0; padding: 2px 8px; border-radius: 3px;">headerTitulo = VG_NO_PATROCINADOR</code></p>
+                
+                <h3>¿Las imágenes se actualizan sin rebuild?</h3>
+                <p style="margin: 10px 0 10px 20px;">Assets.xcassets: Requiere rebuild. URL remota: Se actualiza automáticamente.</p>
+            </div>
+            
+            <!-- SECCIÓN 13: CONTACTO -->
+            <div class="section">
+                <h2>📞 Soporte Técnico</h2>
+                
+                <div class="success-box">
+                    <p><strong>Para dudas sobre especificaciones de imágenes:</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Email: equipo@grupoVal.com</li>
+                        <li>Sistema: Framework GV_Banner</li>
+                        <li>Versión: 1.0 (Octubre 2025)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- FOOTER -->
+        <div class="footer">
+            <p style="font-size: 1.2em; margin-bottom: 10px;">
+                <strong>Manual de Especificaciones - Sistema GV_Banner</strong>
+            </p>
+            <p style="opacity: 0.8;">
+                Grupo VAL Human TECH © 2025
+            </p>
+            <p style="margin-top: 20px; opacity: 0.7; font-size: 0.9em;">
+                Última actualización: 10 de Octubre, 2025
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+

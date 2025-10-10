@@ -4,7 +4,6 @@
 <dict>
 	<key>banners</key>
 	<array>
-		<!-- Banner 1: El Buen Fin -->
 		<dict>
 			<key>nombre</key>
 			<string>El Buen Fin 2025</string>
@@ -13,7 +12,7 @@
 			<key>headerIcono</key>
 			<string>megaphone.fill</string>
 			<key>fotografiaAssets</key>
-			<string>BF</string>
+			<string>nPBF_banner_p</string>
 			<key>fotografiaURL</key>
 			<string></string>
 			<key>textoAlternativo</key>
@@ -31,8 +30,6 @@
 			<key>abrirFueraDeApp</key>
 			<true/>
 		</dict>
-		
-		<!-- Banner 2: Hecho en México (IMPI) -->
 		<dict>
 			<key>nombre</key>
 			<string>Hecho en México</string>
@@ -41,7 +38,7 @@
 			<key>headerIcono</key>
 			<string>megaphone.fill</string>
 			<key>fotografiaAssets</key>
-			<string>HM</string>
+			<string>nHEM_banner_p</string>
 			<key>fotografiaURL</key>
 			<string></string>
 			<key>textoAlternativo</key>
@@ -59,8 +56,6 @@
 			<key>abrirFueraDeApp</key>
 			<true/>
 		</dict>
-		
-		<!-- Banner 3: Compras Locales -->
 		<dict>
 			<key>nombre</key>
 			<string>Compra Local</string>
@@ -87,8 +82,6 @@
 			<key>abrirFueraDeApp</key>
 			<false/>
 		</dict>
-		
-		<!-- Banner 4: Ejemplo con URL remota (si no tuvieras Assets) -->
 		<dict>
 			<key>nombre</key>
 			<string>Banner Remoto Ejemplo</string>
@@ -97,11 +90,11 @@
 			<key>headerIcono</key>
 			<string>megaphone.fill</string>
 			<key>fotografiaAssets</key>
-			<string></string>
+			<string>BHT</string>
 			<key>fotografiaURL</key>
 			<string>https://via.placeholder.com/800x400/FF6B6B/FFFFFF?text=Patrocinador+4</string>
 			<key>textoAlternativo</key>
-			<string>Patrocinador 4</string>
+			<string>BHT</string>
 			<key>tiempoExposicionSegundos</key>
 			<integer>3</integer>
 			<key>fechaInicio</key>
@@ -111,11 +104,10 @@
 			<key>tieneEnlace</key>
 			<true/>
 			<key>url</key>
-			<string>https://www.ejemplo.com</string>
+			<string>https://www.instagram.com/institutohumandelta/</string>
 			<key>abrirFueraDeApp</key>
 			<true/>
 		</dict>
 	</array>
 </dict>
 </plist>
-

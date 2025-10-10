@@ -8,6 +8,10 @@
 		<dict>
 			<key>nombre</key>
 			<string>El Buen Fin 2025</string>
+			<key>headerTitulo</key>
+			<string>VG_NO_PATROCINADOR</string>
+			<key>headerIcono</key>
+			<string>megaphone.fill</string>
 			<key>fotografiaAssets</key>
 			<string>BF</string>
 			<key>fotografiaURL</key>
@@ -32,6 +36,10 @@
 		<dict>
 			<key>nombre</key>
 			<string>Hecho en México</string>
+			<key>headerTitulo</key>
+			<string>VG_NO_PATROCINADOR</string>
+			<key>headerIcono</key>
+			<string>megaphone.fill</string>
 			<key>fotografiaAssets</key>
 			<string>HM</string>
 			<key>fotografiaURL</key>
@@ -56,6 +64,10 @@
 		<dict>
 			<key>nombre</key>
 			<string>Compra Local</string>
+			<key>headerTitulo</key>
+			<string>VG_NO_PATROCINADOR</string>
+			<key>headerIcono</key>
+			<string>megaphone.fill</string>
 			<key>fotografiaAssets</key>
 			<string>CO</string>
 			<key>fotografiaURL</key>
@@ -80,6 +92,10 @@
 		<dict>
 			<key>nombre</key>
 			<string>Banner Remoto Ejemplo</string>
+			<key>headerTitulo</key>
+			<string>VG_NO_PATROCINADOR</string>
+			<key>headerIcono</key>
+			<string>megaphone.fill</string>
 			<key>fotografiaAssets</key>
 			<string></string>
 			<key>fotografiaURL</key>

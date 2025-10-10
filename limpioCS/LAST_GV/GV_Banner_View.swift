@@ -19,32 +19,34 @@ struct GV_Banner_View: View {
     
     var body: some View {
         // Solo mostrar si hay banners activos
-        if bannerManager.hayBanners {
+        if bannerManager.hayBanners, let primerBanner = bannerManager.bannersActivos.first {
             VStack(spacing: 0) {
-                // Header del banner
-                HStack {
-                    Image(systemName: "megaphone.fill")
-                        .font(themeManager.headline)
-                        .foregroundColor(themeManager.accent)
-                    
-                    Text("PATROCINADORES")
-                        .font(themeManager.headline)
-                        .fontWeight(.semibold)
-                        .foregroundColor(themeManager.textPrimary)
-                    
-                    Spacer()
-                    
-                    // Botón Play/Pause
-                    Button(action: {
-                        bannerManager.toggleReproduccion()
-                    }) {
-                        Image(systemName: bannerManager.estaReproduciendo ? "pause.circle.fill" : "play.circle.fill")
-                            .font(.title3)
+                // Header del banner (condicional según configuración)
+                if primerBanner.mostrarHeader {
+                    HStack {
+                        Image(systemName: primerBanner.headerIcono)
+                            .font(themeManager.headline)
                             .foregroundColor(themeManager.accent)
+                        
+                        Text(primerBanner.headerTitulo)
+                            .font(themeManager.headline)
+                            .fontWeight(.semibold)
+                            .foregroundColor(themeManager.textPrimary)
+                        
+                        Spacer()
+                        
+                        // Botón Play/Pause
+                        Button(action: {
+                            bannerManager.toggleReproduccion()
+                        }) {
+                            Image(systemName: bannerManager.estaReproduciendo ? "pause.circle.fill" : "play.circle.fill")
+                                .font(.title3)
+                                .foregroundColor(themeManager.accent)
+                        }
                     }
+                    .padding(.horizontal, themeManager.paddingMedium)
+                    .padding(.vertical, 8)
                 }
-                .padding(.horizontal, themeManager.paddingMedium)
-                .padding(.vertical, 8)
                 
                 // Contenido del banner con TabView
                 TabView(selection: $bannerManager.bannerActualIndex) {

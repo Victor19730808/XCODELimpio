@@ -17,6 +17,10 @@ struct GV_Banner_Config: Identifiable {
     // MARK: - Información Básica
     let nombre: String
     
+    // MARK: - Configuración del Header/Caption
+    let headerTitulo: String        // Texto del header o "VG_NO_PATROCINADOR" para ocultarlo
+    let headerIcono: String         // Ícono SF Symbol para el header
+    
     // MARK: - Imagen/Fotografía (exclusivas - preferencia: Assets)
     let fotografiaAssets: String?   // Nombre de la imagen en Assets.xcassets (ej: "BF", "HM")
     let fotografiaURL: String?      // URL de la imagen remota
@@ -38,6 +42,11 @@ struct GV_Banner_Config: Identifiable {
     let abrirFueraDeApp: Bool       // true = Safari, false = WebView interno
     
     // MARK: - Computed Properties
+    
+    /// Verifica si debe mostrar el header/caption
+    var mostrarHeader: Bool {
+        return headerTitulo != "VG_NO_PATROCINADOR"
+    }
     
     /// Verifica si el banner está activo según las fechas
     var estaActivo: Bool {
@@ -120,6 +129,10 @@ extension GV_Banner_Config {
             return nil
         }
         
+        // Header/Caption (opcional - default: "PATROCINADORES" + "megaphone.fill")
+        let headerTitulo = dict["headerTitulo"] as? String ?? "PATROCINADORES"
+        let headerIcono = dict["headerIcono"] as? String ?? "megaphone.fill"
+        
         // Imagen (opcional - prioridad: Assets > URL)
         let fotografiaAssets = dict["fotografiaAssets"] as? String
         let fotografiaURL = dict["fotografiaURL"] as? String
@@ -162,6 +175,8 @@ extension GV_Banner_Config {
         return GV_Banner_Config(
             id: UUID(),
             nombre: nombre,
+            headerTitulo: headerTitulo,
+            headerIcono: headerIcono,
             fotografiaAssets: fotografiaAssets,
             fotografiaURL: fotografiaURL,
             textoAlternativo: textoAlternativo,

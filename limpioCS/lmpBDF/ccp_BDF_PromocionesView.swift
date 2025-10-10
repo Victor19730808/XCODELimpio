@@ -195,8 +195,6 @@ struct PromocionesMainView: View {
                 }
             }
         }
-        .background(themeManager.cardBackground)
-        .clipShape(RoundedRectangle(cornerRadius: themeManager.cornerRadius))
         .navigationTitle("Promociones")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
@@ -326,6 +324,12 @@ struct EstablecimientoHeaderView: View {
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
             .background(themeManager.primary)
+            .clipShape(
+                UnevenRoundedRectangle(
+                    topLeadingRadius: themeManager.cornerRadius,
+                    topTrailingRadius: themeManager.cornerRadius
+                )
+            )
             
             // Contenido del establecimiento
             VStack(spacing: 16) {
@@ -436,9 +440,15 @@ struct EstablecimientoHeaderView: View {
             }
             .padding(20)
             .background(themeManager.cardBackground)
-            .clipShape(RoundedRectangle(cornerRadius: themeManager.cornerRadius))
+            .clipShape(
+                UnevenRoundedRectangle(
+                    bottomLeadingRadius: themeManager.cornerRadius,
+                    bottomTrailingRadius: themeManager.cornerRadius
+                )
+            )
             .shadow(color: themeManager.shadow, radius: themeManager.shadowRadius, x: 0, y: 4)
         }
+        .clipShape(RoundedRectangle(cornerRadius: themeManager.cornerRadius))
         .padding(.horizontal, 20)
     }
 }

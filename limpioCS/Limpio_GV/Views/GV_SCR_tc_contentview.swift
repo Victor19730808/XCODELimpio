@@ -32,35 +32,6 @@ struct GV_SCR_tc_contentview: View {
                                 .font(themeManager.headline)
                                 .foregroundColor(themeManager.textPrimary)
                                 .padding(.horizontal, themeManager.paddingMedium)
-                            
-                            VStack(spacing: 8) {
-                                NavigationLink {
-                                    ccp_WS_EstablecimientosView()
-                                } label: {
-                                    Label("Establecimientos (normal)", systemImage: "network")
-                                        .font(themeManager.body)
-                                        .foregroundColor(themeManager.textPrimary)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .padding(themeManager.paddingMedium)
-                                        .background(themeManager.cardBackground)
-                                        .cornerRadius(themeManager.cornerRadius)
-                                        .shadow(color: themeManager.shadow, radius: themeManager.shadowRadius)
-                                }
-                                
-                                NavigationLink {
-                                    ccp_WS_EstablecimientosViewFiltrado()
-                                } label: {
-                                    Label("Establecimientos por estado (auto)", systemImage: "location.fill")
-                                        .font(themeManager.body)
-                                        .foregroundColor(themeManager.textPrimary)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .padding(themeManager.paddingMedium)
-                                        .background(themeManager.cardBackground)
-                                        .cornerRadius(themeManager.cornerRadius)
-                                        .shadow(color: themeManager.shadow, radius: themeManager.shadowRadius)
-                                }
-                            }
-                            .padding(.horizontal, themeManager.paddingMedium)
                         }
                         
                         Divider()

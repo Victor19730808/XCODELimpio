@@ -195,6 +195,8 @@ struct PromocionesMainView: View {
                 }
             }
         }
+        .background(themeManager.cardBackground)
+        .clipShape(RoundedRectangle(cornerRadius: themeManager.cornerRadius))
         .navigationTitle("Promociones")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {

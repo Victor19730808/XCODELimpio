@@ -31,6 +31,13 @@ struct GV_Temas_Config {
     let headerText: Color
     let headerIcon: Color
     
+    // MARK: - Colores de Subheaders
+    let subheaderBackground: Color
+    let subheaderText: Color
+    
+    // MARK: - URLs de Configuración
+    let imagenPromocionDefault: String
+    
     // MARK: - Otros Colores
     let border: Color
     let shadow: Color
@@ -115,6 +122,9 @@ class GV_Temas_ConfigManager {
                 headerBackground: .blue,
                 headerText: .white,
                 headerIcon: .white,
+                subheaderBackground: Color.blue.opacity(0.3),
+                subheaderText: Color.blue.opacity(0.8),
+                imagenPromocionDefault: "https://fastly.picsum.photos/id/866/200/300.jpg?hmac=rcadCENKh4rD6MAp6V_ma-AyWv641M4iiOpe1RyFHeI",
                 
                 // Otros Colores
                 border: Color.gray.opacity(0.2),
@@ -185,6 +195,9 @@ class GV_Temas_ConfigManager {
                 headerBackground: Color(red: 0.4, green: 0.6, blue: 1.0),
                 headerText: .white,
                 headerIcon: .white,
+                subheaderBackground: Color(red: 0.4, green: 0.6, blue: 1.0).opacity(0.2),
+                subheaderText: Color(red: 0.4, green: 0.6, blue: 1.0).opacity(0.7),
+                imagenPromocionDefault: "https://fastly.picsum.photos/id/866/200/300.jpg?hmac=rcadCENKh4rD6MAp6V_ma-AyWv641M4iiOpe1RyFHeI",
                 
                 // Otros Colores
                 border: Color.white.opacity(0.2),
@@ -255,6 +268,9 @@ class GV_Temas_ConfigManager {
                 headerBackground: Color(red: 0.9, green: 0.1, blue: 0.2),
                 headerText: .white,
                 headerIcon: .white,
+                subheaderBackground: Color(red: 0.9, green: 0.1, blue: 0.2).opacity(0.25),
+                subheaderText: Color(red: 0.9, green: 0.1, blue: 0.2).opacity(0.8),
+                imagenPromocionDefault: "https://fastly.picsum.photos/id/866/200/300.jpg?hmac=rcadCENKh4rD6MAp6V_ma-AyWv641M4iiOpe1RyFHeI",
                 
                 // Otros Colores
                 border: Color.gray.opacity(0.3),

@@ -77,6 +77,13 @@ extension GV_Temas_Manager {
     var border: Color { config.border }
     var shadow: Color { config.shadow }
     
+    // MARK: - Colores de Subheaders
+    var subheaderBackground: Color { config.subheaderBackground }
+    var subheaderText: Color { config.subheaderText }
+    
+    // MARK: - URLs de Configuración
+    var imagenPromocionDefault: String { config.imagenPromocionDefault }
+    
     // MARK: - Colores de Header
     var headerBackground: Color { config.headerBackground }
     var headerText: Color { config.headerText }

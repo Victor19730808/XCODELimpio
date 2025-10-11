@@ -11,7 +11,7 @@ struct limpioCSApp: App {
            GV_SCR_tp_splash()  // ✨ Empezar con splash migrada
                 .environmentObject(locationService)
         }
-        // ✅ Registramos el contenedor con el nuevo modelo lmpBDF
+        // ✅ Registramos el contenedor con el modelo lmpBDF
         .modelContainer(for: [
             lmpBDF_EstablecimientoLocal.self
         ])

@@ -81,6 +81,22 @@ struct GV_SCR_tc_menuprincipal: View {
                             .offset(y: bannerAnimation ? 0 : 50)
                             .opacity(bannerAnimation ? 1 : 0)
                             .animation(.easeOut(duration: 0.6).delay(0.7), value: bannerAnimation)
+                        
+                        // 🧪 Testing - Solo para desarrollo
+                        #if DEBUG
+                        GV_MenuCard(
+                            title: "🧪 Testing",
+                            icon: "testtube.2",
+                            color: .orange,
+                            items: [
+                                GV_MenuItem(title: "Test Sistema Categorías", subtitle: "Vista de prueba del sistema de categorías", destination: AnyView(GV_TestCategoriasView()))
+                            ]
+                        )
+                        .offset(x: cardAnimations[2] ? 0 : 50)
+                        .opacity(cardAnimations[2] ? 1 : 0)
+                        .animation(.easeOut(duration: 0.6).delay(0.9), value: cardAnimations[2])
+                        #endif
+                        
                     }
                     .padding(.horizontal, themeManager.paddingMedium)
                     

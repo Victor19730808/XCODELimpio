@@ -26,8 +26,6 @@ final class lmpBDF_EstablecimientoLocal {
     /// Longitud geográfica.
     var lon: Double?
 
-    /// 🔸 NUEVO: bandera de favorito
-    var esFavorito: Bool = false
 
     /// Inicializador para crear un establecimiento local.
     init(
@@ -37,8 +35,7 @@ final class lmpBDF_EstablecimientoLocal {
         estado: String? = nil,
         categoria: String? = nil,
         lat: Double? = nil,
-        lon: Double? = nil,
-        esFavorito: Bool = false
+        lon: Double? = nil
     ) {
         self.id = id
         self.nombre = nombre
@@ -47,6 +44,5 @@ final class lmpBDF_EstablecimientoLocal {
         self.categoria = categoria
         self.lat = lat
         self.lon = lon
-        self.esFavorito = esFavorito
     }
 }

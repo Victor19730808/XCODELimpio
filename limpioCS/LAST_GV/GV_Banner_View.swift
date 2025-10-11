@@ -82,6 +82,14 @@ struct GV_Banner_View: View {
                     SafariWebView(url: url)
                 }
             }
+            .onAppear {
+                // Vista se volvió visible - reanudar banners
+                bannerManager.vistaSeVolvioVisible()
+            }
+            .onDisappear {
+                // Vista se volvió invisible - pausar banners
+                bannerManager.vistaSeVolvioInvisible()
+            }
         }
     }
     

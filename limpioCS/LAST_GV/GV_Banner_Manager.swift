@@ -183,6 +183,19 @@ class GV_Banner_Manager: ObservableObject {
         return !bannersActivos.isEmpty
     }
     
+    // MARK: - Control de Visibilidad (Optimización)
+    
+    /// Control de visibilidad de la vista (optimización)
+    func vistaSeVolvioVisible() {
+        print("👁️ Vista se volvió visible - reanudando banners")
+        reproducir()
+    }
+    
+    func vistaSeVolvioInvisible() {
+        print("👁️ Vista se volvió invisible - pausando banners")
+        pausar()
+    }
+    
     // MARK: - Cleanup
     
     deinit {

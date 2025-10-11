@@ -18,13 +18,22 @@ struct GV_SCR_vg_FavoritosView: View {
     // MARK: - Environment
     @Environment(\.dismiss) private var dismiss
     
-    // Trae únicamente favoritos
+    // MARK: - Managers
+    @ObservedObject private var favoritosManager = GV_FavoritosManager.shared
+    
+    // Trae todos los establecimientos (filtrará por favoritos en computed property)
     @Query(
-        filter: #Predicate<lmpBDF_EstablecimientoLocal> { $0.esFavorito == true },
-        sort: \.nombre,
+        sort: \lmpBDF_EstablecimientoLocal.nombre,
         order: .forward
     )
-    private var favoritos: [lmpBDF_EstablecimientoLocal]
+    private var todosEstablecimientos: [lmpBDF_EstablecimientoLocal]
+    
+    // Computed property para obtener solo los favoritos
+    private var favoritos: [lmpBDF_EstablecimientoLocal] {
+        return todosEstablecimientos.filter { establecimiento in
+            favoritosManager.isFavorite(establecimientoId: establecimiento.id)
+        }
+    }
 
     var body: some View {
         VStack(spacing: 0) {

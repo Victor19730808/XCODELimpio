@@ -20,6 +20,7 @@ struct GV_SCR_vg_MapaCercanias: View {
     private let screenType: ScreenType = .general
     private let myHeader: GV_HeaderType = .tipo2
     @ObservedObject private var themeManager = GV_Temas_Manager.shared
+    @ObservedObject private var favoritosManager = GV_FavoritosManager.shared
     
     // MARK: - Parámetros de configuración
     let isTodoMexico: Bool  // Si es true, inicia en modo "Todo México"
@@ -97,7 +98,7 @@ struct GV_SCR_vg_MapaCercanias: View {
     private var establecimientosFiltrados: [lmpBDF_EstablecimientoLocal] {
         return todosLosEstablecimientos.filter { establecimiento in
             // Filtro por favoritos
-            if soloFavoritos && !establecimiento.esFavorito {
+            if soloFavoritos && !favoritosManager.isFavorite(establecimientoId: establecimiento.id) {
                 return false
             }
             
@@ -196,6 +197,7 @@ struct GV_SCR_vg_MapaCercanias: View {
                                     PinEstilo2(
                                         establecimiento: establecimiento,
                                         themeManager: themeManager,
+                                        favoritosManager: favoritosManager,
                                         usarColoresPorCategoria: usarColoresPorCategoria
                                     )
                                     .onTapGesture {
@@ -219,6 +221,7 @@ struct GV_SCR_vg_MapaCercanias: View {
                                     PinEstilo2(
                                         establecimiento: establecimiento,
                                         themeManager: themeManager,
+                                        favoritosManager: favoritosManager,
                                         usarColoresPorCategoria: usarColoresPorCategoria
                                     )
                                     .onTapGesture {
@@ -353,7 +356,8 @@ struct GV_SCR_vg_MapaCercanias: View {
             // Modal con detalles del establecimiento
             EstablecimientoDetailSheet(
                 establecimiento: establecimiento,
-                themeManager: themeManager
+                themeManager: themeManager,
+                favoritosManager: favoritosManager
             )
         }
         .sheet(isPresented: $mostrarSelectorCategoria) {
@@ -874,6 +878,7 @@ struct FiltrosView: View {
 struct PinEstilo2: View {
     let establecimiento: lmpBDF_EstablecimientoLocal
     let themeManager: GV_Temas_Manager
+    let favoritosManager: GV_FavoritosManager
     let usarColoresPorCategoria: Bool
     
     // Función para obtener color según categoría
@@ -909,7 +914,7 @@ struct PinEstilo2: View {
     
     // Colores para gradiente
     private var gradientColors: [Color] {
-        if establecimiento.esFavorito {
+        if favoritosManager.isFavorite(establecimientoId: establecimiento.id) {
             return [themeManager.accent, themeManager.accent.opacity(0.8)]
         } else if usarColoresPorCategoria {
             let baseColor = colorPorCategoria(establecimiento.categoria)
@@ -938,7 +943,7 @@ struct PinEstilo2: View {
                 .shadow(color: Color.black.opacity(0.25), radius: 3, x: 0, y: 2)
             
             // Icono interior
-            Image(systemName: establecimiento.esFavorito ? "heart.fill" : "building.2.fill")
+            Image(systemName: favoritosManager.isFavorite(establecimientoId: establecimiento.id) ? "heart.fill" : "building.2.fill")
                 .font(.system(size: 10, weight: .bold))  // Aumentado de 8 a 10
                 .foregroundColor(.white)
         }
@@ -1021,6 +1026,7 @@ struct UserLocationPinView: View {
 struct EstablecimientoDetailSheet: View {
     let establecimiento: lmpBDF_EstablecimientoLocal
     let themeManager: GV_Temas_Manager
+    let favoritosManager: GV_FavoritosManager
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -1036,7 +1042,7 @@ struct EstablecimientoDetailSheet: View {
                             
                             Spacer()
                             
-                            if establecimiento.esFavorito {
+                            if favoritosManager.isFavorite(establecimientoId: establecimiento.id) {
                                 Image(systemName: "heart.fill")
                                     .foregroundColor(themeManager.accent)
                                     .font(.title2)

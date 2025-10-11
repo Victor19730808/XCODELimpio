@@ -7,7 +7,7 @@
 //  • Componente visual reutilizable para mostrar un establecimiento
 //    con su información básica y un botón para marcarlo como favorito.
 //  • Vinculado al modelo SwiftData: lmpBDF_EstablecimientoLocal
-//  • Permite alternar la propiedad esFavorito y guardar cambios.
+//  • Permite alternar favoritos usando GV_FavoritosManager.
 //  • Migrado al sistema de temas dinámico
 //
 //  Fecha: 2025-10-04
@@ -23,9 +23,9 @@ struct ccp_UI_EstablecimientoRow: View {
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject private var locationService: LocationService
     @ObservedObject private var themeManager = GV_Temas_Manager.shared
+    @ObservedObject private var favoritosManager = GV_FavoritosManager.shared
     @Bindable var est: lmpBDF_EstablecimientoLocal
     @State private var isPressed = false
-    @State private var showPromociones = false
     @State private var showFavoritoConfirmation = false
 
     var body: some View {
@@ -65,7 +65,7 @@ struct ccp_UI_EstablecimientoRow: View {
                 }
                 
                 // Distancia (solo en favoritos) - clickeable para ir al mapa
-                if est.esFavorito && hasValidCoordinates {
+                if favoritosManager.isFavorite(establecimientoId: est.id) && hasValidCoordinates {
                     NavigationLink(destination: MapViewWithLocation(establecimiento: est)) {
                         HStack(spacing: 6) {
                             Image(systemName: "location.circle.fill")
@@ -95,10 +95,8 @@ struct ccp_UI_EstablecimientoRow: View {
             Spacer()
 
             HStack(spacing: 12) {
-                // Botón de promociones
-                Button {
-                    showPromociones = true
-                } label: {
+                // Botón de promociones - NavigationLink
+                NavigationLink(destination: GV_SRC_vg_EstablecimientoPromociones(establecimientoId: est.id)) {
                     Image(systemName: "tag.fill")
                         .font(themeManager.title)
                         .foregroundStyle(themeManager.error)
@@ -119,9 +117,10 @@ struct ccp_UI_EstablecimientoRow: View {
                 Button {
                     showFavoritoConfirmation = true
                 } label: {
-                    Image(systemName: est.esFavorito ? "star.fill" : "star")
+                    let esFavorito = favoritosManager.isFavorite(establecimientoId: est.id)
+                    Image(systemName: esFavorito ? "star.fill" : "star")
                         .font(themeManager.title)
-                        .foregroundStyle(est.esFavorito ? themeManager.warning : themeManager.textSecondary)
+                        .foregroundStyle(esFavorito ? themeManager.warning : themeManager.textSecondary)
                         .scaleEffect(isPressed ? 0.9 : 1.0)
                 }
                 .buttonStyle(.plain)
@@ -130,7 +129,7 @@ struct ccp_UI_EstablecimientoRow: View {
                         isPressed = pressing
                     }
                 } perform: {}
-                .accessibilityLabel(est.esFavorito ? "Quitar de favoritos" : "Agregar a favoritos")
+                .accessibilityLabel(favoritosManager.isFavorite(establecimientoId: est.id) ? "Quitar de favoritos" : "Agregar a favoritos")
             }
         }
         .padding(.vertical, 16)
@@ -142,23 +141,17 @@ struct ccp_UI_EstablecimientoRow: View {
         )
         .scaleEffect(isPressed ? 0.98 : 1.0)
         .animation(.easeInOut(duration: 0.1), value: isPressed)
-        .sheet(isPresented: $showPromociones) {
-            ccp_BDF_PromocionesView(establecimientoIdInicial: est.id)
-        }
-        .alert(est.esFavorito ? "Quitar de favoritos" : "Agregar a favoritos", isPresented: $showFavoritoConfirmation) {
+        .alert(favoritosManager.isFavorite(establecimientoId: est.id) ? "Quitar de favoritos" : "Agregar a favoritos", isPresented: $showFavoritoConfirmation) {
             Button("Cancelar", role: .cancel) { }
-            Button(est.esFavorito ? "Quitar" : "Agregar") {
+            Button(favoritosManager.isFavorite(establecimientoId: est.id) ? "Quitar" : "Agregar") {
                 withAnimation(.easeInOut(duration: 0.2)) {
-                    est.esFavorito.toggle()
+                    favoritosManager.toggleFavorite(establecimientoId: est.id)
                 }
-                do {
-                    try modelContext.save()
-                } catch {
-                    print("⚠️ Error al guardar favorito:", error.localizedDescription)
-                }
+                print("⭐ Favorito toggled para: \(est.nombre) - Es favorito: \(favoritosManager.isFavorite(establecimientoId: est.id))")
             }
         } message: {
-            Text(est.esFavorito ? 
+            let esFavorito = favoritosManager.isFavorite(establecimientoId: est.id)
+            Text(esFavorito ? 
                 "¿Quieres quitar \"\(est.nombre)\" de tus favoritos?" :
                 "¿Quieres agregar \"\(est.nombre)\" a tus favoritos?")
         }
@@ -742,7 +735,6 @@ struct MapViewWithLocation: View {
         categoria: "Restaurante",
         lat: 20.6,
         lon: -100.4,
-        esFavorito: true
     )
     
     let locationService = LocationService()

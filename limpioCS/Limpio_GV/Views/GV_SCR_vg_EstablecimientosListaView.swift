@@ -23,9 +23,12 @@ struct GV_SCR_vg_EstablecimientosListaView: View {
     @Query(sort: \lmpBDF_EstablecimientoLocal.nombre, order: .forward)
     private var all: [lmpBDF_EstablecimientoLocal]
     
+    // MARK: - Managers
+    @ObservedObject private var favoritosManager = GV_FavoritosManager.shared
+    
     // Computed properties
     private var data: [lmpBDF_EstablecimientoLocal] {
-        let baseData = showFavoritesOnly ? all.filter { $0.esFavorito } : all
+        let baseData = showFavoritesOnly ? all.filter { favoritosManager.isFavorite(establecimientoId: $0.id) } : all
         
         if searchText.isEmpty {
             return baseData

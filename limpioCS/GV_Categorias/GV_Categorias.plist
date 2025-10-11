@@ -1,0 +1,941 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>categorias</key>
+	<array>
+		<!-- Evento ID 2: Buen Fin 2024 -->
+		<dict>
+			<key>categoria_id</key>
+			<integer>4477</integer>
+			<key>categoria_nombre</key>
+			<string>SI ERES SERVICIO</string>
+			<key>categoria_taxonomia</key>
+			<string>Clasificación general</string>
+			<key>categoria_tags</key>
+			<string>servicio producto categoría tipo clasificación</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#6C757D</string>
+			<key>icono</key>
+			<string>briefcase.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4478</integer>
+			<key>categoria_nombre</key>
+			<string>Alimentos y bebidas</string>
+			<key>categoria_taxonomia</key>
+			<string>Servicios gastronómicos</string>
+			<key>categoria_tags</key>
+			<string>alimentos bebidas restaurantes comida rápida bares cafeterías banquetes consumo</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#FF6B6B</string>
+			<key>icono</key>
+			<string>fork.knife</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4479</integer>
+			<key>categoria_nombre</key>
+			<string>Belleza, bienestar y salud</string>
+			<key>categoria_taxonomia</key>
+			<string>Belleza y bienestar</string>
+			<key>categoria_tags</key>
+			<string>belleza bienestar salud higiene personal estética spa farmacias cuidado corporal natural maquillaje</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#FF85C2</string>
+			<key>icono</key>
+			<string>sparkles</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4480</integer>
+			<key>categoria_nombre</key>
+			<string>Educación y capacitación</string>
+			<key>categoria_taxonomia</key>
+			<string>Educación y capacitación</string>
+			<key>categoria_tags</key>
+			<string>educación capacitación cursos talleres formación profesional clases escuelas aprendizaje</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#4ECDC4</string>
+			<key>icono</key>
+			<string>book.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4481</integer>
+			<key>categoria_nombre</key>
+			<string>Entretenimiento y recreación</string>
+			<key>categoria_taxonomia</key>
+			<string>Entretenimiento y turismo</string>
+			<key>categoria_tags</key>
+			<string>entretenimiento recreación viajes turismo hospedaje diversión eventos espectáculos cine juguetes</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#FFD93D</string>
+			<key>icono</key>
+			<string>party.popper.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4482</integer>
+			<key>categoria_nombre</key>
+			<string>Hospedaje y viajes</string>
+			<key>categoria_taxonomia</key>
+			<string>Entretenimiento y turismo</string>
+			<key>categoria_tags</key>
+			<string>entretenimiento recreación viajes turismo hospedaje diversión eventos espectáculos cine juguetes</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#6BCF7F</string>
+			<key>icono</key>
+			<string>bed.double.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4483</integer>
+			<key>categoria_nombre</key>
+			<string>Servicios financieros</string>
+			<key>categoria_taxonomia</key>
+			<string>Servicios financieros</string>
+			<key>categoria_tags</key>
+			<string>finanzas bancos seguros créditos inversión ahorro préstamos asesoría financiera</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#2ECC71</string>
+			<key>icono</key>
+			<string>dollarsign.circle.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4484</integer>
+			<key>categoria_nombre</key>
+			<string>Servicios profesionales</string>
+			<key>categoria_taxonomia</key>
+			<string>Servicios profesionales</string>
+			<key>categoria_tags</key>
+			<string>consultoría abogados contadores arquitectura ingeniería diseño asesoría profesional</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#3498DB</string>
+			<key>icono</key>
+			<string>person.text.rectangle.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4485</integer>
+			<key>categoria_nombre</key>
+			<string>Reparaciones y mantenimiento</string>
+			<key>categoria_taxonomia</key>
+			<string>Reparación y mantenimiento</string>
+			<key>categoria_tags</key>
+			<string>reparación mantenimiento servicios técnicos ferretería materiales construcción plomería electricidad remodelación</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#E67E22</string>
+			<key>icono</key>
+			<string>wrench.and.screwdriver.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4486</integer>
+			<key>categoria_nombre</key>
+			<string>Tecnología y comunicación</string>
+			<key>categoria_taxonomia</key>
+			<string>Tecnología y comunicación</string>
+			<key>categoria_tags</key>
+			<string>tecnología comunicación electrónica video cómputo computadoras celulares electrodomésticos línea blanca gadgets internet</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#9B59B6</string>
+			<key>icono</key>
+			<string>laptopcomputer</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4487</integer>
+			<key>categoria_nombre</key>
+			<string>Varios</string>
+			<key>categoria_taxonomia</key>
+			<string>Varios</string>
+			<key>categoria_tags</key>
+			<string>varios misceláneos otros productos servicios general</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#95A5A6</string>
+			<key>icono</key>
+			<string>square.grid.2x2.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4488</integer>
+			<key>categoria_nombre</key>
+			<string>SI ERES PRODUCTO</string>
+			<key>categoria_taxonomia</key>
+			<string>Clasificación general</string>
+			<key>categoria_tags</key>
+			<string>servicio producto categoría tipo clasificación</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#34495E</string>
+			<key>icono</key>
+			<string>shippingbox.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4489</integer>
+			<key>categoria_nombre</key>
+			<string>Abarrotes y perecederos</string>
+			<key>categoria_taxonomia</key>
+			<string>Alimentos y consumo</string>
+			<key>categoria_tags</key>
+			<string>abarrotes perecederos comida supermercado despensa consumo alimentos productos frescos</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#27AE60</string>
+			<key>icono</key>
+			<string>cart.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4490</integer>
+			<key>categoria_nombre</key>
+			<string>Calzado y marroquinería</string>
+			<key>categoria_taxonomia</key>
+			<string>Moda y productos personales</string>
+			<key>categoria_tags</key>
+			<string>moda ropa calzado marroquinería joyería relojería accesorios vestir tendencia boutique</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#8B4513</string>
+			<key>icono</key>
+			<string>shoe.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4491</integer>
+			<key>categoria_nombre</key>
+			<string>Cuidado e higiene personal</string>
+			<key>categoria_taxonomia</key>
+			<string>Belleza y bienestar</string>
+			<key>categoria_tags</key>
+			<string>belleza bienestar salud higiene personal estética spa farmacias cuidado corporal natural maquillaje</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#FF69B4</string>
+			<key>icono</key>
+			<string>drop.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4492</integer>
+			<key>categoria_nombre</key>
+			<string>Electrónica y video</string>
+			<key>categoria_taxonomia</key>
+			<string>Tecnología y comunicación</string>
+			<key>categoria_tags</key>
+			<string>tecnología comunicación electrónica video cómputo computadoras celulares electrodomésticos línea blanca gadgets internet</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#5856D6</string>
+			<key>icono</key>
+			<string>tv.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4493</integer>
+			<key>categoria_nombre</key>
+			<string>Electrodomésticos y línea blanca</string>
+			<key>categoria_taxonomia</key>
+			<string>Tecnología y comunicación</string>
+			<key>categoria_tags</key>
+			<string>tecnología comunicación electrónica video cómputo computadoras celulares electrodomésticos línea blanca gadgets internet</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#007AFF</string>
+			<key>icono</key>
+			<string>refrigerator.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4494</integer>
+			<key>categoria_nombre</key>
+			<string>Farmacias y salud</string>
+			<key>categoria_taxonomia</key>
+			<string>Belleza y bienestar</string>
+			<key>categoria_tags</key>
+			<string>belleza bienestar salud higiene personal estética spa farmacias cuidado corporal natural maquillaje</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#E74C3C</string>
+			<key>icono</key>
+			<string>cross.case.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4495</integer>
+			<key>categoria_nombre</key>
+			<string>Ferretería y materiales de construcción</string>
+			<key>categoria_taxonomia</key>
+			<string>Reparación y mantenimiento</string>
+			<key>categoria_tags</key>
+			<string>reparación mantenimiento servicios técnicos ferretería materiales construcción plomería electricidad remodelación</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#D35400</string>
+			<key>icono</key>
+			<string>hammer.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4496</integer>
+			<key>categoria_nombre</key>
+			<string>Fotografía, cómputo y accesorios</string>
+			<key>categoria_taxonomia</key>
+			<string>Tecnología y comunicación</string>
+			<key>categoria_tags</key>
+			<string>tecnología comunicación electrónica video cómputo computadoras celulares electrodomésticos línea blanca gadgets internet</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#8E44AD</string>
+			<key>icono</key>
+			<string>camera.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4497</integer>
+			<key>categoria_nombre</key>
+			<string>Hogar y decoración</string>
+			<key>categoria_taxonomia</key>
+			<string>Hogar y estilo de vida</string>
+			<key>categoria_tags</key>
+			<string>hogar decoración muebles jardín plantas regalos artesanías estilo vida interior diseño casa</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#F39C12</string>
+			<key>icono</key>
+			<string>house.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4498</integer>
+			<key>categoria_nombre</key>
+			<string>Joyería y relojería</string>
+			<key>categoria_taxonomia</key>
+			<string>Moda y productos personales</string>
+			<key>categoria_tags</key>
+			<string>moda ropa calzado marroquinería joyería relojería accesorios vestir tendencia boutique</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#FFD700</string>
+			<key>icono</key>
+			<string>crown.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4499</integer>
+			<key>categoria_nombre</key>
+			<string>Juguetería y entretenimiento</string>
+			<key>categoria_taxonomia</key>
+			<string>Entretenimiento y turismo</string>
+			<key>categoria_tags</key>
+			<string>entretenimiento recreación viajes turismo hospedaje diversión eventos espectáculos cine juguetes</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#FF6347</string>
+			<key>icono</key>
+			<string>puzzlepiece.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4500</integer>
+			<key>categoria_nombre</key>
+			<string>Moda y ropa</string>
+			<key>categoria_taxonomia</key>
+			<string>Moda y productos personales</string>
+			<key>categoria_tags</key>
+			<string>moda ropa calzado marroquinería joyería relojería accesorios vestir tendencia boutique</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#E91E63</string>
+			<key>icono</key>
+			<string>tshirt.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4501</integer>
+			<key>categoria_nombre</key>
+			<string>Muebles</string>
+			<key>categoria_taxonomia</key>
+			<string>Hogar y estilo de vida</string>
+			<key>categoria_tags</key>
+			<string>hogar decoración muebles jardín plantas regalos artesanías estilo vida interior diseño casa</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#795548</string>
+			<key>icono</key>
+			<string>sofa.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4502</integer>
+			<key>categoria_nombre</key>
+			<string>Oficina y papelería</string>
+			<key>categoria_taxonomia</key>
+			<string>Oficina y papelería</string>
+			<key>categoria_tags</key>
+			<string>oficina papelería útiles escolares escritorios suministros materiales administrativos trabajo</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#607D8B</string>
+			<key>icono</key>
+			<string>pencil.and.list.clipboard</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4503</integer>
+			<key>categoria_nombre</key>
+			<string>Regalos y artesanías</string>
+			<key>categoria_taxonomia</key>
+			<string>Hogar y estilo de vida</string>
+			<key>categoria_tags</key>
+			<string>hogar decoración muebles jardín plantas regalos artesanías estilo vida interior diseño casa</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#FF1744</string>
+			<key>icono</key>
+			<string>gift.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4504</integer>
+			<key>categoria_nombre</key>
+			<string>Jardinería y plantas</string>
+			<key>categoria_taxonomia</key>
+			<string>Hogar y estilo de vida</string>
+			<key>categoria_tags</key>
+			<string>hogar decoración muebles jardín plantas regalos artesanías estilo vida interior diseño casa</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#4CAF50</string>
+			<key>icono</key>
+			<string>leaf.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4505</integer>
+			<key>categoria_nombre</key>
+			<string>Varios</string>
+			<key>categoria_taxonomia</key>
+			<string>Varios</string>
+			<key>categoria_tags</key>
+			<string>varios misceláneos otros productos servicios general</string>
+			<key>evento_id</key>
+			<integer>2</integer>
+			<key>colorHex</key>
+			<string>#9E9E9E</string>
+			<key>icono</key>
+			<string>ellipsis.circle.fill</string>
+		</dict>
+		
+		<!-- Evento ID 1: Eventos anteriores -->
+		<dict>
+			<key>categoria_id</key>
+			<integer>4506</integer>
+			<key>categoria_nombre</key>
+			<string>Abarrotes</string>
+			<key>categoria_taxonomia</key>
+			<string>Alimentos y consumo</string>
+			<key>categoria_tags</key>
+			<string>abarrotes comida supermercado despensa consumo alimentos perecederos restaurantes comida rápida bebidas</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#27AE60</string>
+			<key>icono</key>
+			<string>basket.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4507</integer>
+			<key>categoria_nombre</key>
+			<string>Automóviles y transportes</string>
+			<key>categoria_taxonomia</key>
+			<string>Automotriz y transporte</string>
+			<key>categoria_tags</key>
+			<string>automóviles autos transporte refacciones llantas servicio mecánico autoservicio movilidad coches mantenimiento</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#2C3E50</string>
+			<key>icono</key>
+			<string>car.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4508</integer>
+			<key>categoria_nombre</key>
+			<string>Bancos y seguros</string>
+			<key>categoria_taxonomia</key>
+			<string>Finanzas y servicios</string>
+			<key>categoria_tags</key>
+			<string>bancos seguros servicios pagos trámites asesoría crédito finanzas inversión soporte atención</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#16A085</string>
+			<key>icono</key>
+			<string>building.columns.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4509</integer>
+			<key>categoria_nombre</key>
+			<string>Blancos</string>
+			<key>categoria_taxonomia</key>
+			<string>Hogar y decoración</string>
+			<key>categoria_tags</key>
+			<string>hogar muebles decoración línea blanca blancos sala cocina recámara diseño interior</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#BDC3C7</string>
+			<key>icono</key>
+			<string>bed.double.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4510</integer>
+			<key>categoria_nombre</key>
+			<string>Calzado</string>
+			<key>categoria_taxonomia</key>
+			<string>Moda y accesorios</string>
+			<key>categoria_tags</key>
+			<string>ropa calzado moda accesorios vestir zapatos joyería joyas tendencias boutique estilo</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#8B4513</string>
+			<key>icono</key>
+			<string>shoe.2.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4511</integer>
+			<key>categoria_nombre</key>
+			<string>Cuidado e higiene personal</string>
+			<key>categoria_taxonomia</key>
+			<string>Salud y bienestar</string>
+			<key>categoria_tags</key>
+			<string>farmacia salud bienestar higiene personal óptica lentes cuidado corporal belleza medicamentos productos naturales</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#FF69B4</string>
+			<key>icono</key>
+			<string>heart.text.square.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4512</integer>
+			<key>categoria_nombre</key>
+			<string>Deportes</string>
+			<key>categoria_taxonomia</key>
+			<string>Estilo de vida</string>
+			<key>categoria_tags</key>
+			<string>deportes regalos juguetería jardinería ocio tiempo libre lifestyle oportunidades varios hobbies recreación</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#FF6B35</string>
+			<key>icono</key>
+			<string>figure.run</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4513</integer>
+			<key>categoria_nombre</key>
+			<string>Electrónica y video</string>
+			<key>categoria_taxonomia</key>
+			<string>Tecnología y electrónica</string>
+			<key>categoria_tags</key>
+			<string>electrónica electrodomésticos video audio fotografía cómputo computadoras celulares tecnología gadgets televisores</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#5856D6</string>
+			<key>icono</key>
+			<string>play.tv.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4514</integer>
+			<key>categoria_nombre</key>
+			<string>Electrodomésticos</string>
+			<key>categoria_taxonomia</key>
+			<string>Tecnología y electrónica</string>
+			<key>categoria_tags</key>
+			<string>electrónica electrodomésticos video audio fotografía cómputo computadoras celulares tecnología gadgets televisores</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#007AFF</string>
+			<key>icono</key>
+			<string>washer.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4515</integer>
+			<key>categoria_nombre</key>
+			<string>Farmacias</string>
+			<key>categoria_taxonomia</key>
+			<string>Salud y bienestar</string>
+			<key>categoria_tags</key>
+			<string>farmacia salud bienestar higiene personal óptica lentes cuidado corporal belleza medicamentos productos naturales</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#E74C3C</string>
+			<key>icono</key>
+			<string>pills.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4516</integer>
+			<key>categoria_nombre</key>
+			<string>Ferretería</string>
+			<key>categoria_taxonomia</key>
+			<string>Oficina y papelería</string>
+			<key>categoria_tags</key>
+			<string>oficina papelería útiles escolares escritorios ferretería herramientas materiales suministros trabajo empresarial</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#D35400</string>
+			<key>icono</key>
+			<string>wrench.adjustable.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4517</integer>
+			<key>categoria_nombre</key>
+			<string>Fotografía y cómputo</string>
+			<key>categoria_taxonomia</key>
+			<string>Tecnología y electrónica</string>
+			<key>categoria_tags</key>
+			<string>electrónica electrodomésticos video audio fotografía cómputo computadoras celulares tecnología gadgets televisores</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#8E44AD</string>
+			<key>icono</key>
+			<string>desktopcomputer</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4518</integer>
+			<key>categoria_nombre</key>
+			<string>Hogar y decoración</string>
+			<key>categoria_taxonomia</key>
+			<string>Hogar y decoración</string>
+			<key>categoria_tags</key>
+			<string>hogar muebles decoración línea blanca blancos sala cocina recámara diseño interior</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#F39C12</string>
+			<key>icono</key>
+			<string>lamp.table.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4519</integer>
+			<key>categoria_nombre</key>
+			<string>Jardinería</string>
+			<key>categoria_taxonomia</key>
+			<string>Estilo de vida</string>
+			<key>categoria_tags</key>
+			<string>deportes regalos juguetería jardinería ocio tiempo libre lifestyle oportunidades varios hobbies recreación</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#4CAF50</string>
+			<key>icono</key>
+			<string>tree.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4520</integer>
+			<key>categoria_nombre</key>
+			<string>Joyería</string>
+			<key>categoria_taxonomia</key>
+			<string>Moda y accesorios</string>
+			<key>categoria_tags</key>
+			<string>ropa calzado moda accesorios vestir zapatos joyería joyas tendencias boutique estilo</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#FFD700</string>
+			<key>icono</key>
+			<string>sparkles</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4521</integer>
+			<key>categoria_nombre</key>
+			<string>Juguetería</string>
+			<key>categoria_taxonomia</key>
+			<string>Estilo de vida</string>
+			<key>categoria_tags</key>
+			<string>deportes regalos juguetería jardinería ocio tiempo libre lifestyle oportunidades varios hobbies recreación</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#FF6347</string>
+			<key>icono</key>
+			<string>airplane</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4522</integer>
+			<key>categoria_nombre</key>
+			<string>Línea blanca</string>
+			<key>categoria_taxonomia</key>
+			<string>Hogar y decoración</string>
+			<key>categoria_tags</key>
+			<string>hogar muebles decoración línea blanca blancos sala cocina recámara diseño interior</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#007AFF</string>
+			<key>icono</key>
+			<string>oven.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4523</integer>
+			<key>categoria_nombre</key>
+			<string>Muebles</string>
+			<key>categoria_taxonomia</key>
+			<string>Hogar y decoración</string>
+			<key>categoria_tags</key>
+			<string>hogar muebles decoración línea blanca blancos sala cocina recámara diseño interior</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#795548</string>
+			<key>icono</key>
+			<string>chair.lounge.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4524</integer>
+			<key>categoria_nombre</key>
+			<string>Oficina y papelería</string>
+			<key>categoria_taxonomia</key>
+			<string>Oficina y papelería</string>
+			<key>categoria_tags</key>
+			<string>oficina papelería útiles escolares escritorios ferretería herramientas materiales suministros trabajo empresarial</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#607D8B</string>
+			<key>icono</key>
+			<string>folder.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4525</integer>
+			<key>categoria_nombre</key>
+			<string>Oportunidades</string>
+			<key>categoria_taxonomia</key>
+			<string>Estilo de vida</string>
+			<key>categoria_tags</key>
+			<string>deportes regalos juguetería jardinería ocio tiempo libre lifestyle oportunidades varios hobbies recreación</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#FF9800</string>
+			<key>icono</key>
+			<string>star.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4526</integer>
+			<key>categoria_nombre</key>
+			<string>Óptica</string>
+			<key>categoria_taxonomia</key>
+			<string>Salud y bienestar</string>
+			<key>categoria_tags</key>
+			<string>farmacia salud bienestar higiene personal óptica lentes cuidado corporal belleza medicamentos productos naturales</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#00BCD4</string>
+			<key>icono</key>
+			<string>eyeglasses</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4527</integer>
+			<key>categoria_nombre</key>
+			<string>Perecederos</string>
+			<key>categoria_taxonomia</key>
+			<string>Alimentos y consumo</string>
+			<key>categoria_tags</key>
+			<string>abarrotes comida supermercado despensa consumo alimentos perecederos restaurantes comida rápida bebidas</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#8BC34A</string>
+			<key>icono</key>
+			<string>carrot.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4528</integer>
+			<key>categoria_nombre</key>
+			<string>Regalos</string>
+			<key>categoria_taxonomia</key>
+			<string>Estilo de vida</string>
+			<key>categoria_tags</key>
+			<string>deportes regalos juguetería jardinería ocio tiempo libre lifestyle oportunidades varios hobbies recreación</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#E91E63</string>
+			<key>icono</key>
+			<string>giftcard.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4529</integer>
+			<key>categoria_nombre</key>
+			<string>Restaurantes</string>
+			<key>categoria_taxonomia</key>
+			<string>Alimentos y consumo</string>
+			<key>categoria_tags</key>
+			<string>abarrotes comida supermercado despensa consumo alimentos perecederos restaurantes comida rápida bebidas</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#FF5722</string>
+			<key>icono</key>
+			<string>fork.knife.circle.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4530</integer>
+			<key>categoria_nombre</key>
+			<string>Ropa</string>
+			<key>categoria_taxonomia</key>
+			<string>Moda y accesorios</string>
+			<key>categoria_tags</key>
+			<string>ropa calzado moda accesorios vestir zapatos joyería joyas tendencias boutique estilo</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#9C27B0</string>
+			<key>icono</key>
+			<string>tshirt</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4531</integer>
+			<key>categoria_nombre</key>
+			<string>Servicios</string>
+			<key>categoria_taxonomia</key>
+			<string>Finanzas y servicios</string>
+			<key>categoria_tags</key>
+			<string>bancos seguros servicios pagos trámites asesoría crédito finanzas inversión soporte atención</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#3F51B5</string>
+			<key>icono</key>
+			<string>hand.raised.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4532</integer>
+			<key>categoria_nombre</key>
+			<string>Varios</string>
+			<key>categoria_taxonomia</key>
+			<string>Estilo de vida</string>
+			<key>categoria_tags</key>
+			<string>deportes regalos juguetería jardinería ocio tiempo libre lifestyle oportunidades varios hobbies recreación</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#9E9E9E</string>
+			<key>icono</key>
+			<string>square.stack.fill</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4533</integer>
+			<key>categoria_nombre</key>
+			<string>Viajes</string>
+			<key>categoria_taxonomia</key>
+			<string>Entretenimiento y viajes</string>
+			<key>categoria_tags</key>
+			<string>viajes entretenimiento vacaciones cine música turismo diversión espectáculos eventos hoteles vuelos</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#00BCD4</string>
+			<key>icono</key>
+			<string>airplane.departure</string>
+		</dict>
+		<dict>
+			<key>categoria_id</key>
+			<integer>4534</integer>
+			<key>categoria_nombre</key>
+			<string>Entretenimiento</string>
+			<key>categoria_taxonomia</key>
+			<string>Entretenimiento y viajes</string>
+			<key>categoria_tags</key>
+			<string>viajes entretenimiento vacaciones cine música turismo diversión espectáculos eventos hoteles vuelos</string>
+			<key>evento_id</key>
+			<integer>1</integer>
+			<key>colorHex</key>
+			<string>#673AB7</string>
+			<key>icono</key>
+			<string>theatermasks.fill</string>
+		</dict>
+	</array>
+</dict>
+</plist>
+

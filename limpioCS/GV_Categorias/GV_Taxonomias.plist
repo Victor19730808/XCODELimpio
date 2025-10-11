@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>taxonomias</key>
+	<dict>
+		<key>Alimentos y consumo</key>
+		<dict>
+			<key>icono</key>
+			<string>fork.knife.circle.fill</string>
+			<key>colorHex</key>
+			<string>#FF6B6B</string>
+		</dict>
+		<key>Automotriz y transporte</key>
+		<dict>
+			<key>icono</key>
+			<string>car.2.fill</string>
+			<key>colorHex</key>
+			<string>#2C3E50</string>
+		</dict>
+		<key>Belleza y bienestar</key>
+		<dict>
+			<key>icono</key>
+			<string>sparkles</string>
+			<key>colorHex</key>
+			<string>#FF85C2</string>
+		</dict>
+		<key>Clasificación general</key>
+		<dict>
+			<key>icono</key>
+			<string>square.grid.3x3.fill</string>
+			<key>colorHex</key>
+			<string>#95A5A6</string>
+		</dict>
+		<key>Educación y capacitación</key>
+		<dict>
+			<key>icono</key>
+			<string>graduationcap.fill</string>
+			<key>colorHex</key>
+			<string>#4ECDC4</string>
+		</dict>
+		<key>Entretenimiento y turismo</key>
+		<dict>
+			<key>icono</key>
+			<string>popcorn.fill</string>
+			<key>colorHex</key>
+			<string>#FFD93D</string>
+		</dict>
+		<key>Entretenimiento y viajes</key>
+		<dict>
+			<key>icono</key>
+			<string>airplane.circle.fill</string>
+			<key>colorHex</key>
+			<string>#673AB7</string>
+		</dict>
+		<key>Estilo de vida</key>
+		<dict>
+			<key>icono</key>
+			<string>heart.circle.fill</string>
+			<key>colorHex</key>
+			<string>#FF6B35</string>
+		</dict>
+		<key>Finanzas y servicios</key>
+		<dict>
+			<key>icono</key>
+			<string>banknote.fill</string>
+			<key>colorHex</key>
+			<string>#16A085</string>
+		</dict>
+		<key>Hogar y decoración</key>
+		<dict>
+			<key>icono</key>
+			<string>house.circle.fill</string>
+			<key>colorHex</key>
+			<string>#F39C12</string>
+		</dict>
+		<key>Hogar y estilo de vida</key>
+		<dict>
+			<key>icono</key>
+			<string>house.and.flag.fill</string>
+			<key>colorHex</key>
+			<string>#E67E22</string>
+		</dict>
+		<key>Moda y accesorios</key>
+		<dict>
+			<key>icono</key>
+			<string>tshirt.fill</string>
+			<key>colorHex</key>
+			<string>#E91E63</string>
+		</dict>
+		<key>Moda y productos personales</key>
+		<dict>
+			<key>icono</key>
+			<string>bag.fill</string>
+			<key>colorHex</key>
+			<string>#9C27B0</string>
+		</dict>
+		<key>Oficina y papelería</key>
+		<dict>
+			<key>icono</key>
+			<string>pencil.and.list.clipboard</string>
+			<key>colorHex</key>
+			<string>#607D8B</string>
+		</dict>
+		<key>Reparación y mantenimiento</key>
+		<dict>
+			<key>icono</key>
+			<string>wrench.and.screwdriver.fill</string>
+			<key>colorHex</key>
+			<string>#E67E22</string>
+		</dict>
+		<key>Salud y bienestar</key>
+		<dict>
+			<key>icono</key>
+			<string>cross.case.fill</string>
+			<key>colorHex</key>
+			<string>#E74C3C</string>
+		</dict>
+		<key>Servicios financieros</key>
+		<dict>
+			<key>icono</key>
+			<string>dollarsign.circle.fill</string>
+			<key>colorHex</key>
+			<string>#2ECC71</string>
+		</dict>
+		<key>Servicios gastronómicos</key>
+		<dict>
+			<key>icono</key>
+			<string>fork.knife</string>
+			<key>colorHex</key>
+			<string>#FF5733</string>
+		</dict>
+		<key>Servicios profesionales</key>
+		<dict>
+			<key>icono</key>
+			<string>briefcase.fill</string>
+			<key>colorHex</key>
+			<string>#3498DB</string>
+		</dict>
+		<key>Tecnología y comunicación</key>
+		<dict>
+			<key>icono</key>
+			<string>laptopcomputer</string>
+			<key>colorHex</key>
+			<string>#9B59B6</string>
+		</dict>
+		<key>Tecnología y electrónica</key>
+		<dict>
+			<key>icono</key>
+			<string>bolt.circle.fill</string>
+			<key>colorHex</key>
+			<string>#5856D6</string>
+		</dict>
+		<key>Varios</key>
+		<dict>
+			<key>icono</key>
+			<string>ellipsis.circle.fill</string>
+			<key>colorHex</key>
+			<string>#9E9E9E</string>
+		</dict>
+	</dict>
+</dict>
+</plist>
+

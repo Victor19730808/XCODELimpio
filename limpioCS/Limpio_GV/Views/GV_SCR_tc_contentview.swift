@@ -113,9 +113,9 @@ struct GV_SCR_tc_contentview: View {
                                 .padding(.horizontal, themeManager.paddingMedium)
                             
                             NavigationLink {
-                                ccp_BDF_PromocionesView()
+                                GV_SRC_vg_EstablecimientoPromociones(establecimientoId: 123) // ID de ejemplo
                             } label: {
-                                Label("Promociones (ccp)", systemImage: "tag.fill")
+                                Label("Promociones (GV)", systemImage: "tag.fill")
                                     .font(themeManager.body)
                                     .foregroundColor(themeManager.textPrimary)
                                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -126,6 +126,7 @@ struct GV_SCR_tc_contentview: View {
                             }
                             .padding(.horizontal, themeManager.paddingMedium)
                         }
+                        
                         
                     }
                     .padding(.top, themeManager.paddingMedium)

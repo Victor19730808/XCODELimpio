@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación - GV_ep_Establecimientos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .header .version {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .info-box.warning {
+            border-left-color: #ffc107;
+            background: #fff8e1;
+        }
+        
+        .info-box.success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        
+        .info-box.error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        
+        .method-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .method-card:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .method-card h4 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .badge.public {
+            background: #28a745;
+            color: white;
+        }
+        
+        .badge.private {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .badge.enum {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .param-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        .param-table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .param-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .param-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        .code-block .keyword {
+            color: #ff79c6;
+        }
+        
+        .code-block .function {
+            color: #50fa7b;
+        }
+        
+        .code-block .string {
+            color: #f1fa8c;
+        }
+        
+        .code-block .comment {
+            color: #6272a4;
+        }
+        
+        .toc {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .toc h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .toc ul {
+            list-style: none;
+        }
+        
+        .toc li {
+            padding: 8px 0;
+        }
+        
+        .toc a {
+            color: #764ba2;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .toc a:hover {
+            color: #667eea;
+            padding-left: 10px;
+        }
+        
+        .footer {
+            background: #2d2d2d;
+            color: white;
+            text-align: center;
+            padding: 30px;
+            margin-top: 40px;
+        }
+        
+        .flow-diagram {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .flow-step {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin: 10px;
+            font-weight: bold;
+        }
+        
+        .flow-arrow {
+            display: inline-block;
+            color: #667eea;
+            font-size: 2em;
+            margin: 0 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .param-table {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📦 GV_ep_Establecimientos</h1>
+            <p class="subtitle">Sistema de Sincronización API ↔ Base de Datos Local</p>
+            <span class="version">Versión 1.0.0 | SwiftData + URLSession</span>
+        </div>
+        
+        <div class="content">
+            <!-- Tabla de Contenidos -->
+            <div class="toc">
+                <h3>📑 Tabla de Contenidos</h3>
+                <ul>
+                    <li><a href="#overview">1. Descripción General</a></li>
+                    <li><a href="#architecture">2. Arquitectura</a></li>
+                    <li><a href="#enums">3. Enumeraciones</a></li>
+                    <li><a href="#public-methods">4. Métodos Públicos</a></li>
+                    <li><a href="#private-methods">5. Métodos Privados</a></li>
+                    <li><a href="#error-handling">6. Manejo de Errores</a></li>
+                    <li><a href="#usage">7. Ejemplos de Uso</a></li>
+                    <li><a href="#best-practices">8. Mejores Prácticas</a></li>
+                </ul>
+            </div>
+            
+            <!-- Sección 1: Descripción General -->
+            <div class="section" id="overview">
+                <h2>1. 📋 Descripción General</h2>
+                <p>
+                    <strong>GV_ep_Establecimientos</strong> es una clase Swift diseñada para gestionar la sincronización 
+                    de datos entre una API REST y una base de datos local SwiftData. Proporciona métodos robustos para:
+                </p>
+                <ul style="margin-left: 20px; margin-top: 15px;">
+                    <li>✅ Descarga de datos desde endpoints REST</li>
+                    <li>✅ Validación e imputación de valores por defecto</li>
+                    <li>✅ Sincronización incremental/decremental con base de datos local</li>
+                    <li>✅ Consultas flexibles con ordenamiento y filtrado</li>
+                    <li>✅ Limpieza completa de la base de datos</li>
+                    <li>✅ Detección y reporte de duplicados</li>
+                    <li>✅ Manejo exhaustivo de errores</li>
+                </ul>
+                
+                <div class="info-box success">
+                    <strong>🎯 Objetivo Principal:</strong> Proporcionar una capa de abstracción robusta y reutilizable 
+                    para la sincronización de datos, minimizando la complejidad en las vistas y garantizando la integridad 
+                    de los datos.
+                </div>
+            </div>
+            
+            <!-- Sección 2: Arquitectura -->
+            <div class="section" id="architecture">
+                <h2>2. 🏗️ Arquitectura</h2>
+                
+                <h3>Componentes del Sistema</h3>
+                <div class="flow-diagram">
+                    <div class="flow-step">API REST</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">GV_ep_Establecimientos</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">SwiftData BD</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">Vista UI</div>
+                </div>
+                
+                <h3>Modelo de Datos</h3>
+                <div class="code-block">
+<span class="keyword">@Model</span>
+<span class="keyword">final class</span> <span class="function">GV_modeloCont_Establecimientos</span> {
+    <span class="keyword">@Attribute</span>(.unique) <span class="keyword">var</span> establecimiento_id: Int
+    <span class="keyword">var</span> user_id: Int?
+    <span class="keyword">var</span> usuario_id: Int?
+    <span class="keyword">var</span> indice_id: Int?
+    <span class="keyword">var</span> registro_evento_id: Int?
+    <span class="keyword">var</span> establecimiento_nombre: String
+    <span class="keyword">var</span> establecimiento_logo: String?
+    <span class="keyword">var</span> establecimiento_url: String?
+    <span class="keyword">var</span> usuario_phone_number: String?
+    <span class="keyword">var</span> usuario_email: String?
+    <span class="keyword">var</span> direccion_completa: String?
+    <span class="keyword">var</span> direccion_municipio: String?
+    <span class="keyword">var</span> direccion_estado: String?
+    <span class="keyword">var</span> direccion_latitud: Double?
+    <span class="keyword">var</span> direccion_longitud: Double?
+    <span class="keyword">var</span> categoria_id: Int?
+    <span class="keyword">var</span> categoria_nombre: String?
+}
+                </div>
+                
+                <div class="info-box">
+                    <strong>📌 Nota:</strong> El campo <code>establecimiento_id</code> es único y se utiliza como 
+                    clave primaria para evitar duplicados en la base de datos.
+                </div>
+            </div>
+            
+            <!-- Sección 3: Enumeraciones -->
+            <div class="section" id="enums">
+                <h2>3. 🔢 Enumeraciones</h2>
+                
+                <div class="method-card">
+                    <h4><span class="badge enum">ENUM</span> ModoCargaBD</h4>
+                    <p><strong>Descripción:</strong> Define el modo de carga de datos a la base de datos local.</p>
+                    
+                    <table class="param-table">
+                        <thead>
+                            <tr>
+                                <th>Valor</th>
+                                <th>Descripción</th>
+                                <th>Comportamiento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>.full</code></td>
+                                <td>Carga completa</td>
+                                <td>Borra todos los registros existentes y carga los nuevos</td>
+                            </tr>
+                            <tr>
+                                <td><code>.add</code></td>
+                                <td>Agregar</td>
+                                <td>Solo agrega registros nuevos, permite duplicados</td>
+                            </tr>
+                            <tr>
+                                <td><code>.inc</code></td>
+                                <td>Incremental</td>
+                                <td>Actualiza existentes e inserta nuevos, sin duplicados</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="method-card">
+                    <h4><span class="badge enum">ENUM</span> OrdenResultados</h4>
+                    <p><strong>Descripción:</strong> Define el orden de los resultados en las consultas.</p>
+                    
+                    <table class="param-table">
+                        <thead>
+                            <tr>
+                                <th>Valor</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>.asc</code></td>
+                                <td>Orden ascendente por <code>establecimiento_id</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>.desc</code></td>
+                                <td>Orden descendente por <code>establecimiento_id</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="method-card">
+                    <h4><span class="badge enum">ENUM</span> TipoRegreso</h4>
+                    <p><strong>Descripción:</strong> Define el tipo de datos a retornar en las consultas.</p>
+                    
+                    <table class="param-table">
+                        <thead>
+                            <tr>
+                                <th>Valor</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>.id</code></td>
+                                <td>Retorna solo los IDs de los establecimientos</td>
+                            </tr>
+                            <tr>
+                                <td><code>.full</code></td>
+                                <td>Retorna todos los campos en formato CSV</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Sección 4: Métodos Públicos -->
+            <div class="section" id="public-methods">
+                <h2>4. 🔓 Métodos Públicos</h2>
+                
+                <!-- Método 1 -->
+                <div class="method-card">
+                    <h4><span class="badge public">PUBLIC</span> Load_API_Stream_EstabalecimeintosV</h4>
+                    
+                    <p><strong>Descripción:</strong> Carga datos desde el endpoint REST con validación e imputación de valores por defecto.</p>
+                    
+                    <h5 style="margin-top: 20px;">Parámetros:</h5>
+                    <table class="param-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>xEndPoint</code></td>
+                                <td>String</td>
+                                <td>URL base del endpoint (sin el número de registros)</td>
+                            </tr>
+                            <tr>
+                                <td><code>xNo</code></td>
+                                <td>Int</td>
+                                <td>Número de registros a solicitar (usar 100000 para "todos")</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h5 style="margin-top: 20px;">Retorna:</h5>
+                    <table class="param-table">
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>resultado</code></td>
+                                <td>String</td>
+                                <td>JSON del API o mensaje de error</td>
+                            </tr>
+                            <tr>
+                                <td><code>codigoError</code></td>
+                                <td>Int</td>
+                                <td>0 = éxito, -1 = error</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h5 style="margin-top: 20px;">Ejemplo de Uso:</h5>
+                    <div class="code-block">
+<span class="keyword">let</span> ep = <span class="function">GV_ep_Establecimientos</span>(modelContext: modelContext)
+<span class="keyword">let</span> (json, codigo) = ep.<span class="function">Load_API_Stream_EstabalecimeintosV</span>(
+    xEndPoint: <span class="string">"https://api.ejemplo.com/establecimientos"</span>,
+    xNo: <span class="string">50</span>
+)
+
+<span class="keyword">if</span> codigo == <span class="string">0</span> {
+    <span class="function">print</span>(<span class="string">"✅ Datos cargados: \(json.count) caracteres"</span>)
+} <span class="keyword">else</span> {
+    <span class="function">print</span>(<span class="string">"❌ Error: \(json)"</span>)
+}
+                    </div>
+                </div>
+                
+                <!-- Método 2 -->
+                <div class="method-card">
+                    <h4><span class="badge public">PUBLIC</span> Load_Stream_BDL</h4>
+                    
+                    <p><strong>Descripción:</strong> Carga el stream JSON a la base de datos local con diferentes modos de sincronización.</p>
+                    
+                    <h5 style="margin-top: 20px;">Parámetros:</h5>
+                    <table class="param-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>xStream</code></td>
+                                <td>String</td>
+                                <td>JSON string obtenido del API</td>
+                            </tr>
+                            <tr>
+                                <td><code>flagIncremental</code></td>
+                                <td>ModoCargaBD</td>
+                                <td>Modo de carga: .full, .add, o .inc</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h5 style="margin-top: 20px;">Retorna:</h5>
+                    <table class="param-table">
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>resultado</code></td>
+                                <td>String</td>
+                                <td>Reporte detallado con 4 secciones: Resumen, Lista CSV, Duplicados, Errores</td>
+                            </tr>
+                            <tr>
+                                <td><code>codigoError</code></td>
+                                <td>Int</td>
+                                <td>0 = éxito, -1 = error fatal, -2 = error parcial</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="info-box warning">
+                        <strong>⚠️ Importante:</strong> En modo <code>.full</code>, todos los registros existentes 
+                        serán eliminados antes de insertar los nuevos. Use con precaución.
+                    </div>
+                    
+                    <h5 style="margin-top: 20px;">Ejemplo de Uso:</h5>
+                    <div class="code-block">
+<span class="comment">// Primero, obtener datos del API</span>
+<span class="keyword">let</span> (json, codigoAPI) = ep.<span class="function">Load_API_Stream_EstabalecimeintosV</span>(
+    xEndPoint: endpoint,
+    xNo: <span class="string">100</span>
+)
+
+<span class="keyword">if</span> codigoAPI == <span class="string">0</span> {
+    <span class="comment">// Luego, cargar a la base de datos</span>
+    <span class="keyword">let</span> (reporte, codigoBD) = ep.<span class="function">Load_Stream_BDL</span>(
+        xStream: json,
+        flagIncremental: .full
+    )
+    
+    <span class="function">print</span>(reporte) <span class="comment">// Muestra resumen detallado</span>
+}
+                    </div>
+                </div>
+                
+                <!-- Método 3 -->
+                <div class="method-card">
+                    <h4><span class="badge public">PUBLIC</span> Get_Establecimientos</h4>
+                    
+                    <p><strong>Descripción:</strong> Consulta establecimientos de la base de datos local con opciones de ordenamiento y formato.</p>
+                    
+                    <h5 style="margin-top: 20px;">Parámetros:</h5>
+                    <table class="param-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>xNo</code></td>
+                                <td>Int</td>
+                                <td>Número de registros a retornar</td>
+                            </tr>
+                            <tr>
+                                <td><code>incDec</code></td>
+                                <td>OrdenResultados</td>
+                                <td>Orden: .asc o .desc</td>
+                            </tr>
+                            <tr>
+                                <td><code>cRegresa</code></td>
+                                <td>TipoRegreso</td>
+                                <td>Formato: .id o .full</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h5 style="margin-top: 20px;">Retorna:</h5>
+                    <table class="param-table">
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>resultado</code></td>
+                                <td>String</td>
+                                <td>Datos formateados (CSV simple con numerador)</td>
+                            </tr>
+                            <tr>
+                                <td><code>codigoError</code></td>
+                                <td>Int</td>
+                                <td>0 = éxito, -1 = error o BD vacía</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h5 style="margin-top: 20px;">Ejemplo de Uso:</h5>
+                    <div class="code-block">
+<span class="comment">// Obtener primeros 10 registros, ascendente, completo</span>
+<span class="keyword">let</span> (datos, codigo) = ep.<span class="function">Get_Establecimientos</span>(
+    xNo: <span class="string">10</span>,
+    incDec: .asc,
+    cRegresa: .full
+)
+
+<span class="function">print</span>(datos)
+<span class="comment">// Salida:</span>
+<span class="comment">// 1. 34618, CANACO SERVYTUR, Ciudad de México, CDMX, Servicios</span>
+<span class="comment">// 2. 34619, Establecimiento 2, Guadalajara, Jalisco, Comercio</span>
+<span class="comment">// ...</span>
+                    </div>
+                </div>
+                
+                <!-- Método 4 -->
+                <div class="method-card">
+                    <h4><span class="badge public">PUBLIC</span> Limpiar_BaseDatos</h4>
+                    
+                    <p><strong>Descripción:</strong> Elimina todos los registros de la base de datos local.</p>
+                    
+                    <h5 style="margin-top: 20px;">Parámetros:</h5>
+                    <p style="margin-left: 20px;"><em>Ninguno</em></p>
+                    
+                    <h5 style="margin-top: 20px;">Retorna:</h5>
+                    <table class="param-table">
+                        <thead>
+                            <tr>
+                                <th>Campo</th>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>resultado</code></td>
+                                <td>String</td>
+                                <td>Reporte con fecha inicio/fin y registros eliminados</td>
+                            </tr>
+                            <tr>
+                                <td><code>codigoError</code></td>
+                                <td>Int</td>
+                                <td>0 = éxito, -1 = error</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="info-box error">
+                        <strong>🚨 ADVERTENCIA:</strong> Esta operación es <strong>irreversible</strong>. 
+                        Todos los datos locales serán eliminados permanentemente.
+                    </div>
+                    
+                    <h5 style="margin-top: 20px;">Ejemplo de Uso:</h5>
+                    <div class="code-block">
+<span class="keyword">let</span> (reporte, codigo) = ep.<span class="function">Limpiar_BaseDatos</span>()
+
+<span class="keyword">if</span> codigo == <span class="string">0</span> {
+    <span class="function">print</span>(<span class="string">"✅ Base de datos limpiada"</span>)
+    <span class="function">print</span>(reporte)
+} <span class="keyword">else</span> {
+    <span class="function">print</span>(<span class="string">"❌ Error al limpiar: \(reporte)"</span>)
+}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sección 5: Métodos Privados -->
+            <div class="section" id="private-methods">
+                <h2>5. 🔒 Métodos Privados</h2>
+                
+                <div class="method-card">
+                    <h4><span class="badge private">PRIVATE</span> crearEstablecimientoDesdeJSON</h4>
+                    <p><strong>Descripción:</strong> Crea una instancia de <code>GV_modeloCont_Establecimientos</code> desde un diccionario JSON.</p>
+                    <p><strong>Validación:</strong> Verifica que el campo <code>establecimiento_id</code> exista, de lo contrario lanza un error.</p>
+                </div>
+                
+                <div class="method-card">
+                    <h4><span class="badge private">PRIVATE</span> actualizarEstablecimiento</h4>
+                    <p><strong>Descripción:</strong> Actualiza los campos de un establecimiento existente con datos del JSON.</p>
+                    <p><strong>Uso:</strong> Utilizado en modo <code>.inc</code> (incremental) para actualizar registros existentes.</p>
+                </div>
+                
+                <div class="method-card">
+                    <h4><span class="badge private">PRIVATE</span> obtenerFechaFormateada</h4>
+                    <p><strong>Descripción:</strong> Retorna la fecha y hora actual en formato <code>ddMMyy HH:mm:ss</code>.</p>
+                    <p><strong>Ejemplo:</strong> <code>110125 14:30:45</code></p>
+                </div>
+            </div>
+            
+            <!-- Sección 6: Manejo de Errores -->
+            <div class="section" id="error-handling">
+                <h2>6. ⚠️ Manejo de Errores</h2>
+                
+                <h3>Códigos de Error</h3>
+                <table class="param-table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Significado</th>
+                            <th>Acción Recomendada</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>0</code></td>
+                            <td>✅ Éxito total</td>
+                            <td>Operación completada sin errores</td>
+                        </tr>
+                        <tr>
+                            <td><code>-1</code></td>
+                            <td>❌ Error fatal</td>
+                            <td>La operación falló completamente. Revisar mensaje de error.</td>
+                        </tr>
+                        <tr>
+                            <td><code>-2</code></td>
+                            <td>⚠️ Error parcial</td>
+                            <td>Algunos registros fallaron, pero el proceso continuó. Revisar reporte detallado.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>Estructura del Mensaje de Error</h3>
+                <div class="code-block">
+<span class="comment">// Formato estándar de error:</span>
+<span class="string">"Descripción del error, 
+ número sistema del error (1001, 1002, etc.), 
+ número de establecimiento_Id donde ocurrió el error, 
+ fecha y hora (ddMMyy HH:mm:ss),
+ nombre de archivo desde donde se invocó, 
+ función del objeto donde ocurrió el error"</span>
+                </div>
+                
+                <h3>Detección de Duplicados</h3>
+                <div class="info-box">
+                    <p><strong>🔍 Análisis Automático:</strong> El método <code>Load_Stream_BDL</code> detecta automáticamente 
+                    duplicados en el JSON del API antes de intentar insertarlos en la base de datos.</p>
+                    
+                    <p style="margin-top: 10px;"><strong>Reporte de Duplicados:</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Lista de IDs duplicados con su frecuencia</li>
+                        <li>Ordenados de mayor a menor frecuencia</li>
+                        <li>Incluido en la sección 3 del reporte de <code>Load_Stream_BDL</code></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Sección 7: Ejemplos de Uso -->
+            <div class="section" id="usage">
+                <h2>7. 💡 Ejemplos de Uso</h2>
+                
+                <h3>Ejemplo 1: Sincronización Completa (API → BD)</h3>
+                <div class="code-block">
+<span class="comment">// 1. Inicializar el objeto</span>
+<span class="keyword">let</span> ep = <span class="function">GV_ep_Establecimientos</span>(modelContext: modelContext)
+
+<span class="comment">// 2. Descargar datos del API</span>
+<span class="keyword">let</span> endpoint = <span class="string">"https://api.ejemplo.com/establecimientos"</span>
+<span class="keyword">let</span> (json, codigoAPI) = ep.<span class="function">Load_API_Stream_EstabalecimeintosV</span>(
+    xEndPoint: endpoint,
+    xNo: <span class="string">100000</span> <span class="comment">// Todos los registros</span>
+)
+
+<span class="keyword">guard</span> codigoAPI == <span class="string">0</span> <span class="keyword">else</span> {
+    <span class="function">print</span>(<span class="string">"❌ Error en API: \(json)"</span>)
+    <span class="keyword">return</span>
+}
+
+<span class="comment">// 3. Cargar a la base de datos (modo FULL)</span>
+<span class="keyword">let</span> (reporte, codigoBD) = ep.<span class="function">Load_Stream_BDL</span>(
+    xStream: json,
+    flagIncremental: .full
+)
+
+<span class="function">print</span>(reporte)
+
+<span class="comment">// 4. Verificar resultados</span>
+<span class="keyword">let</span> (consulta, codigoConsulta) = ep.<span class="function">Get_Establecimientos</span>(
+    xNo: <span class="string">5</span>,
+    incDec: .asc,
+    cRegresa: .full
+)
+
+<span class="function">print</span>(<span class="string">"Primeros 5 registros:\n\(consulta)"</span>)
+                </div>
+                
+                <h3>Ejemplo 2: Actualización Incremental</h3>
+                <div class="code-block">
+<span class="comment">// Actualizar solo registros nuevos o modificados</span>
+<span class="keyword">let</span> ep = <span class="function">GV_ep_Establecimientos</span>(modelContext: modelContext)
+
+<span class="keyword">let</span> (json, codigoAPI) = ep.<span class="function">Load_API_Stream_EstabalecimeintosV</span>(
+    xEndPoint: <span class="string">"https://api.ejemplo.com/establecimientos"</span>,
+    xNo: <span class="string">50</span>
+)
+
+<span class="keyword">if</span> codigoAPI == <span class="string">0</span> {
+    <span class="keyword">let</span> (reporte, codigoBD) = ep.<span class="function">Load_Stream_BDL</span>(
+        xStream: json,
+        flagIncremental: .inc <span class="comment">// Modo incremental</span>
+    )
+    
+    <span class="keyword">if</span> codigoBD == <span class="string">0</span> {
+        <span class="function">print</span>(<span class="string">"✅ Actualización incremental exitosa"</span>)
+    } <span class="keyword">else if</span> codigoBD == <span class="string">-2</span> {
+        <span class="function">print</span>(<span class="string">"⚠️ Actualización con errores parciales"</span>)
+    }
+    
+    <span class="function">print</span>(reporte)
+}
+                </div>
+                
+                <h3>Ejemplo 3: Consultas Avanzadas</h3>
+                <div class="code-block">
+<span class="keyword">let</span> ep = <span class="function">GV_ep_Establecimientos</span>(modelContext: modelContext)
+
+<span class="comment">// Consulta 1: Últimos 10 IDs</span>
+<span class="keyword">let</span> (ids, _) = ep.<span class="function">Get_Establecimientos</span>(
+    xNo: <span class="string">10</span>,
+    incDec: .desc,
+    cRegresa: .id
+)
+<span class="function">print</span>(<span class="string">"IDs:\n\(ids)"</span>)
+
+<span class="comment">// Consulta 2: Primeros 20 registros completos</span>
+<span class="keyword">let</span> (completo, _) = ep.<span class="function">Get_Establecimientos</span>(
+    xNo: <span class="string">20</span>,
+    incDec: .asc,
+    cRegresa: .full
+)
+<span class="function">print</span>(<span class="string">"Datos completos:\n\(completo)"</span>)
+                </div>
+                
+                <h3>Ejemplo 4: Limpieza y Recarga</h3>
+                <div class="code-block">
+<span class="keyword">let</span> ep = <span class="function">GV_ep_Establecimientos</span>(modelContext: modelContext)
+
+<span class="comment">// 1. Limpiar base de datos</span>
+<span class="keyword">let</span> (reporteLimpieza, codigoLimpieza) = ep.<span class="function">Limpiar_BaseDatos</span>()
+
+<span class="keyword">if</span> codigoLimpieza == <span class="string">0</span> {
+    <span class="function">print</span>(<span class="string">"✅ BD limpiada"</span>)
+    <span class="function">print</span>(reporteLimpieza)
+    
+    <span class="comment">// 2. Recargar datos frescos</span>
+    <span class="keyword">let</span> (json, codigoAPI) = ep.<span class="function">Load_API_Stream_EstabalecimeintosV</span>(
+        xEndPoint: <span class="string">"https://api.ejemplo.com/establecimientos"</span>,
+        xNo: <span class="string">100000</span>
+    )
+    
+    <span class="keyword">if</span> codigoAPI == <span class="string">0</span> {
+        <span class="keyword">let</span> (reporte, _) = ep.<span class="function">Load_Stream_BDL</span>(
+            xStream: json,
+            flagIncremental: .full
+        )
+        <span class="function">print</span>(reporte)
+    }
+}
+                </div>
+            </div>
+            
+            <!-- Sección 8: Mejores Prácticas -->
+            <div class="section" id="best-practices">
+                <h2>8. ✨ Mejores Prácticas</h2>
+                
+                <div class="info-box success">
+                    <h4>✅ Recomendaciones</h4>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>Usar modo incremental (.inc):</strong> Para actualizaciones frecuentes sin perder datos existentes</li>
+                        <li><strong>Validar códigos de error:</strong> Siempre verificar el código de retorno antes de proceder</li>
+                        <li><strong>Manejar errores parciales (-2):</strong> Revisar el reporte detallado cuando ocurran</li>
+                        <li><strong>Usar 100000 para "todos":</strong> Cuando se necesite cargar todos los registros disponibles</li>
+                        <li><strong>Ejecutar en Task/async:</strong> Para operaciones largas, usar concurrencia de Swift</li>
+                        <li><strong>Actualizar UI en MainActor:</strong> Después de operaciones asíncronas</li>
+                        <li><strong>Revisar duplicados:</strong> Analizar la sección 3 del reporte de <code>Load_Stream_BDL</code></li>
+                    </ul>
+                </div>
+                
+                <div class="info-box warning">
+                    <h4>⚠️ Precauciones</h4>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>Modo .full:</strong> Elimina TODOS los datos existentes. Usar con precaución.</li>
+                        <li><strong>Limpiar_BaseDatos:</strong> Operación irreversible. Confirmar antes de ejecutar.</li>
+                        <li><strong>Modo .add:</strong> Permite duplicados. Solo usar cuando sea necesario.</li>
+                        <li><strong>Conexión de red:</strong> Verificar conectividad antes de llamar métodos API</li>
+                        <li><strong>Tamaño de datos:</strong> Para grandes volúmenes, considerar paginación</li>
+                    </ul>
+                </div>
+                
+                <div class="info-box">
+                    <h4>💡 Optimizaciones</h4>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>Formato CSV simple:</strong> <code>Get_Establecimientos</code> usa formato ligero para mejor rendimiento</li>
+                        <li><strong>Guardado individual:</strong> En modo .full, cada registro se guarda inmediatamente para evitar conflictos</li>
+                        <li><strong>Detección temprana de duplicados:</strong> Se analizan antes de intentar insertar</li>
+                        <li><strong>Consultas limitadas:</strong> Usar <code>xNo</code> apropiado para evitar cargar demasiados datos en UI</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <div class="footer">
+                <p><strong>GV_ep_Establecimientos</strong> | Sistema de Sincronización API ↔ BD</p>
+                <p style="margin-top: 10px; opacity: 0.8;">
+                    Desarrollado con Swift + SwiftData | Versión 1.0.0 | Enero 2025
+                </p>
+                <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.7;">
+                    📦 Parte del framework GV_ | 🔧 Arquitectura modular | 🚀 Optimizado para iOS 26+
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

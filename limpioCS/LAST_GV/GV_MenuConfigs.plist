@@ -2,31 +2,72 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<!-- Configuración para Menú Principal -->
 	<key>1</key>
+    <dict>
+        <key>displayName</key>
+        <string>Menú Principal</string>
+        <key>description</key>
+        <string>Menú completo con todas las opciones disponibles</string>
+        <key>showMenu</key>
+        <true/>
+        <key>iconName</key>
+        <string>line.3.horizontal</string>
+        <key>iconSize</key>
+        <real>24</real>
+        <key>padding</key>
+        <real>16</real>
+        <key>options</key>
+        <array>
+            <dict>
+                <key>id</key>
+                <string>themes</string>
+                <key>title</key>
+                <string>Temas</string>
+                <key>icon</key>
+                <string>paintpalette</string>
+                <key>navigationType</key>
+                <string>sheet</string>
+                <key>destinationView</key>
+                <string>GV_Temas_SelectorView</string>
+                <key>debugOnly</key>
+                <false/>
+            </dict>
+            <dict>
+                <key>id</key>
+                <string>goBack</string>
+                <key>title</key>
+                <string>Regresar a Anterior</string>
+                <key>icon</key>
+                <string>chevron.left</string>
+                <key>navigationType</key>
+                <string>action</string>
+                <key>destinationView</key>
+                <string></string>
+                <key>debugOnly</key>
+                <false/>
+            </dict>
+            <dict>
+                <key>id</key>
+                <string>goToPortada</string>
+                <key>title</key>
+                <string>Regresar a Portada</string>
+                <key>icon</key>
+                <string>house.fill</string>
+                <key>navigationType</key>
+                <string>navigation</string>
+                <key>destinationView</key>
+                <string>GV_SCR_tc_menuprincipal</string>
+                <key>debugOnly</key>
+                <false/>
+            </dict>
+        </array>
+    </dict>
+    <key>2</key>
 	<dict>
-		<key>showMenu</key>
-		<true/>
-		<key>iconName</key>
-		<string>line.3.horizontal</string>
-		<key>iconSize</key>
-		<real>24</real>
-		<key>padding</key>
-		<real>16</real>
-		<key>options</key>
-		<array>
-			<string>themes</string>
-			<string>adminDatos</string>
-			<string>advancedSearch</string>
-			<string>mySettings</string>
-			<string>exit</string>
-			<string>goToPortada</string>
-		</array>
-	</dict>
-	
-	<!-- Configuración para Menú Mapa -->
-	<key>2</key>
-	<dict>
+		<key>displayName</key>
+		<string>Menú Mapa</string>
+		<key>description</key>
+		<string>Menú para vista de mapa con opciones específicas</string>
 		<key>showMenu</key>
 		<true/>
 		<key>iconName</key>
@@ -37,57 +78,200 @@
 		<real>20</real>
 		<key>options</key>
 		<array>
-			<string>themes</string>
-			<string>advancedSearch</string>
-			<string>mySettings</string>
-			<string>exit</string>
-			<string>goToPortada</string>
+			<dict>
+				<key>id</key>
+				<string>themes</string>
+				<key>title</key>
+				<string>Temas</string>
+				<key>icon</key>
+				<string>paintpalette</string>
+				<key>navigationType</key>
+				<string>sheet</string>
+				<key>destinationView</key>
+				<string>GV_Temas_SelectorView</string>
+				<key>debugOnly</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>id</key>
+				<string>advancedSearch</string>
+				<key>title</key>
+				<string>Búsquedas Avanzadas</string>
+				<key>icon</key>
+				<string>magnifyingglass.circle</string>
+				<key>navigationType</key>
+				<string>sheet</string>
+				<key>destinationView</key>
+				<string>GV_SCR_vg_FavoritosView</string>
+				<key>debugOnly</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>id</key>
+				<string>mySettings</string>
+				<key>title</key>
+				<string>Mis Configuraciones</string>
+				<key>icon</key>
+				<string>gearshape</string>
+				<key>navigationType</key>
+				<string>sheet</string>
+				<key>destinationView</key>
+				<string>MySettingsView</string>
+				<key>debugOnly</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>id</key>
+				<string>exit</string>
+				<key>title</key>
+				<string>Regresar</string>
+				<key>icon</key>
+				<string>door.exit.open</string>
+				<key>navigationType</key>
+				<string>action</string>
+				<key>destinationView</key>
+				<string></string>
+				<key>debugOnly</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>id</key>
+				<string>goToPortada</string>
+				<key>title</key>
+				<string>Ir a Portada</string>
+				<key>icon</key>
+				<string>house.fill</string>
+				<key>navigationType</key>
+				<string>navigation</string>
+				<key>destinationView</key>
+				<string>GV_SCR_tc_menuprincipal</string>
+				<key>debugOnly</key>
+				<false/>
+			</dict>
 		</array>
 	</dict>
-	
-	<!-- Configuración para Menú Lista -->
 	<key>3</key>
 	<dict>
+		<key>displayName</key>
+		<string>Menú Splash</string>
+		<key>description</key>
+		<string>Menú para pantalla de bienvenida</string>
 		<key>showMenu</key>
 		<true/>
 		<key>iconName</key>
-		<string>list.bullet</string>
+		<string>line.3.horizontal</string>
 		<key>iconSize</key>
-		<real>22</real>
+		<real>24</real>
 		<key>padding</key>
-		<real>20</real>
+		<real>16</real>
 		<key>options</key>
 		<array>
-			<string>themes</string>
-			<string>adminDatos</string>
-			<string>mySettings</string>
-			<string>exit</string>
-			<string>goToPortada</string>
+			<dict>
+				<key>id</key>
+				<string>themes</string>
+				<key>title</key>
+				<string>Temas</string>
+				<key>icon</key>
+				<string>paintpalette</string>
+				<key>navigationType</key>
+				<string>sheet</string>
+				<key>destinationView</key>
+				<string>GV_Temas_SelectorView</string>
+				<key>debugOnly</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>id</key>
+				<string>goToEstablecimientos</string>
+				<key>title</key>
+				<string>Ir a Lista de Establecimientos</string>
+				<key>icon</key>
+				<string>list.bullet</string>
+				<key>navigationType</key>
+				<string>navigation</string>
+				<key>destinationView</key>
+				<string>GV_SCR_vg_EstablecimientosListaView</string>
+				<key>debugOnly</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>id</key>
+				<string>goToFavoritos</string>
+				<key>title</key>
+				<string>Ir a Favoritos</string>
+				<key>icon</key>
+				<string>heart.fill</string>
+				<key>navigationType</key>
+				<string>navigation</string>
+				<key>destinationView</key>
+				<string>GV_SCR_vg_FavoritosView</string>
+				<key>debugOnly</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>id</key>
+				<string>goToMapa</string>
+				<key>title</key>
+				<string>Ir a Mapa</string>
+				<key>icon</key>
+				<string>map.fill</string>
+				<key>navigationType</key>
+				<string>navigation</string>
+				<key>destinationView</key>
+				<string>GV_MapaCercanias_Refactored</string>
+				<key>debugOnly</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>id</key>
+				<string>goToConcanaco</string>
+				<key>title</key>
+				<string>Ir a Sitio de Cónaco</string>
+				<key>icon</key>
+				<string>globe</string>
+				<key>navigationType</key>
+				<string>action</string>
+				<key>destinationView</key>
+				<string>https://www.concanaco.com.mx</string>
+				<key>debugOnly</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>id</key>
+				<string>goToHHT</string>
+				<key>title</key>
+				<string>Human Tech</string>
+				<key>icon</key>
+				<string>link</string>
+				<key>navigationType</key>
+				<string>action</string>
+				<key>destinationView</key>
+				<string>https://www.hht.mx</string>
+				<key>debugOnly</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>id</key>
+				<string>goToManual</string>
+				<key>title</key>
+				<string>Manual del APP</string>
+				<key>icon</key>
+				<string>book.fill</string>
+				<key>navigationType</key>
+				<string>action</string>
+				<key>destinationView</key>
+				<string>https://youtu.be/pIBVWT8nEe0</string>
+				<key>debugOnly</key>
+				<false/>
+			</dict>
 		</array>
 	</dict>
-	
-	<!-- Configuración para Menú Simple -->
 	<key>4</key>
 	<dict>
-		<key>showMenu</key>
-		<true/>
-		<key>iconName</key>
-		<string>gear</string>
-		<key>iconSize</key>
-		<real>20</real>
-		<key>padding</key>
-		<real>15</real>
-		<key>options</key>
-		<array>
-			<string>themes</string>
-			<string>exit</string>
-			<string>goToPortada</string>
-		</array>
-	</dict>
-	
-	<!-- Configuración para Sin Menú -->
-	<key>5</key>
-	<dict>
+		<key>displayName</key>
+		<string>Sin Menú</string>
+		<key>description</key>
+		<string>Sin menú hamburguesa visible</string>
 		<key>showMenu</key>
 		<false/>
 		<key>iconName</key>
@@ -98,25 +282,6 @@
 		<real>0</real>
 		<key>options</key>
 		<array/>
-	</dict>
-
-	<!-- Configuración para My Prueba -->
-	<key>6</key>
-	<dict>
-		<key>showMenu</key>
-		<true/>
-		<key>iconName</key>
-		<string>folder.fill</string>
-		<key>iconSize</key>
-		<real>22</real>
-		<key>padding</key>
-		<real>18</real>
-		<key>options</key>
-		<array>
-			<string>adminDatos</string>
-			<string>exit</string>
-			<string>goToPortada</string>
-		</array>
 	</dict>
 </dict>
 </plist>

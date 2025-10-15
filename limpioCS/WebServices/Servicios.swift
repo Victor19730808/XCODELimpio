@@ -21,7 +21,7 @@ final class Servicios {
     // MARK: - 1) Establecimientos con filtros locales
     func obtenerEstablecimientos(
         limit: Int = 10000,
-        filtros: FiltrosEstablecimientos = .init()
+        filtros: FiltrosEstablecimientos = FiltrosEstablecimientos()
     ) async throws -> [Establecimiento] {
         let todos = try await api.getEstablecimientos(limit: limit)
         return todos.filter { e in

@@ -2,13 +2,18 @@ import Foundation
 import CoreLocation
 import Combine
 
+// MARK: - Production Logger
+// Usa ProductionLogger para logging optimizado
+
 /// Servicio centralizado de ubicación para toda la app.
 /// - iOS < 26  → CLGeocoder (CoreLocation)
 /// - iOS ≥ 26  → Reverse geocoding HTTP (Nominatim/OSM)
 @MainActor
+// TEMPORALMENTE DESHABILITADO PARA DEBUGGING
+// public final class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
 public final class LocationService: NSObject, ObservableObject, CLLocationManagerDelegate {
 
-    // MARK: - Estado público
+    // MARK: - Estado público (REHABILITADO)
     @Published public var latitude: Double?
     @Published public var longitude: Double?
     @Published public var estado: String = ""
@@ -19,8 +24,8 @@ public final class LocationService: NSObject, ObservableObject, CLLocationManage
     // MARK: - Config ajustable
     /// Segundos mínimos entre consultas de reverse geocoding (throttle).
     public var minRGInterval: TimeInterval = 2.0
-    /// Distancia mínima en metros para volver a consultar.
-    public var minMoveMeters: CLLocationDistance = 50
+    /// Distancia mínima en metros para volver a consultar (optimizado para performance).
+    public var minMoveMeters: CLLocationDistance = 20
     /// Precisión del cache (número de decimales de lat/lon).
     public var cachePrecisionDigits: Int = 4
     /// Idioma preferido en Nominatim (p. ej. "es", "es-MX", "en").
@@ -59,7 +64,9 @@ public final class LocationService: NSObject, ObservableObject, CLLocationManage
 
     // MARK: - API
     public func start() {
-        guard !hasStarted else {
+        // REHABILITADO - Siempre solicitar ubicación fresca, incluso si ya se inició antes
+        if hasStarted {
+            ProductionLogger.locationLog("Solicitando actualización de ubicación")
             manager.startUpdatingLocation()
             manager.requestLocation()
             return
@@ -68,12 +75,15 @@ public final class LocationService: NSObject, ObservableObject, CLLocationManage
 
         switch manager.authorizationStatus {
         case .notDetermined:
+            ProductionLogger.locationLog("Solicitando permisos de ubicación")
             manager.requestWhenInUseAuthorization()
         case .authorizedWhenInUse, .authorizedAlways:
+            ProductionLogger.locationLog("Iniciando servicio de ubicación")
             manager.startUpdatingLocation()
             manager.requestLocation()
         case .restricted, .denied:
             lastLog = "Permisos restringidos/denegados."
+            ProductionLogger.locationLog(lastLog)
         @unknown default:
             break
         }
@@ -92,6 +102,67 @@ public final class LocationService: NSObject, ObservableObject, CLLocationManage
         cache.removeAll()
         try? FileManager.default.removeItem(at: cacheURL)
         lastLog = "Cache de reverse geocoding eliminado."
+        ProductionLogger.locationLog("Cache limpiado completamente")
+    }
+    
+    /// Fuerza una ubicación manual (útil para testing o simulador)
+    public func setManualLocation(latitude: Double, longitude: Double) {
+        ProductionLogger.locationLog("Forzando ubicación manual: Lat: \(latitude), Lon: \(longitude)")
+        
+        Task { @MainActor in
+            self.latitude = latitude
+            self.longitude = longitude
+        }
+        
+        // Limpiar el throttle para permitir reverse geocoding inmediato
+        lastRGAt = nil
+        lastRGCoord = nil
+        
+        // Crear una ubicación artificial para el reverse geocoding
+        let location = CLLocation(latitude: latitude, longitude: longitude)
+        
+        // Forzar reverse geocoding
+        let key = cacheKey(lat: latitude, lon: longitude)
+        if #available(iOS 26.0, *) {
+            Task {
+                do {
+                    let (state, muni) = try await reverseGeocodeHTTP(lat: latitude, lon: longitude)
+                    await MainActor.run {
+                        self.estado = state
+                        self.municipio = muni
+                        self.lastLog = self.snapshotString() + " (manual)"
+                        ProductionLogger.locationLog("Manual location set: \(self.lastLog)")
+                        self.putCache(key: key, state: state, municipality: muni)
+                    }
+                } catch {
+                    await MainActor.run {
+                        self.lastLog = "RG HTTP error: \(error.localizedDescription)"
+                        ProductionLogger.locationLog(self.lastLog)
+                    }
+                }
+            }
+        } else {
+            geocoder.reverseGeocodeLocation(location) { [weak self] placemarks, error in
+                guard let self = self else { return }
+                Task { @MainActor in
+                    if let error = error {
+                        self.lastLog = "RG error: \(error.localizedDescription)"
+                        ProductionLogger.locationLog(self.lastLog)
+                        return
+                    }
+                    guard let p = placemarks?.first else { return }
+                    let state = p.administrativeArea ?? ""
+                    let muni  = p.subAdministrativeArea ?? p.locality ?? ""
+                    Task { @MainActor in
+                        self.estado = state
+                        self.municipio = muni
+                        self.lastLog = self.snapshotString() + " (manual)"
+                        ProductionLogger.locationLog(self.lastLog)
+                        self.putCache(key: key, state: state, municipality: muni)
+                    }
+                }
+            }
+        }
     }
 
     // MARK: - CLLocationManagerDelegate
@@ -106,27 +177,47 @@ public final class LocationService: NSObject, ObservableObject, CLLocationManage
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let last = locations.last else { return }
         let c = last.coordinate
+        
+        ProductionLogger.locationLog("Nueva ubicación recibida del GPS: Lat: \(c.latitude), Lon: \(c.longitude), Precisión: \(last.horizontalAccuracy)m")
 
-        // Actualiza lat/lon
-        latitude  = c.latitude
-        longitude = c.longitude
+        // Actualiza lat/lon solo si cambió significativamente
+        let threshold = 0.0001 // ~11 metros
+        let latChanged = abs((latitude ?? 0) - c.latitude) > threshold
+        let lonChanged = abs((longitude ?? 0) - c.longitude) > threshold
+        
+        if latChanged || lonChanged {
+            Task { @MainActor in
+                latitude  = c.latitude
+                longitude = c.longitude
+                ProductionLogger.locationLog("Coordenadas actualizadas")
+            }
+        } else {
+            ProductionLogger.locationLog("Ubicación recibida pero sin cambio significativo")
+        }
 
         // 1) Intenta resolver por cache
         let key = cacheKey(lat: c.latitude, lon: c.longitude)
         if let hit = cache[key] {
-            estado = hit.state
-            municipio = hit.municipality
-            lastLog = snapshotString() + " (cache)"
-            print("[LOC] \(lastLog)")
-            // Decide si aún así quieres refrescar en background -> opcional
-            return
+            // Solo actualizar si cambió (en MainActor)
+            Task { @MainActor in
+                if estado != hit.state {
+                    estado = hit.state
+                }
+                if municipio != hit.municipality {
+                    municipio = hit.municipality
+                }
+                lastLog = snapshotString() + " (cache)"
+                ProductionLogger.locationLog(lastLog)
+            }
+            // NO retornar aquí - continuar para actualizar con datos frescos si es necesario
+            // return  <- COMENTADO para permitir actualización
         }
 
         // 2) Throttle por tiempo y distancia
         let now = Date()
         if let t = lastRGAt, now.timeIntervalSince(t) < minRGInterval {
             lastLog = "RG omitido por intervalo mínimo (\(minRGInterval)s)."
-            print("[LOC] \(lastLog)")
+            ProductionLogger.locationLog(lastLog)
             return
         }
         if let prev = lastRGCoord {
@@ -134,7 +225,7 @@ public final class LocationService: NSObject, ObservableObject, CLLocationManage
                 .distance(from: CLLocation(latitude: prev.latitude, longitude: prev.longitude))
             if d < minMoveMeters {
                 lastLog = "RG omitido (< \(Int(minMoveMeters)) m de movimiento)."
-                print("[LOC] \(lastLog)")
+                ProductionLogger.locationLog(lastLog)
                 return
             }
         }
@@ -150,13 +241,13 @@ public final class LocationService: NSObject, ObservableObject, CLLocationManage
                         self.estado = state
                         self.municipio = muni
                         self.lastLog = self.snapshotString()
-                        print("[LOC] \(self.lastLog)")
+                        ProductionLogger.locationLog(self.lastLog)
                         self.putCache(key: key, state: state, municipality: muni)
                     }
                 } catch {
                     await MainActor.run {
                         self.lastLog = "RG HTTP error: \(error.localizedDescription)"
-                        print("[LOC] \(self.lastLog)")
+                        ProductionLogger.locationLog(self.lastLog)
                     }
                 }
             }
@@ -166,17 +257,19 @@ public final class LocationService: NSObject, ObservableObject, CLLocationManage
                 Task { @MainActor in
                     if let error = error {
                         self.lastLog = "RG error: \(error.localizedDescription)"
-                        print("[LOC] \(self.lastLog)")
+                        ProductionLogger.locationLog(self.lastLog)
                         return
                     }
                     guard let p = placemarks?.first else { return }
                     let state = p.administrativeArea ?? ""
                     let muni  = p.subAdministrativeArea ?? p.locality ?? ""
-                    self.estado = state
-                    self.municipio = muni
-                    self.lastLog = self.snapshotString()
-                    print("[LOC] \(self.lastLog)")
-                    self.putCache(key: key, state: state, municipality: muni)
+                    Task { @MainActor in
+                        self.estado = state
+                        self.municipio = muni
+                        self.lastLog = self.snapshotString()
+                        ProductionLogger.locationLog(self.lastLog)
+                        self.putCache(key: key, state: state, municipality: muni)
+                    }
                 }
             }
         }
@@ -185,7 +278,7 @@ public final class LocationService: NSObject, ObservableObject, CLLocationManage
     public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         Task { @MainActor in
             self.lastLog = "Error: \(error.localizedDescription)"
-            print("[LOC] \(self.lastLog)")
+                    ProductionLogger.locationLog(self.lastLog)
         }
     }
 

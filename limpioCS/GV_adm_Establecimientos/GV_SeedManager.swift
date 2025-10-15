@@ -78,7 +78,7 @@ final class GV_SeedManager: ObservableObject {
         }
         
         isCurrentlyLoading = true
-        print("🌱 SEED: Iniciando carga de datos precargados...")
+        ProductionLogger.seedLog("Iniciando carga de datos precargados")
         
         isLoading = true
         progress = 0.0
@@ -90,7 +90,7 @@ final class GV_SeedManager: ObservableObject {
         
         guard let seedURL = Bundle.main.url(forResource: seedFileName, withExtension: "json") else {
             let error = "❌ Archivo seed no encontrado: \(seedFileName).json"
-            print(error)
+            ProductionLogger.log(error, level: .error)
             await finalizarConError(error)
             return (false, error)
         }

@@ -10,6 +10,8 @@ import SwiftUI
 import Combine
 
 /// Manager para gestionar banners rotativos con control de reproducción
+// TEMPORALMENTE DESHABILITADO PARA DEBUGGING
+// class GV_Banner_Manager: ObservableObject {
 class GV_Banner_Manager: ObservableObject {
     static let shared = GV_Banner_Manager()
     
@@ -41,9 +43,9 @@ class GV_Banner_Manager: ObservableObject {
         bannersActivos = GV_Banner_ConfigSource.shared.loadActiveBanners()
         
         if bannersActivos.isEmpty {
-            print("⚠️ No hay banners activos para mostrar")
+            // print("⚠️ No hay banners activos para mostrar")
         } else {
-            print("✅ \(bannersActivos.count) banners activos cargados")
+            // print("✅ \(bannersActivos.count) banners activos cargados")
         }
     }
     
@@ -82,16 +84,15 @@ class GV_Banner_Manager: ObservableObject {
             self?.siguienteBanner()
         }
         
-        print("⏱️ Banner '\(bannerActual.nombre)' visible por \(tiempoExposicion)s")
+        // print("⏱️ Banner '\(bannerActual.nombre)' visible por \(tiempoExposicion)s")
     }
     
     /// Avanza al siguiente banner
     func siguienteBanner() {
         guard !bannersActivos.isEmpty else { return }
         
-        withAnimation(.easeInOut(duration: 0.5)) {
-            bannerActualIndex = (bannerActualIndex + 1) % bannersActivos.count
-        }
+        // Actualizar sin animación para evitar "Publishing changes" errors
+        bannerActualIndex = (bannerActualIndex + 1) % bannersActivos.count
         
         if estaReproduciendo {
             programarSiguienteRotacion()
@@ -102,9 +103,8 @@ class GV_Banner_Manager: ObservableObject {
     func bannerAnterior() {
         guard !bannersActivos.isEmpty else { return }
         
-        withAnimation(.easeInOut(duration: 0.5)) {
-            bannerActualIndex = (bannerActualIndex - 1 + bannersActivos.count) % bannersActivos.count
-        }
+        // Actualizar sin animación para evitar "Publishing changes" errors
+        bannerActualIndex = (bannerActualIndex - 1 + bannersActivos.count) % bannersActivos.count
         
         if estaReproduciendo {
             programarSiguienteRotacion()
@@ -116,9 +116,8 @@ class GV_Banner_Manager: ObservableObject {
     func saltarABanner(_ index: Int) {
         guard index >= 0 && index < bannersActivos.count else { return }
         
-        withAnimation(.easeInOut(duration: 0.5)) {
-            bannerActualIndex = index
-        }
+        // Actualizar sin animación para evitar "Publishing changes" errors
+        bannerActualIndex = index
         
         if estaReproduciendo {
             programarSiguienteRotacion()
@@ -132,10 +131,10 @@ class GV_Banner_Manager: ObservableObject {
         estaReproduciendo.toggle()
         
         if estaReproduciendo {
-            print("▶️ Rotación de banners reanudada")
+            ProductionLogger.bannerLog("▶️ Rotación de banners reanudada")
             programarSiguienteRotacion()
         } else {
-            print("⏸️ Rotación de banners pausada")
+            ProductionLogger.bannerLog("⏸️ Rotación de banners pausada")
             timer?.invalidate()
         }
     }
@@ -145,7 +144,7 @@ class GV_Banner_Manager: ObservableObject {
         if estaReproduciendo {
             estaReproduciendo = false
             timer?.invalidate()
-            print("⏸️ Rotación pausada")
+            ProductionLogger.bannerLog("⏸️ Rotación pausada")
         }
     }
     
@@ -154,7 +153,7 @@ class GV_Banner_Manager: ObservableObject {
         if !estaReproduciendo {
             estaReproduciendo = true
             programarSiguienteRotacion()
-            print("▶️ Rotación reanudada")
+            ProductionLogger.bannerLog("▶️ Rotación reanudada")
         }
     }
     
@@ -187,12 +186,12 @@ class GV_Banner_Manager: ObservableObject {
     
     /// Control de visibilidad de la vista (optimización)
     func vistaSeVolvioVisible() {
-        print("👁️ Vista se volvió visible - reanudando banners")
+        ProductionLogger.bannerLog("👁️ Vista se volvió visible - reanudando banners")
         reproducir()
     }
     
     func vistaSeVolvioInvisible() {
-        print("👁️ Vista se volvió invisible - pausando banners")
+        ProductionLogger.bannerLog("👁️ Vista se volvió invisible - pausando banners")
         pausar()
     }
     

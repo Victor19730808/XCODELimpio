@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- ========================================== -->
+	<!-- GV_MisConfiguracionesGenerales.plist       -->
+	<!-- Configuraciones generales de la aplicación -->
+	<!-- ========================================== -->
+	
+	<!-- CONFIGURACIÓN DEL MAPA -->
+	<key>Mapa</key>
+	<dict>
+		<!-- Radio inicial al centrar en usuario (en kilómetros) -->
+		<key>RadioCentradoUsuario_KM</key>
+		<real>5.0</real>
+		
+		<!-- Zoom level al centrar en usuario (latitudeDelta) -->
+		<key>ZoomUsuario_LatitudeDelta</key>
+		<real>0.05</real>
+		
+		<!-- Radio para mostrar todo México (latitudeDelta) -->
+		<key>ZoomMexico_LatitudeDelta</key>
+		<real>15.0</real>
+		
+		<!-- Límite máximo de establecimientos a mostrar -->
+		<key>MaxEstablecimientosVisibles</key>
+		<integer>150</integer>
+		
+		<!-- Límite de fetch para lazy loading (performance) -->
+		<key>MaxEstablecimientosFetch</key>
+		<integer>300</integer>
+		
+		<!-- Buffer para cargar fuera del viewport (en grados) -->
+		<key>RegionBuffer</key>
+		<real>0.05</real>
+		
+		<!-- Tiempo de debounce para actualizaciones (segundos) -->
+		<key>DebounceTime</key>
+		<real>0.3</real>
+		
+		<!-- Activar clustering por defecto -->
+		<key>ClusteringActivado</key>
+		<true/>
+		
+		<!-- Radio del cluster (en grados) -->
+		<key>ClusterRadius</key>
+		<real>0.02</real>
+		
+		<!-- Mínimo de establecimientos para formar cluster -->
+		<key>MinClusterSize</key>
+		<integer>3</integer>
+	</dict>
+	
+	<!-- CONFIGURACIÓN DE UBICACIÓN -->
+	<key>Ubicacion</key>
+	<dict>
+		<!-- Metros mínimos de movimiento para actualizar -->
+		<key>MinMovimientoMetros</key>
+		<real>20.0</real>
+		
+		<!-- Tiempo mínimo entre actualizaciones (segundos) -->
+		<key>MinIntervaloSegundos</key>
+		<real>2.0</real>
+		
+		<!-- Tamaño del cache de ubicaciones -->
+		<key>TamanoCacheUbicaciones</key>
+		<integer>100</integer>
+	</dict>
+	
+	<!-- CONFIGURACIÓN GENERAL -->
+	<key>General</key>
+	<dict>
+		<!-- Versión de configuración -->
+		<key>Version</key>
+		<string>1.0.0</string>
+		
+		<!-- Modo debug activado -->
+		<key>ModoDebug</key>
+		<false/>
+		
+		<!-- Idioma de la app -->
+		<key>Idioma</key>
+		<string>es</string>
+	</dict>
+</dict>
+</plist>
+

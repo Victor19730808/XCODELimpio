@@ -5,28 +5,18 @@ import SwiftData
 struct limpioCSApp: App {
     
     init() {
-        // Configurar sistema de logs
-        #if DEBUG
-        // Configuración SÚPER mínima - solo errores críticos
-        LogConfig.enabledLevels = [.error]
-        LogConfig.enabledCategories = [.system]
-        LogConfig.showFileInfo = false
-        LogConfig.showTimestamp = false
-        LogConfig.maxMessageLength = 50
-        #else
-        LogConfig.configureForProduction()
-        #endif
-        
-        infoLog("🚀 App iniciando", category: .system)
+        // Sistema de logging optimizado para producción
+        ProductionLogger.log("App iniciando", level: .info)
     }
     // Instancia única para toda la app
     @StateObject private var locationService = LocationService()
     @StateObject private var seedManager = GV_SeedManager.shared
     @State private var showMainApp = false
+    @State private var needsSeed = false
 
     var body: some Scene {
         WindowGroup {
-            if seedManager.checkSeedStatus() && !showMainApp {
+            if needsSeed && !showMainApp {
                 // 🌱 Mostrar pantalla de carga si necesita seed
                 GV_SeedLoadingView(seedManager: seedManager) {
                     showMainApp = true
@@ -35,16 +25,16 @@ struct limpioCSApp: App {
                 // 🚀 Mostrar splash screen normal
                 GV_SCR_tp_splash()
                     .environmentObject(locationService)
+                    .onAppear {
+                        needsSeed = seedManager.checkSeedStatus()
+                    }
                 
                 // 🛠️ VISTA DE ADMINISTRACIÓN (Comentada - solo para desarrollo)
                 // GV_VistaSimple_Test()
                 //     .environmentObject(locationService)
             }
         }
-        // ✅ Registramos el contenedor con ambos modelos
-               .modelContainer(for: [
-                   GV_modeloCont_Establecimientos.self,  // Modelo nuevo (principal)
-                   lmpBDF_EstablecimientoLocal.self      // Modelo anterior (compatibilidad)
-               ])
+        // ✅ Registramos el contenedor con el modelo principal (limpio)
+               .modelContainer(for: GV_modeloCont_Establecimientos.self)
     }
 }

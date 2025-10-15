@@ -45,19 +45,20 @@ struct GV_SCR_tc_contentview: View {
                                 .foregroundColor(themeManager.textPrimary)
                                 .padding(.horizontal, themeManager.paddingMedium)
                             
-                            NavigationLink {
-                                ccp_BDF_DBIncrementalTestView()
-                            } label: {
-                                Label("Prueba DB Incremental", systemImage: "externaldrive.connected.to.line.below")
-                                    .font(themeManager.body)
-                                    .foregroundColor(themeManager.textPrimary)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(themeManager.paddingMedium)
-                                    .background(themeManager.cardBackground)
-                                    .cornerRadius(themeManager.cornerRadius)
-                                    .shadow(color: themeManager.shadow, radius: themeManager.shadowRadius)
-                            }
-                            .padding(.horizontal, themeManager.paddingMedium)
+                            // COMENTADO - Vista de testing eliminada para producción
+                            // NavigationLink {
+                            //     ccp_BDF_DBIncrementalTestView()
+                            // } label: {
+                            //     Label("Prueba DB Incremental", systemImage: "externaldrive.connected.to.line.below")
+                            //         .font(themeManager.body)
+                            //         .foregroundColor(themeManager.textPrimary)
+                            //         .frame(maxWidth: .infinity, alignment: .leading)
+                            //         .padding(themeManager.paddingMedium)
+                            //         .background(themeManager.cardBackground)
+                            //         .cornerRadius(themeManager.cornerRadius)
+                            //         .shadow(color: themeManager.shadow, radius: themeManager.shadowRadius)
+                            // }
+                            // .padding(.horizontal, themeManager.paddingMedium)
                         }
                         
                         Divider()
@@ -73,9 +74,9 @@ struct GV_SCR_tc_contentview: View {
                             
                             VStack(spacing: 8) {
                                 NavigationLink {
-                                    GV_SCR_vg_MapaCercanias(isTodoMexico: false)
+                                    GV_GreatMap(isTodoMexico: false)
                                 } label: {
-                                    Label("Mapa de BD local", systemImage: "map.fill")
+                                    Label("Mapa de Establecimientos", systemImage: "map.fill")
                                         .font(themeManager.body)
                                         .foregroundColor(themeManager.textPrimary)
                                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -84,11 +85,12 @@ struct GV_SCR_tc_contentview: View {
                                         .cornerRadius(themeManager.cornerRadius)
                                         .shadow(color: themeManager.shadow, radius: themeManager.shadowRadius)
                                 }
+                                .padding(.horizontal, themeManager.paddingMedium)
                                 
                                 NavigationLink {
-                                    GV_SCR_vg_MapaCercanias(isTodoMexico: true)
+                                    GV_GreatMap(isTodoMexico: true)
                                 } label: {
-                                    Label("Mapa (clusters de establecimientos)", systemImage: "square.stack.3d.up.fill")
+                                    Label("Mapa Todo México", systemImage: "square.stack.3d.up.fill")
                                         .font(themeManager.body)
                                         .foregroundColor(themeManager.textPrimary)
                                         .frame(maxWidth: .infinity, alignment: .leading)

@@ -23,15 +23,15 @@ struct GV_SCR_vg_FavoritosView: View {
     
     // Trae todos los establecimientos (filtrará por favoritos en computed property)
     @Query(
-        sort: \lmpBDF_EstablecimientoLocal.nombre,
+        sort: \GV_modeloCont_Establecimientos.establecimiento_nombre,
         order: .forward
     )
-    private var todosEstablecimientos: [lmpBDF_EstablecimientoLocal]
+    private var todosEstablecimientos: [GV_modeloCont_Establecimientos]
     
     // Computed property para obtener solo los favoritos
-    private var favoritos: [lmpBDF_EstablecimientoLocal] {
+    private var favoritos: [GV_modeloCont_Establecimientos] {
         return todosEstablecimientos.filter { establecimiento in
-            favoritosManager.isFavorite(establecimientoId: establecimiento.id)
+            favoritosManager.isFavorite(establecimientoId: establecimiento.establecimiento_id)
         }
     }
 
@@ -68,8 +68,23 @@ struct GV_SCR_vg_FavoritosView: View {
                     ScrollView {
                         LazyVStack(spacing: themeManager.spacing) {
                             ForEach(favoritos) { est in
-                                ccp_UI_EstablecimientoRow(est: est)
-                                    .padding(.horizontal, themeManager.paddingMedium)
+                                // Vista simple temporal hasta reconstruir el componente
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text(est.establecimiento_nombre)
+                                        .font(themeManager.body)
+                                        .fontWeight(.bold)
+                                    
+                                    if let estado = est.direccion_estado {
+                                        Text(estado)
+                                            .font(themeManager.caption)
+                                            .foregroundColor(themeManager.textSecondary)
+                                    }
+                                }
+                                .padding()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(themeManager.cardBackground)
+                                .cornerRadius(themeManager.cornerRadius)
+                                .padding(.horizontal, themeManager.paddingMedium)
                             }
                         }
                         .padding(.vertical, themeManager.spacing)

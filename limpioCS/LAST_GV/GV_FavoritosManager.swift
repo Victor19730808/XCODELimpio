@@ -9,6 +9,8 @@
 import Foundation
 import Combine
 
+// TEMPORALMENTE DESHABILITADO PARA DEBUGGING
+// class GV_FavoritosManager: ObservableObject {
 class GV_FavoritosManager: ObservableObject {
     static let shared = GV_FavoritosManager()
     private let favoritosKey = "favoriteEstablishmentIds"
@@ -22,23 +24,23 @@ class GV_FavoritosManager: ObservableObject {
     private init() {
         self.favoriteIds = []
         self.favoriteIds = loadFavorites()
-        print("🏠 GV_FavoritosManager inicializado con \(favoriteIds.count) favoritos")
+        // GV_FavoritosManager inicializado
     }
     
     private func loadFavorites() -> Set<Int> {
         if let data = UserDefaults.standard.data(forKey: favoritosKey),
            let decodedIds = try? JSONDecoder().decode(Set<Int>.self, from: data) {
-            print("📂 Favoritos cargados: \(decodedIds)")
+            // Favoritos cargados
             return decodedIds
         }
-        print("📂 No hay favoritos guardados, iniciando con set vacío")
+        // No hay favoritos guardados
         return []
     }
     
     private func saveFavorites() {
         if let encoded = try? JSONEncoder().encode(favoriteIds) {
             UserDefaults.standard.set(encoded, forKey: favoritosKey)
-            print("💾 Favoritos guardados: \(favoriteIds)")
+            // Favoritos guardados
         }
     }
     
@@ -49,24 +51,24 @@ class GV_FavoritosManager: ObservableObject {
     func toggleFavorite(establecimientoId: Int) {
         if favoriteIds.contains(establecimientoId) {
             favoriteIds.remove(establecimientoId)
-            print("❌ Removido de favoritos: \(establecimientoId)")
+            // Removido de favoritos
         } else {
             favoriteIds.insert(establecimientoId)
-            print("✅ Agregado a favoritos: \(establecimientoId)")
+            // Agregado a favoritos
         }
     }
     
     func addFavorite(establecimientoId: Int) {
         if !favoriteIds.contains(establecimientoId) {
             favoriteIds.insert(establecimientoId)
-            print("✅ Agregado a favoritos: \(establecimientoId)")
+            // Agregado a favoritos
         }
     }
     
     func removeFavorite(establecimientoId: Int) {
         if favoriteIds.contains(establecimientoId) {
             favoriteIds.remove(establecimientoId)
-            print("❌ Removido de favoritos: \(establecimientoId)")
+            // Removido de favoritos
         }
     }
     

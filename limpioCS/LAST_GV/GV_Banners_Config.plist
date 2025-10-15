@@ -12,7 +12,7 @@
 			<key>headerIcono</key>
 			<string>megaphone.fill</string>
 			<key>fotografiaAssets</key>
-			<string>nPBF_banner_p</string>
+			<string>BFHM</string>
 			<key>fotografiaURL</key>
 			<string></string>
 			<key>textoAlternativo</key>
@@ -32,7 +32,7 @@
 		</dict>
 		<dict>
 			<key>nombre</key>
-			<string>Hecho en México</string>
+			<string>BLHM</string>
 			<key>headerTitulo</key>
 			<string>VG_NO_PATROCINADOR</string>
 			<key>headerIcono</key>
@@ -64,7 +64,7 @@
 			<key>headerIcono</key>
 			<string>megaphone.fill</string>
 			<key>fotografiaAssets</key>
-			<string>CO</string>
+			<string>BLCC</string>
 			<key>fotografiaURL</key>
 			<string></string>
 			<key>textoAlternativo</key>

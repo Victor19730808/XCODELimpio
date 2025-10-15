@@ -10,10 +10,12 @@ import SwiftUI
 import Combine
 
 /// Manager global de temas - Singleton ObservableObject
+// TEMPORALMENTE DESHABILITADO PARA DEBUGGING
+// class GV_Temas_Manager: ObservableObject {
 class GV_Temas_Manager: ObservableObject {
     static let shared = GV_Temas_Manager()
     
-    /// Tema actual activo (global)
+    /// Tema actual activo (global) - REHABILITADO
     @Published var currentTheme: GV_Temas_Type {
         didSet {
             saveThemePreference()

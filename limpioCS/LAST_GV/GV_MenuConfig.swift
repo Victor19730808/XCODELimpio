@@ -10,11 +10,13 @@ import SwiftUI
 
 /// Estructura que define la configuración de un menú.
 struct GV_MenuConfig {
+    let displayName: String?
+    let description: String?
     let showMenu: Bool
     let iconName: String
     let iconSize: CGFloat
     let iconColor: Color
-    let options: [MenuOption]
+    let options: [GV_MenuOptionModel]
     let backgroundColor: Color
     let padding: CGFloat
 }
@@ -25,76 +27,25 @@ class GV_MenuConfigManager {
     
     private init() {}
     
-    /// Devuelve la configuración de menú para un tipo específico.
-    /// Usa el GV_ConfigLoader para decidir si carga desde Swift o Plist
     func getMenuConfig(for type: GV_MenuType) -> GV_MenuConfig {
         return GV_ConfigLoader.shared.loadMenuConfig(for: type)
     }
     
-    /// Devuelve la configuración de menú desde código Swift (hardcoded)
     func getMenuConfigFromSwift(for type: GV_MenuType) -> GV_MenuConfig {
-        switch type {
-        case .principal:
-            return GV_MenuConfig(
-                showMenu: true,
-                iconName: "line.3.horizontal",
-                iconSize: 24,
-                iconColor: .white,
-                options: [.themes, .adminDatos, .advancedSearch, .mySettings, .exit, .goToPortada],
-                backgroundColor: .clear,
-                padding: 16
-            )
-        case .mapa:
-            return GV_MenuConfig(
-                showMenu: true,
-                iconName: "map",
-                iconSize: 22,
-                iconColor: .white,
-                options: [.themes, .advancedSearch, .mySettings, .exit, .goToPortada],
-                backgroundColor: .clear,
-                padding: 20
-            )
-        case .lista:
-            return GV_MenuConfig(
-                showMenu: true,
-                iconName: "list.bullet",
-                iconSize: 22,
-                iconColor: .white,
-                options: [.themes, .adminDatos, .mySettings, .exit, .goToPortada],
-                backgroundColor: .clear,
-                padding: 20
-            )
-        case .simple:
-            return GV_MenuConfig(
-                showMenu: true,
-                iconName: "gear",
-                iconSize: 20,
-                iconColor: .white,
-                options: [.themes, .exit, .goToPortada],
-                backgroundColor: .clear,
-                padding: 15
-            )
-        case .ninguno:
-            return GV_MenuConfig(
-                showMenu: false,
-                iconName: "",
-                iconSize: 0,
-                iconColor: .clear,
-                options: [],
-                backgroundColor: .clear,
-                padding: 0
-            )
-        case .myPrueba:
-            return GV_MenuConfig(
-                showMenu: true,
-                iconName: "folder.fill",
-                iconSize: 20,
-                iconColor: .white,
-                options: [.adminDatos, .exit, .goToPortada],
-                backgroundColor: .clear,
-                padding: 15
-            )
-        }
+        ProductionLogger.log("No se pudo cargar menú tipo \(type.rawValue) desde Plist", level: .error)
+        ProductionLogger.log("Verifica que GV_MenuConfigs.plist esté correctamente configurado", level: .warning)
+        
+        return GV_MenuConfig(
+            displayName: "Error de Configuración",
+            description: "No se pudo cargar el menú desde el Plist",
+            showMenu: true,
+            iconName: "exclamationmark.triangle.fill",
+            iconSize: 24,
+            iconColor: .red,
+            options: [],
+            backgroundColor: .clear,
+            padding: 16
+        )
     }
 }
 
@@ -117,47 +68,131 @@ extension GV_MenuType {
     @ViewBuilder
     func menuView(
         showThemes: Binding<Bool>,
+        showArrastrePrueba: Binding<Bool> = .constant(false),
         showAdminDatos: Binding<Bool>,
         showAdvancedSearch: Binding<Bool>,
         showMySettings: Binding<Bool>,
         onExit: @escaping () -> Void = {},
-        onGoToPortada: @escaping () -> Void = {}
+        onGoToPortada: @escaping () -> Void = {},
+        onGoBack: @escaping () -> Void = {},
+        onGoToEstablecimientos: @escaping () -> Void = {},
+        onGoToFavoritos: @escaping () -> Void = {},
+        onGoToMapa: @escaping () -> Void = {}
     ) -> some View {
         let config = menuConfig
         
         if config.showMenu {
-            Menu {
-                ForEach(config.options, id: \.self) { option in
-                    Button(action: {
-                        switch option {
-                        case .themes:
-                            showThemes.wrappedValue = true
-                        case .adminDatos:
-                            showAdminDatos.wrappedValue = true
-                        case .advancedSearch:
-                            showAdvancedSearch.wrappedValue = true
-                        case .mySettings:
-                            showMySettings.wrappedValue = true
-                        case .exit:
-                            // ✨ Acción especial: regresar
-                            onExit()
-                        case .goToPortada:
-                            // ✨ Acción especial: ir a portada
-                            onGoToPortada()
-                        }
-                    }) {
-                        Label(option.rawValue, systemImage: option.icon)
-                    }
+            if config.options.isEmpty && config.iconName == "exclamationmark.triangle.fill" {
+                Button(action: {
+                    ProductionLogger.log("Menú no configurado correctamente", level: .error)
+                }) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .font(.system(size: config.iconSize))
+                        .foregroundColor(.red)
                 }
-            } label: {
-                Image(systemName: config.iconName)
-                    .font(.system(size: config.iconSize))
-                    .foregroundColor(config.iconColor)
+            } else {
+                Menu {
+                    ForEach(filteredOptions(config.options)) { option in
+                        Button(action: {
+                            handleMenuAction(
+                                option: option,
+                                showThemes: showThemes,
+                                showArrastrePrueba: showArrastrePrueba,
+                                showAdminDatos: showAdminDatos,
+                                showAdvancedSearch: showAdvancedSearch,
+                                showMySettings: showMySettings,
+                                onExit: onExit,
+                                onGoToPortada: onGoToPortada,
+                                onGoBack: onGoBack,
+                                onGoToEstablecimientos: onGoToEstablecimientos,
+                                onGoToFavoritos: onGoToFavoritos,
+                                onGoToMapa: onGoToMapa
+                            )
+                        }) {
+                            Label(option.title, systemImage: option.icon)
+                        }
+                    }
+                } label: {
+                    Image(systemName: config.iconName)
+                        .font(.system(size: config.iconSize))
+                        .foregroundColor(config.iconColor)
+                }
             }
         } else {
-            // Sin menú - espacio vacío para mantener centrado el texto
             Color.clear
                 .frame(width: 30, height: 30)
         }
     }
+    
+    private func filteredOptions(_ options: [GV_MenuOptionModel]) -> [GV_MenuOptionModel] {
+        #if DEBUG
+        return options
+        #else
+        return options.filter { !$0.debugOnly }
+        #endif
+    }
+    
+    private func handleMenuAction(
+        option: GV_MenuOptionModel,
+        showThemes: Binding<Bool>,
+        showArrastrePrueba: Binding<Bool>,
+        showAdminDatos: Binding<Bool>,
+        showAdvancedSearch: Binding<Bool>,
+        showMySettings: Binding<Bool>,
+        onExit: @escaping () -> Void,
+        onGoToPortada: @escaping () -> Void,
+        onGoBack: @escaping () -> Void,
+        onGoToEstablecimientos: @escaping () -> Void,
+        onGoToFavoritos: @escaping () -> Void,
+        onGoToMapa: @escaping () -> Void
+    ) {
+        let sheetBindings: [String: Binding<Bool>] = [
+            "themes": showThemes,
+            "adminDatos": showAdminDatos,
+            "advancedSearch": showAdvancedSearch,
+            "mySettings": showMySettings
+        ]
+        
+        let navigationActions: [String: () -> Void] = [
+            "goToPortada": onGoToPortada,
+            "goToEstablecimientos": onGoToEstablecimientos,
+            "goToFavoritos": onGoToFavoritos,
+            "goToMapa": onGoToMapa
+        ]
+        
+        let actionHandlers: [String: () -> Void] = [
+            "exit": onExit,
+            "goBack": onGoBack,
+            "goToConcanaco": { openURL("https://www.concanaco.com.mx") },
+            "goToHHT": { openURL("https://www.hht.mx") },
+            "goToManual": { openURL("https://youtu.be/pIBVWT8nEe0") }
+        ]
+        
+        switch option.navigationTypeEnum {
+        case .sheet:
+            if let binding = sheetBindings[option.id] {
+                binding.wrappedValue = true
+            } else {
+                print("⚠️ Sheet '\(option.id)' no está registrado en sheetBindings")
+            }
+        case .navigation:
+            if let action = navigationActions[option.id] {
+                action()
+            } else {
+                print("⚠️ Navegación '\(option.id)' no está registrada en navigationActions")
+            }
+        case .action:
+            if let action = actionHandlers[option.id] {
+                action()
+            } else {
+                print("⚠️ Acción '\(option.id)' no está registrada en actionHandlers")
+            }
+        }
+    }
+}
+
+// MARK: - Helper Functions
+private func openURL(_ urlString: String) {
+    guard let url = URL(string: urlString) else { return }
+    UIApplication.shared.open(url)
 }

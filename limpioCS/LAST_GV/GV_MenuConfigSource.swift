@@ -22,7 +22,7 @@ class GV_ConfigLoader {
     /// 🚩 BANDERA: Cambia esta variable para usar Swift o Plist
     /// - .swift: Usa configuraciones hardcoded en GV_MenuConfigManager
     /// - .plist: Carga configuraciones desde MenuConfigs.plist
-    static var source: GV_ConfigSource = .swift  // 🚩 CAMBIAR AQUÍ
+    static var source: GV_ConfigSource = .plist  // 🚩 ACTIVADO PLIST
     
     private init() {}
     
@@ -46,7 +46,7 @@ class GV_ConfigLoader {
     /// Carga configuración desde Plist
     private func loadFromPlist(_ type: GV_MenuType) -> GV_MenuConfig {
         // Intentar cargar desde Plist en LAST_GV/
-        guard let plistPath = Bundle.main.path(forResource: "LAST_GV/GV_MenuConfigs", ofType: "plist"),
+        guard let plistPath = Bundle.main.path(forResource: "GV_MenuConfigs", ofType: "plist"),
               let plistData = FileManager.default.contents(atPath: plistPath),
               let plist = try? PropertyListSerialization.propertyList(from: plistData, format: nil) as? [String: [String: Any]] else {
             print("⚠️ No se pudo cargar GV_MenuConfigs.plist, usando Swift como fallback")
@@ -61,24 +61,39 @@ class GV_ConfigLoader {
         }
         
         // Parsear configuración
+        let displayName = config["displayName"] as? String
+        let description = config["description"] as? String
         let showMenu = config["showMenu"] as? Bool ?? true
         let iconName = config["iconName"] as? String ?? "line.3.horizontal"
         let iconSize = config["iconSize"] as? CGFloat ?? 22
         let padding = config["padding"] as? CGFloat ?? 16
         
-        // Parsear opciones
-        let optionsArray = config["options"] as? [String] ?? []
-        let options = optionsArray.compactMap { optionString -> MenuOption? in
-            switch optionString {
-            case "themes": return .themes
-            case "adminDatos": return .adminDatos
-            case "advancedSearch": return .advancedSearch
-            case "mySettings": return .mySettings
-            default: return nil
+        // Parsear opciones dinámicas desde Plist
+        let optionsArray = config["options"] as? [[String: Any]] ?? []
+        let options = optionsArray.compactMap { optionDict -> GV_MenuOptionModel? in
+            guard let id = optionDict["id"] as? String,
+                  let title = optionDict["title"] as? String,
+                  let icon = optionDict["icon"] as? String,
+                  let navigationType = optionDict["navigationType"] as? String,
+                  let destinationView = optionDict["destinationView"] as? String else {
+                return nil
             }
+            
+            let debugOnly = optionDict["debugOnly"] as? Bool ?? false
+            
+            return GV_MenuOptionModel(
+                id: id,
+                title: title,
+                icon: icon,
+                navigationType: navigationType,
+                destinationView: destinationView,
+                debugOnly: debugOnly
+            )
         }
         
         return GV_MenuConfig(
+            displayName: displayName,
+            description: description,
             showMenu: showMenu,
             iconName: iconName,
             iconSize: iconSize,

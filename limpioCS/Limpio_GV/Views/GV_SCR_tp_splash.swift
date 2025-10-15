@@ -10,7 +10,7 @@ import SwiftUI
 
 struct GV_SCR_tp_splash: View {
     // MARK: - Configuración del Sistema GV
-    private let screenType: ScreenType = .splash
+    private let screenType: ScreenType = .general
     private let myHeader: GV_HeaderType = .tipo1
     @ObservedObject private var themeManager = GV_Temas_Manager.shared
     
@@ -24,17 +24,37 @@ struct GV_SCR_tp_splash: View {
     @State private var contentOpacity: Double = 0.0
     @State private var pulseScale: CGFloat = 1.0
     
+    // MARK: - Estados de Navegación
+    @State private var showThemes = false
+    @State private var showAdminDatos = false
+    @State private var showAdvancedSearch = false
+    @State private var showMySettings = false
+    @State private var navigateToEstablecimientos = false
+    @State private var navigateToFavoritos = false
+    @State private var navigateToMapa = false
+    
     var body: some View {
-        ZStack {
+        NavigationStack {
+            ZStack {
             // Fondo temado
             themeManager.background
                 .ignoresSafeArea()
                 .opacity(backgroundOpacity)
             
             VStack(spacing: 0) {
-                // Header con menú - TODO EN UNA SOLA LÍNEA! 🎯
-                myHeader.headerViewWithMenu("Hecho en México", nil, .principal)
-                    .opacity(headerOpacity)
+                // Header con menú splash
+                myHeader.headerViewWithMenu("Hecho en México", nil, .splash,
+                    onNavigateToEstablecimientos: {
+                        navigateToEstablecimientos = true
+                    },
+                    onNavigateToFavoritos: {
+                        navigateToFavoritos = true
+                    },
+                    onNavigateToMapa: {
+                        navigateToMapa = true
+                    }
+                )
+                .opacity(headerOpacity)
                 
                 // Contenido principal con tema aplicado
                 VStack(spacing: 0) {
@@ -142,48 +162,65 @@ struct GV_SCR_tp_splash: View {
         }
         .fullScreenCover(isPresented: $showMainApp) {
             GV_SCR_tc_menuprincipal() // ✨ Navegar a Menú Principal migrado
+                .environmentObject(LocationService())
         }
+        .sheet(isPresented: $showThemes) {
+            GV_Temas_SelectorView()
+        }
+        .sheet(isPresented: $showAdminDatos) {
+            GV_SCR_vg_EstablecimientosListaView()
+        }
+        .sheet(isPresented: $showAdvancedSearch) {
+            GV_SCR_vg_FavoritosView()
+        }
+        .sheet(isPresented: $showMySettings) {
+            Text("Mis Configuraciones").padding()
+        }
+        .navigationDestination(isPresented: $navigateToEstablecimientos) {
+            GV_SCR_vg_EstablecimientosListaView()
+        }
+        .navigationDestination(isPresented: $navigateToFavoritos) {
+            GV_SCR_vg_FavoritosView()
+        }
+        .navigationDestination(isPresented: $navigateToMapa) {
+            GV_GreatMap(isTodoMexico: false)
+        }
+        } // Cerrar NavigationStack
     }
     
     private func startAnimation() {
-        // Secuencia de animaciones estilo El Buen Fin con tema dinámico
-        withAnimation(.easeInOut(duration: 0.6)) {
+        // ANIMACIONES OPTIMIZADAS PARA EXPERIENCIA PROFESIONAL
+        withAnimation(.easeOut(duration: 0.6)) {
             backgroundOpacity = 1.0
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            withAnimation(.easeOut(duration: 0.8)) {
-                headerOpacity = 1.0
+        withAnimation(.easeOut(duration: 0.7).delay(0.15)) {
+            headerOpacity = 1.0
+        }
+        
+        withAnimation(.spring(response: 0.8, dampingFraction: 0.7, blendDuration: 0).delay(0.3)) {
+            logoScale = 1.0
+            logoOpacity = 1.0
+        }
+        
+        withAnimation(.easeOut(duration: 0.5).delay(0.7)) {
+            contentOpacity = 1.0
+        }
+        
+        // Iniciar animación de pulso suave después de que aparezcan los logos
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) {
+            withAnimation(.easeInOut(duration: 1.2)) {
+                pulseScale = 1.08
             }
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-            withAnimation(.easeOut(duration: 1.0)) {
-                logoScale = 1.0
-                logoOpacity = 1.0
-            }
-            
-            // Iniciar efecto de pulso
-            withAnimation(.easeInOut(duration: 2.0).repeatForever(autoreverses: true)) {
-                pulseScale = 1.1
-            }
-        }
+        isAnimating = true
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-            withAnimation(.easeOut(duration: 0.8)) {
-                contentOpacity = 1.0
+        // Transición suave a la app principal después de 3 segundos
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            withAnimation(.easeInOut(duration: 0.5)) {
+                showMainApp = true
             }
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
-            withAnimation(.easeInOut(duration: 0.6)) {
-                isAnimating = true
-            }
-        }
-        
-        // Transición a la app principal después de 5 segundos
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-            showMainApp = true
         }
     }
 }

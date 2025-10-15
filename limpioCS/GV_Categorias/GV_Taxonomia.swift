@@ -52,6 +52,11 @@ class GV_TaxonomiaManager {
     /// Diccionario de taxonomías por nombre
     private(set) var taxonomias: [String: GV_Taxonomia] = [:]
     
+    /// Array de taxonomías ordenadas alfabéticamente
+    var taxonomiasArray: [GV_Taxonomia] {
+        taxonomias.values.sorted { $0.nombre < $1.nombre }
+    }
+    
     /// Estado de carga
     private(set) var isLoaded: Bool = false
     private(set) var loadError: String?

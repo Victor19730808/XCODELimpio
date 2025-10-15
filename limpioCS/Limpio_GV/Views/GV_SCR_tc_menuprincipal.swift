@@ -19,7 +19,7 @@ struct GV_SCR_tc_menuprincipal: View {
     
     // MARK: - Estados de Animación
     @State private var scrollOffset: CGFloat = 0
-    @State private var cardAnimations: [Bool] = Array(repeating: false, count: 3)  // Cambiado de 4 a 3
+    @State private var cardAnimations: [Bool] = Array(repeating: false, count: 4)  // 3 cards principales + 1 testing
     @State private var bannerAnimation: Bool = false
     
     var body: some View {
@@ -69,7 +69,7 @@ struct GV_SCR_tc_menuprincipal: View {
                             icon: "map.fill",
                             color: themeManager.cardSuccess,
                             items: [
-                                GV_MenuItem(title: "Mapa de Establecimientos", subtitle: "Cercanías y todo México", destination: AnyView(GV_SCR_vg_MapaCercanias(isTodoMexico: false)))
+                                GV_MenuItem(title: "Mapa de Establecimientos", subtitle: "Cerca de ti y todo México", destination: AnyView(GV_GreatMap(isTodoMexico: false)))
                             ]
                         )
                         .offset(x: cardAnimations[2] ? 0 : -50)
@@ -89,12 +89,16 @@ struct GV_SCR_tc_menuprincipal: View {
                             icon: "testtube.2",
                             color: .orange,
                             items: [
-                                GV_MenuItem(title: "Test Sistema Categorías", subtitle: "Vista de prueba del sistema de categorías", destination: AnyView(GV_TestCategoriasView()))
+                                // COMENTADO - Vistas de testing eliminadas para producción
+                                // GV_MenuItem(title: "🛠️ Admin Sistema", subtitle: "Administración completa del sistema GV_ep_Establecimientos", destination: AnyView(GV_VistaSimple_Test())),
+                                // GV_MenuItem(title: "Test Sistema Categorías", subtitle: "Vista de prueba del sistema de categorías", destination: AnyView(GV_TestCategoriasView())),
+                                // GV_MenuItem(title: "Test Ubicación", subtitle: "Diagnóstico de problemas de ubicación", destination: AnyView(GV_TestLocationView()))
+                                GV_MenuItem(title: "⚙️ Configuración", subtitle: "Opciones generales de la app", destination: AnyView(Text("Configuración próximamente")))
                             ]
                         )
-                        .offset(x: cardAnimations[2] ? 0 : 50)
-                        .opacity(cardAnimations[2] ? 1 : 0)
-                        .animation(.easeOut(duration: 0.6).delay(0.9), value: cardAnimations[2])
+                        .offset(x: cardAnimations[3] ? 0 : 50)
+                        .opacity(cardAnimations[3] ? 1 : 0)
+                        .animation(.easeOut(duration: 0.6).delay(0.9), value: cardAnimations[3])
                         #endif
                         
                     }
@@ -117,6 +121,10 @@ struct GV_SCR_tc_menuprincipal: View {
         .background(themeManager.background)
         .preferredColorScheme(themeManager.currentTheme.preferredColorScheme)
         .onAppear {
+            // Iniciar el servicio de ubicación
+            print("🚀 [MENU] Iniciando LocationService desde menú principal")
+            location.start()
+            
             // Iniciar animaciones de las cards con delay
             for i in 0..<cardAnimations.count {
                 DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * 0.2) {

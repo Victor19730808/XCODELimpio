@@ -37,6 +37,50 @@
 		<!-- Tiempo de debounce para actualizaciones (segundos) -->
 		<key>DebounceTime</key>
 		<real>0.3</real>
+		<!-- Tiempo de debounce para la búsqueda por nombre (segundos) -->
+		<key>SearchDebounceTime</key>
+		<real>0.35</real>
+		<!-- Mínimo de caracteres para activar búsqueda -->
+		<key>SearchMinChars</key>
+		<integer>1</integer>
+		<!-- Máximo de resultados a mostrar en overlay de búsqueda -->
+		<key>SearchMaxResults</key>
+		<integer>20</integer>
+		<!-- Límite de fetch global para buscar por nombre -->
+		<key>SearchFetchLimit</key>
+		<integer>1000</integer>
+		<!-- Duración del resaltado del pin (segundos) -->
+		<key>HighlightDuration</key>
+		<real>1.2</real>
+		<!-- Duración del fade-out del resaltado (segundos) -->
+		<key>HighlightFadeDuration</key>
+		<real>0.4</real>
+		<!-- Retardo para abrir el diálogo de acciones tras centrar (segundos) -->
+		<key>ActionMenuDelay</key>
+		<real>0.2</real>
+		<!-- Thresholds de recarga de región -->
+		<key>ThresholdCenterFactor</key>
+		<real>0.10</real>
+		<key>ThresholdSpanFactorLat</key>
+		<real>0.10</real>
+		<key>ThresholdSpanFactorLon</key>
+		<real>0.10</real>
+		<!-- Caché por tiles -->
+		<key>TileCacheTTLSeconds</key>
+		<integer>300</integer>
+		<key>TileGridBaseDegrees</key>
+		<real>0.20</real>
+		<!-- Fetch adaptativo por zoom -->
+		<key>AdaptiveFetch_WideLatDelta</key>
+		<real>12.0</real>
+		<key>AdaptiveFetch_MediumLatDelta</key>
+		<real>4.0</real>
+		<key>AdaptiveFetch_WideLimit</key>
+		<integer>120</integer>
+		<key>AdaptiveFetch_MediumLimit</key>
+		<integer>220</integer>
+		<key>AdaptiveFetch_CloseLimit</key>
+		<integer>300</integer>
 		
 		<!-- Activar clustering por defecto -->
 		<key>ClusteringActivado</key>

@@ -28,6 +28,26 @@ class GV_ConfiguracionesGenerales {
     var mapa_MaxEstablecimientosFetch: Int = 300
     var mapa_RegionBuffer: Double = 0.05
     var mapa_DebounceTime: Double = 0.3
+    var mapa_SearchDebounceTime: Double = 0.35
+    var mapa_SearchMinChars: Int = 1
+    var mapa_SearchMaxResults: Int = 20
+    var mapa_SearchFetchLimit: Int = 2000
+    var mapa_HighlightDuration: Double = 1.2
+    var mapa_HighlightFadeDuration: Double = 0.4
+    var mapa_ActionMenuDelay: Double = 0.2
+    // Thresholds de región
+    var mapa_ThresholdCenterFactor: Double = 0.10
+    var mapa_ThresholdSpanFactorLat: Double = 0.10
+    var mapa_ThresholdSpanFactorLon: Double = 0.10
+    // Caché por tiles
+    var mapa_TileCacheTTLSeconds: Int = 300
+    var mapa_TileGridBaseDegrees: Double = 0.20
+    // Fetch adaptativo
+    var mapa_AdaptiveFetch_WideLatDelta: Double = 12.0
+    var mapa_AdaptiveFetch_MediumLatDelta: Double = 4.0
+    var mapa_AdaptiveFetch_WideLimit: Int = 120
+    var mapa_AdaptiveFetch_MediumLimit: Int = 220
+    var mapa_AdaptiveFetch_CloseLimit: Int = 300
     var mapa_ClusteringActivado: Bool = true
     var mapa_ClusterRadius: Double = 0.02
     var mapa_MinClusterSize: Int = 3
@@ -66,6 +86,23 @@ class GV_ConfiguracionesGenerales {
             mapa_MaxEstablecimientosFetch = mapa["MaxEstablecimientosFetch"] as? Int ?? 300
             mapa_RegionBuffer = mapa["RegionBuffer"] as? Double ?? 0.05
             mapa_DebounceTime = mapa["DebounceTime"] as? Double ?? 0.3
+            mapa_SearchDebounceTime = mapa["SearchDebounceTime"] as? Double ?? 0.35
+            mapa_SearchMinChars = mapa["SearchMinChars"] as? Int ?? 1
+            mapa_SearchMaxResults = mapa["SearchMaxResults"] as? Int ?? 20
+            mapa_SearchFetchLimit = mapa["SearchFetchLimit"] as? Int ?? 2000
+            mapa_HighlightDuration = mapa["HighlightDuration"] as? Double ?? 1.2
+            mapa_HighlightFadeDuration = mapa["HighlightFadeDuration"] as? Double ?? 0.4
+            mapa_ActionMenuDelay = mapa["ActionMenuDelay"] as? Double ?? 0.2
+            mapa_ThresholdCenterFactor = mapa["ThresholdCenterFactor"] as? Double ?? 0.10
+            mapa_ThresholdSpanFactorLat = mapa["ThresholdSpanFactorLat"] as? Double ?? 0.10
+            mapa_ThresholdSpanFactorLon = mapa["ThresholdSpanFactorLon"] as? Double ?? 0.10
+            mapa_TileCacheTTLSeconds = mapa["TileCacheTTLSeconds"] as? Int ?? 300
+            mapa_TileGridBaseDegrees = mapa["TileGridBaseDegrees"] as? Double ?? 0.20
+            mapa_AdaptiveFetch_WideLatDelta = mapa["AdaptiveFetch_WideLatDelta"] as? Double ?? 12.0
+            mapa_AdaptiveFetch_MediumLatDelta = mapa["AdaptiveFetch_MediumLatDelta"] as? Double ?? 4.0
+            mapa_AdaptiveFetch_WideLimit = mapa["AdaptiveFetch_WideLimit"] as? Int ?? 120
+            mapa_AdaptiveFetch_MediumLimit = mapa["AdaptiveFetch_MediumLimit"] as? Int ?? 220
+            mapa_AdaptiveFetch_CloseLimit = mapa["AdaptiveFetch_CloseLimit"] as? Int ?? 300
             mapa_ClusteringActivado = mapa["ClusteringActivado"] as? Bool ?? true
             mapa_ClusterRadius = mapa["ClusterRadius"] as? Double ?? 0.02
             mapa_MinClusterSize = mapa["MinClusterSize"] as? Int ?? 3

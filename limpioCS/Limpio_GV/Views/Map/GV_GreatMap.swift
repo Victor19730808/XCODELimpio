@@ -1080,7 +1080,9 @@ struct GV_GreatMap: View {
            let categoria = categoriaManager.categoria(byNombre: nombreCat) {
             return (categoria.color, categoria.icono)
         }
-        return nil
+        // Configurable: estilo para sin categoría desde plist
+        let color = Color(hex: config.mapa_NoCategoryColorHex) ?? .gray
+        return (color, config.mapa_NoCategoryIcon)
     }
 
     /// Obtiene el ID de categoría resuelto para un establecimiento

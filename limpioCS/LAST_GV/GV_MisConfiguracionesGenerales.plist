@@ -2,130 +2,101 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<!-- ========================================== -->
-	<!-- GV_MisConfiguracionesGenerales.plist       -->
-	<!-- Configuraciones generales de la aplicación -->
-	<!-- ========================================== -->
-	
-	<!-- CONFIGURACIÓN DEL MAPA -->
 	<key>Mapa</key>
 	<dict>
-		<!-- Radio inicial al centrar en usuario (en kilómetros) -->
 		<key>RadioCentradoUsuario_KM</key>
-		<real>5.0</real>
-		
-		<!-- Zoom level al centrar en usuario (latitudeDelta) -->
+		<real>5</real>
 		<key>ZoomUsuario_LatitudeDelta</key>
 		<real>0.05</real>
-		
-		<!-- Radio para mostrar todo México (latitudeDelta) -->
 		<key>ZoomMexico_LatitudeDelta</key>
-		<real>15.0</real>
-		
-		<!-- Límite máximo de establecimientos a mostrar -->
+		<real>15</real>
 		<key>MaxEstablecimientosVisibles</key>
 		<integer>150</integer>
-		
-		<!-- Límite de fetch para lazy loading (performance) -->
 		<key>MaxEstablecimientosFetch</key>
 		<integer>300</integer>
-		
-		<!-- Buffer para cargar fuera del viewport (en grados) -->
 		<key>RegionBuffer</key>
 		<real>0.05</real>
-		
-		<!-- Tiempo de debounce para actualizaciones (segundos) -->
 		<key>DebounceTime</key>
 		<real>0.3</real>
-		<!-- Tiempo de debounce para la búsqueda por nombre (segundos) -->
 		<key>SearchDebounceTime</key>
 		<real>0.35</real>
-		<!-- Mínimo de caracteres para activar búsqueda -->
 		<key>SearchMinChars</key>
 		<integer>1</integer>
-		<!-- Máximo de resultados a mostrar en overlay de búsqueda -->
 		<key>SearchMaxResults</key>
 		<integer>20</integer>
-		<!-- Límite de fetch global para buscar por nombre -->
 		<key>SearchFetchLimit</key>
 		<integer>1000</integer>
-		<!-- Duración del resaltado del pin (segundos) -->
 		<key>HighlightDuration</key>
 		<real>1.2</real>
-		<!-- Duración del fade-out del resaltado (segundos) -->
 		<key>HighlightFadeDuration</key>
 		<real>0.4</real>
-		<!-- Retardo para abrir el diálogo de acciones tras centrar (segundos) -->
 		<key>ActionMenuDelay</key>
 		<real>0.2</real>
-		<!-- Thresholds de recarga de región -->
+		<key>NoCategoryIcon</key>
+		<string>questionmark.circle.fill</string>
+		<key>NoCategoryColorHex</key>
+		<string>#9E9E9E</string>
 		<key>ThresholdCenterFactor</key>
-		<real>0.10</real>
+		<real>0.1</real>
 		<key>ThresholdSpanFactorLat</key>
-		<real>0.10</real>
+		<real>0.1</real>
 		<key>ThresholdSpanFactorLon</key>
-		<real>0.10</real>
-		<!-- Caché por tiles -->
+		<real>0.1</real>
 		<key>TileCacheTTLSeconds</key>
 		<integer>300</integer>
 		<key>TileGridBaseDegrees</key>
-		<real>0.20</real>
-		<!-- Fetch adaptativo por zoom -->
+		<real>0.2</real>
 		<key>AdaptiveFetch_WideLatDelta</key>
-		<real>12.0</real>
+		<real>12</real>
 		<key>AdaptiveFetch_MediumLatDelta</key>
-		<real>4.0</real>
+		<real>4</real>
 		<key>AdaptiveFetch_WideLimit</key>
 		<integer>120</integer>
 		<key>AdaptiveFetch_MediumLimit</key>
 		<integer>220</integer>
 		<key>AdaptiveFetch_CloseLimit</key>
 		<integer>300</integer>
-		
-		<!-- Activar clustering por defecto -->
 		<key>ClusteringActivado</key>
 		<true/>
-		
-		<!-- Radio del cluster (en grados) -->
 		<key>ClusterRadius</key>
 		<real>0.02</real>
-		
-		<!-- Mínimo de establecimientos para formar cluster -->
 		<key>MinClusterSize</key>
 		<integer>3</integer>
 	</dict>
-	
-	<!-- CONFIGURACIÓN DE UBICACIÓN -->
 	<key>Ubicacion</key>
 	<dict>
-		<!-- Metros mínimos de movimiento para actualizar -->
 		<key>MinMovimientoMetros</key>
-		<real>20.0</real>
-		
-		<!-- Tiempo mínimo entre actualizaciones (segundos) -->
+		<real>20</real>
 		<key>MinIntervaloSegundos</key>
-		<real>2.0</real>
-		
-		<!-- Tamaño del cache de ubicaciones -->
+		<real>2</real>
 		<key>TamanoCacheUbicaciones</key>
 		<integer>100</integer>
 	</dict>
-	
-	<!-- CONFIGURACIÓN GENERAL -->
+	<key>Lista</key>
+	<dict>
+		<key>SearchMaxResults</key>
+		<integer>20</integer>
+		<key>SearchDebounceTime</key>
+		<real>0.35</real>
+		<key>SearchMinChars</key>
+		<integer>3</integer>
+		<key>DistanceCacheInvalidationMeters</key>
+		<real>60</real>
+		<key>NoCategoryIcon</key>
+		<string>questionmark.circle.fill</string>
+		<key>NoCategoryColorHex</key>
+		<string>#9E9E9E</string>
+		<key>RowSpacing</key>
+		<integer>4</integer>
+	</dict>
 	<key>General</key>
 	<dict>
-		<!-- Versión de configuración -->
 		<key>Version</key>
 		<string>1.0.0</string>
-		
-		<!-- Modo debug activado -->
 		<key>ModoDebug</key>
 		<false/>
-		
-		<!-- Idioma de la app -->
 		<key>Idioma</key>
 		<string>es</string>
 	</dict>
 </dict>
 </plist>
-

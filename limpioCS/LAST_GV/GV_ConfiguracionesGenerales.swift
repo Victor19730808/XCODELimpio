@@ -35,6 +35,8 @@ class GV_ConfiguracionesGenerales {
     var mapa_HighlightDuration: Double = 1.2
     var mapa_HighlightFadeDuration: Double = 0.4
     var mapa_ActionMenuDelay: Double = 0.2
+    var mapa_NoCategoryIcon: String = "questionmark.circle.fill"
+    var mapa_NoCategoryColorHex: String = "#9E9E9E"
     // Thresholds de región
     var mapa_ThresholdCenterFactor: Double = 0.10
     var mapa_ThresholdSpanFactorLat: Double = 0.10
@@ -61,6 +63,15 @@ class GV_ConfiguracionesGenerales {
     var general_Version: String = "1.0.0"
     var general_ModoDebug: Bool = false
     var general_Idioma: String = "es"
+    
+    // Lista (Participantes)
+    var lista_SearchMaxResults: Int = 20
+    var lista_SearchDebounceTime: Double = 0.35
+    var lista_SearchMinChars: Int = 1
+    var lista_DistanceCacheInvalidationMeters: Double = 60.0
+    var lista_NoCategoryIcon: String = "questionmark.circle.fill"
+    var lista_NoCategoryColorHex: String = "#9E9E9E"
+    var lista_RowSpacing: Double = 8.0
     
     // MARK: - Init
     private init() {
@@ -93,6 +104,8 @@ class GV_ConfiguracionesGenerales {
             mapa_HighlightDuration = mapa["HighlightDuration"] as? Double ?? 1.2
             mapa_HighlightFadeDuration = mapa["HighlightFadeDuration"] as? Double ?? 0.4
             mapa_ActionMenuDelay = mapa["ActionMenuDelay"] as? Double ?? 0.2
+            mapa_NoCategoryIcon = mapa["NoCategoryIcon"] as? String ?? "questionmark.circle.fill"
+            mapa_NoCategoryColorHex = mapa["NoCategoryColorHex"] as? String ?? "#9E9E9E"
             mapa_ThresholdCenterFactor = mapa["ThresholdCenterFactor"] as? Double ?? 0.10
             mapa_ThresholdSpanFactorLat = mapa["ThresholdSpanFactorLat"] as? Double ?? 0.10
             mapa_ThresholdSpanFactorLon = mapa["ThresholdSpanFactorLon"] as? Double ?? 0.10
@@ -120,6 +133,17 @@ class GV_ConfiguracionesGenerales {
             general_Version = general["Version"] as? String ?? "1.0.0"
             general_ModoDebug = general["ModoDebug"] as? Bool ?? false
             general_Idioma = general["Idioma"] as? String ?? "es"
+        }
+        
+        // Lista de Participantes
+        if let lista = plist["Lista"] as? [String: Any] {
+            lista_SearchMaxResults = lista["SearchMaxResults"] as? Int ?? 20
+            lista_SearchDebounceTime = lista["SearchDebounceTime"] as? Double ?? 0.35
+            lista_SearchMinChars = lista["SearchMinChars"] as? Int ?? 1
+            lista_DistanceCacheInvalidationMeters = lista["DistanceCacheInvalidationMeters"] as? Double ?? 60.0
+            lista_NoCategoryIcon = lista["NoCategoryIcon"] as? String ?? "questionmark.circle.fill"
+            lista_NoCategoryColorHex = lista["NoCategoryColorHex"] as? String ?? "#9E9E9E"
+            lista_RowSpacing = lista["RowSpacing"] as? Double ?? 8.0
         }
         
         ProductionLogger.log("Configuraciones cargadas - Radio mapa: \(mapa_RadioCentradoUsuario_KM)km", level: .info)

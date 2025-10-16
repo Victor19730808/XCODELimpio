@@ -42,16 +42,26 @@ struct GV_SCR_tp_splash: View {
                 .opacity(backgroundOpacity)
             
             VStack(spacing: 0) {
-                // Header con menú splash
-                myHeader.headerViewWithMenu("Hecho en México", nil, .splash,
-                    onNavigateToEstablecimientos: {
-                        navigateToEstablecimientos = true
-                    },
-                    onNavigateToFavoritos: {
-                        navigateToFavoritos = true
-                    },
-                    onNavigateToMapa: {
-                        navigateToMapa = true
+                // Nuevo header centrado real con botón de menú a la derecha
+                ZStack {
+                    Text("Hecho en México")
+                        .font(themeManager.title)
+                        .foregroundColor(themeManager.headerText)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                }
+                .frame(maxWidth: .infinity)
+                .background(themeManager.headerBackground)
+                .overlay(
+                    HStack {
+                        Spacer()
+                        Button {
+                            showMainApp = true
+                        } label: {
+                            Image(systemName: "line.3.horizontal")
+                                .foregroundColor(themeManager.headerIcon)
+                                .padding(.trailing, 16)
+                        }
                     }
                 )
                 .opacity(headerOpacity)

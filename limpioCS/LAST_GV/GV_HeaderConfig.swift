@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 /// Configuración de header para cada tipo
 struct GV_HeaderConfig {
@@ -31,6 +32,19 @@ class GV_HeaderConfigManager {
     static let shared = GV_HeaderConfigManager()
     
     private init() {}
+
+    // Lee valor simple desde GV_Headers_Config.plist (fileprivate para uso en este archivo)
+    fileprivate func valueForKey(_ key: String) -> String? {
+        guard let path = Bundle.main.path(forResource: "GV_Headers_Config", ofType: "plist"),
+              let data = FileManager.default.contents(atPath: path),
+              let plist = try? PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? [String: Any] else { return nil }
+        return plist[key] as? String
+    }
+
+    /// Verifica si existe un asset con ese nombre
+    fileprivate func assetExists(_ name: String) -> Bool {
+        return UIImage(named: name) != nil
+    }
     
     /// Obtiene la configuración de header para un tipo específico
     /// - Parameter headerType: Tipo de header
@@ -104,15 +118,24 @@ extension GV_HeaderType {
             HStack {
                 // Lado izquierdo - Imagen o espacio vacío con frame fijo
                 HStack {
-                    if let imagen = imagen {
-                        Image(imagen)
+                    // Splash: icono desde plist si no se pasa imagen
+                    let leftImageName: String? = {
+                        if let imagen = imagen { return imagen }
+                        if self == .tipo1 { return GV_HeaderConfigManager.shared.valueForKey("SplashLeftIconAssets") }
+                        return nil
+                    }()
+                    if let imgName = leftImageName, GV_HeaderConfigManager.shared.assetExists(imgName) {
+                        Image(imgName)
                             .resizable()
                             .scaledToFit()
                             .frame(width: 30, height: 30)
                             .foregroundColor(GV_Temas_Manager.shared.headerIcon)
                     } else {
-                        Color.clear
+                        Image(systemName: "questionmark.circle.fill")
+                            .resizable()
+                            .scaledToFit()
                             .frame(width: 30, height: 30)
+                            .foregroundColor(GV_Temas_Manager.shared.headerIcon)
                     }
                 }
                 .frame(width: 50, alignment: .leading)
@@ -206,10 +229,15 @@ private struct GV_HeaderWithMenuWrapper: View {
         
         VStack(spacing: 0) {
             HStack {
-                // Lado izquierdo - Imagen o espacio vacío con frame fijo
+                // Lado izquierdo - Imagen (desde parámetro o plist para splash) o espacio fijo
                 HStack {
-                    if let imagen = imagen {
-                        Image(imagen)
+                    let leftImageName: String? = {
+                        if let imagen = imagen { return imagen }
+                        if headerType == .tipo1 { return GV_HeaderConfigManager.shared.valueForKey("SplashLeftIconAssets") }
+                        return nil
+                    }()
+                    if let imgName = leftImageName {
+                        Image(imgName)
                             .resizable()
                             .scaledToFit()
                             .frame(width: 30, height: 30)

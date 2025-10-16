@@ -175,3 +175,4 @@ Este documento describe cada una de las propiedades disponibles en el plist de c
 Estos cambios aumentan resultados en iPad, reducen carga en zoom amplio y suavizan recargas por micro-pan.
 
 
+

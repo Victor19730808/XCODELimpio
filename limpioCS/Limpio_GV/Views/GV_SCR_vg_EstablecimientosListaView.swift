@@ -83,6 +83,11 @@ struct GV_SCR_vg_EstablecimientosListaView: View {
     @State private var showActions = false
     @State private var searchDebounceTask: Task<Void, Never>? = nil
     @State private var showCategorySheet = false
+    @State private var navegarAPromos = false
+    @State private var navegarAlMapa = false
+    @State private var focoMapaCoord: CLLocationCoordinate2D? = nil
+    @State private var showQuickPromo = false
+    @State private var quickPromoEst: GV_modeloCont_Establecimientos? = nil
     
     // MARK: - Paginación
     @State private var itemsToShow = 50
@@ -112,8 +117,7 @@ struct GV_SCR_vg_EstablecimientosListaView: View {
         let minChars = max(1, config.lista_SearchMinChars)
         let term = debouncedSearchText.trimmingCharacters(in: .whitespacesAndNewlines)
         if term.count >= minChars {
-            let lower = term.lowercased()
-            resultado = resultado.filter { $0.establecimiento_nombre.lowercased().contains(lower) }
+            resultado = resultado.filter { $0.establecimiento_nombre.gvContainsInsensitive(term) }
         }
         
         // Ordenar por distancia usando caché externo (no modifica @State)
@@ -388,11 +392,21 @@ struct GV_SCR_vg_EstablecimientosListaView: View {
                 isFavorite: selectedEst.map { favoritosManager.isFavorite(establecimientoId: $0.establecimiento_id) } ?? false,
                 onGo: { if let est = selectedEst { irA(est) } },
                 onRoute: { if let est = selectedEst { rutaA(est) } },
-                onPromos: { /* navegación externa si aplica */ },
+                onPromos: { if selectedEst != nil { navegarAPromos = true } },
+                onQuickPromos: { if let est = selectedEst { quickPromoEst = est; showQuickPromo = true } },
                 onToggleFavorite: { if let est = selectedEst { favoritosManager.toggleFavorite(establecimientoId: est.establecimiento_id); hapticSuccess() } },
                 onWebsite: { if let est = selectedEst { abrirSitioWeb(est) } }
             )
         )
+        .navigationDestination(isPresented: $navegarAPromos) {
+            if let est = selectedEst {
+                GV_SRC_vg_EstablecimientoPromociones(establecimientoId: est.establecimiento_id)
+            }
+        }
+        .navigationDestination(isPresented: $navegarAlMapa) {
+            GV_GreatMap(isTodoMexico: false, initialFocusCoordinate: focoMapaCoord)
+        }
+        .sheet(isPresented: $showQuickPromo) { quickPromosSheet }
         .sheet(isPresented: $showCategorySheet) { categoriaSheet }
         .onAppear {
             // Homologar con SearchMaxResults del mapa
@@ -518,10 +532,10 @@ struct GV_SCR_vg_EstablecimientosListaView: View {
     // MARK: - Filtros dinámicos por categoría
     private func categoriasDisponiblesList() -> [GV_Categoria] {
         let minChars = max(1, config.lista_SearchMinChars)
-        let term = debouncedSearchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let term = debouncedSearchText.trimmingCharacters(in: .whitespacesAndNewlines)
         let fuente: [GV_modeloCont_Establecimientos]
         if term.count >= minChars {
-            fuente = all.filter { $0.establecimiento_nombre.lowercased().contains(term) }
+            fuente = all.filter { $0.establecimiento_nombre.gvContainsInsensitive(term) }
         } else {
             fuente = all
         }
@@ -546,9 +560,11 @@ struct GV_SCR_vg_EstablecimientosListaView: View {
 
     // MARK: - Acciones
     private func irA(_ est: GV_modeloCont_Establecimientos) {
+        // Homologado: abrir nuestra pantalla de mapa centrada en el pin
         hapticSelection()
-        // Comportamiento mínimo: abrir ruta como “Ir a”
-        rutaA(est)
+        guard let lat = est.direccion_latitud, let lon = est.direccion_longitud else { return }
+        focoMapaCoord = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+        navegarAlMapa = true
     }
     private func rutaA(_ est: GV_modeloCont_Establecimientos) {
         guard let lat = est.direccion_latitud, let lon = est.direccion_longitud,
@@ -558,6 +574,19 @@ struct GV_SCR_vg_EstablecimientosListaView: View {
     private func abrirSitioWeb(_ est: GV_modeloCont_Establecimientos) {
         guard let s = est.establecimiento_url, let url = URL(string: s) else { return }
         UIApplication.shared.open(url)
+    }
+    private var quickPromosSheet: some View {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 12) {
+                if let est = quickPromoEst {
+                    GV_QuickPromosView(establecimientoId: est.establecimiento_id, establecimientoNombre: est.establecimiento_nombre)
+                }
+            }
+            .padding()
+            .presentationDetents([.medium])
+            .presentationDragIndicator(.visible)
+            .toolbar { ToolbarItem(placement: .primaryAction) { Button("Cerrar") { showQuickPromo = false } } }
+        }
     }
 
     // MARK: - Haptics

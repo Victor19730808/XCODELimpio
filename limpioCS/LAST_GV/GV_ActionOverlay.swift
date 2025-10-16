@@ -8,6 +8,7 @@ struct GV_ActionOverlay: View {
     var onGo: () -> Void
     var onRoute: () -> Void
     var onPromos: () -> Void
+    var onQuickPromos: () -> Void
     var onToggleFavorite: () -> Void
     var onWebsite: () -> Void
     
@@ -25,6 +26,8 @@ struct GV_ActionOverlay: View {
                             actionButton(system: "mappin.and.ellipse") { onGo(); dismiss() }.accessibilityLabel("Ir a")
                             actionButton(system: "car.fill") { onRoute(); dismiss() }.accessibilityLabel("Ruta desde mi ubicación")
                             actionButton(system: "tag.fill") { onPromos(); dismiss() }.accessibilityLabel("Ver promociones")
+                            // Variante ligera de promociones
+                            actionButton(system: "tag") { onQuickPromos(); dismiss() }.accessibilityLabel("Promos rápidas")
                             actionButton(system: isFavorite ? "heart.slash" : "heart.fill",
                                          tint: isFavorite ? themeManager.textPrimary : .red) { onToggleFavorite(); dismiss() }
                                 .accessibilityLabel(isFavorite ? "Quitar de favoritos" : "Guardar en favoritos")
@@ -61,5 +64,6 @@ struct GV_ActionOverlay: View {
     
     private func dismiss() { withAnimation(.easeOut(duration: 0.2)) { isPresented = false } }
 }
+
 
 

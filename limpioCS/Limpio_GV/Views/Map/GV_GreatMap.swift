@@ -65,9 +65,18 @@ struct GV_GreatMap: View {
     @State private var showEmptyOverlay: Bool = false
     @State private var regionCache: [String: (Date, [GV_modeloCont_Establecimientos])] = [:]
     @State private var categoriaIdMemo: [Int: Int] = [:]
+    @State private var showQuickPromo = false
+    @State private var quickPromoEst: GV_modeloCont_Establecimientos? = nil
     
     // MARK: - Configuración
     let isTodoMexico: Bool
+    let initialFocusCoordinate: CLLocationCoordinate2D?
+
+    // Inicializador explícito para permitir pasar coordenada inicial desde otras pantallas
+    init(isTodoMexico: Bool, initialFocusCoordinate: CLLocationCoordinate2D? = nil) {
+        self.isTodoMexico = isTodoMexico
+        self.initialFocusCoordinate = initialFocusCoordinate
+    }
     
     // MARK: - Computed Properties
     
@@ -86,9 +95,9 @@ struct GV_GreatMap: View {
             }
         }
         if debouncedSearchText.trimmingCharacters(in: .whitespacesAndNewlines).count >= max(1, config.mapa_SearchMinChars) {
-            let term = debouncedSearchText.lowercased()
+            let term = debouncedSearchText
             resultado = resultado.filter { est in
-                est.establecimiento_nombre.lowercased().contains(term)
+                est.establecimiento_nombre.gvContainsInsensitive(term)
             }
         }
         return resultado
@@ -119,8 +128,15 @@ struct GV_GreatMap: View {
             location.start()
             ProductionLogger.mapLog("LocationService iniciado - Lat: \(location.latitude?.description ?? "nil"), Lon: \(location.longitude?.description ?? "nil")")
             
+            if let focus = initialFocusCoordinate {
+                // Priorizar foco inicial solicitado (desde lista, deeplink, etc.)
+                let delta = max(0.02, config.mapa_ZoomUsuario_LatitudeDelta)
+                let region = MKCoordinateRegion(center: focus, span: MKCoordinateSpan(latitudeDelta: delta, longitudeDelta: delta))
+                cameraPosition = .region(region)
+            } else {
+                configurarCamaraInicial()
+            }
             cargarEstablecimientos()
-            configurarCamaraInicial()
         }
     }
     
@@ -381,8 +397,54 @@ struct GV_GreatMap: View {
         .onChange(of: debouncedSearchText) { _, term in
             actualizarResultadosBusqueda(term: term)
         }
-        .overlay(accionesDialog)
+        .overlay(
+            GV_ActionOverlay(
+                isPresented: $mostrarAcciones,
+                showWebsite: (establecimientoParaAcciones?.establecimiento_url?.isEmpty == false),
+                isFavorite: establecimientoParaAcciones.map { favoritosManager.isFavorite(establecimientoId: $0.establecimiento_id) } ?? false,
+                onGo: {
+                    if let est = establecimientoParaAcciones { centrarEnEstablecimiento(est) }
+                    // Cerrar overlay de resultados de búsqueda
+                    debouncedSearchText = ""
+                    searchText = ""
+                    searchResults = []
+                    searchFieldFocused = false
+                },
+                onRoute: {
+                    if let est = establecimientoParaAcciones { abrirRutasEnMaps(est) }
+                    debouncedSearchText = ""
+                    searchText = ""
+                    searchResults = []
+                    searchFieldFocused = false
+                },
+                onPromos: {
+                    if let est = establecimientoParaAcciones {
+                        establecimientoSeleccionado = est
+                        navegarAPromociones = true
+                    }
+                    debouncedSearchText = ""
+                    searchText = ""
+                    searchResults = []
+                    searchFieldFocused = false
+                },
+                onQuickPromos: {
+                    if let est = establecimientoParaAcciones {
+                        quickPromoEst = est
+                        showQuickPromo = true
+                    }
+                },
+                onToggleFavorite: { if let est = establecimientoParaAcciones { favoritosManager.toggleFavorite(establecimientoId: est.establecimiento_id); hapticSuccess() } },
+                onWebsite: {
+                    if let est = establecimientoParaAcciones { abrirSitioWeb(est) }
+                    debouncedSearchText = ""
+                    searchText = ""
+                    searchResults = []
+                    searchFieldFocused = false
+                }
+            )
+        )
         .overlay(loadingEmptyOverlays)
+        .sheet(isPresented: $showQuickPromo) { quickPromosSheet }
     }
     
     // MARK: - Funciones
@@ -631,9 +693,8 @@ struct GV_GreatMap: View {
                 )
                 descriptor.fetchLimit = config.mapa_SearchFetchLimit
                 let todos = try context.fetch(descriptor)
-                // Filtro por nombre (case/diacritic insensitive)
-                let lower = limpio.lowercased()
-                var filtrados = todos.filter { $0.establecimiento_nombre.lowercased().contains(lower) }
+                // Filtro por nombre (case/diacritic/encoding insensitive)
+                var filtrados = todos.filter { $0.establecimiento_nombre.gvContainsInsensitive(limpio) }
                 if !categoriasSeleccionadas.isEmpty {
                     filtrados = filtrados.filter { est in
                         if let catId = categoriaIdResuelta(for: est) { return categoriasSeleccionadas.contains(catId) }
@@ -723,6 +784,21 @@ struct GV_GreatMap: View {
         return String(format: "%.4f_%.4f_%.4f_%.4f", cLat, cLon, sLat, sLon)
     }
 
+    // MARK: - Quick Promos Sheet
+    private var quickPromosSheet: some View {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 12) {
+                if let est = quickPromoEst {
+                    GV_QuickPromosView(establecimientoId: est.establecimiento_id, establecimientoNombre: est.establecimiento_nombre)
+                }
+            }
+            .padding()
+            .presentationDetents([.medium])
+            .presentationDragIndicator(.visible)
+            .toolbar { ToolbarItem(placement: .primaryAction) { Button("Cerrar") { showQuickPromo = false } } }
+        }
+    }
+
     private func adaptiveFetchLimit(for region: MKCoordinateRegion) -> Int {
         let latDelta = region.span.latitudeDelta
         if latDelta >= config.mapa_AdaptiveFetch_WideLatDelta { return config.mapa_AdaptiveFetch_WideLimit }
@@ -805,124 +881,7 @@ struct GV_GreatMap: View {
         openURL(url)
     }
 
-    // Diálogo de acciones (overlay personalizado con iconos)
-    private var accionesDialog: some View {
-        Group {
-            if mostrarAcciones, let est = establecimientoParaAcciones {
-                ZStack(alignment: .bottom) {
-                    // Fondo dimmer
-                    Color.black.opacity(0.35)
-                        .ignoresSafeArea()
-                        .onTapGesture { withAnimation(.easeOut(duration: 0.2)) { mostrarAcciones = false } }
-
-                    // Sheet de acciones icon-only
-                    VStack(spacing: 14) {
-                        HStack(spacing: 24) {
-                            // Ir a
-                            Button {
-                                centrarEnEstablecimiento(est)
-                                debouncedSearchText = ""
-                                searchText = ""
-                                searchResults = []
-                                searchFieldFocused = false
-                                withAnimation(.easeOut(duration: 0.2)) { mostrarAcciones = false }
-                            } label: {
-                                Circle()
-                                    .fill(themeManager.cardBackground)
-                                    .frame(width: 58, height: 58)
-                                    .overlay(Image(systemName: "mappin.and.ellipse").font(.system(size: 22, weight: .semibold)).foregroundColor(themeManager.textPrimary))
-                            }
-                            .accessibilityLabel("Ir a")
-
-                            // Ruta
-                            Button {
-                                abrirRutasEnMaps(est)
-                                debouncedSearchText = ""
-                                searchText = ""
-                                searchResults = []
-                                searchFieldFocused = false
-                                withAnimation(.easeOut(duration: 0.2)) { mostrarAcciones = false }
-                            } label: {
-                                Circle()
-                                    .fill(themeManager.cardBackground)
-                                    .frame(width: 58, height: 58)
-                                    .overlay(Image(systemName: "car.fill").font(.system(size: 22, weight: .semibold)).foregroundColor(themeManager.textPrimary))
-                            }
-                            .accessibilityLabel("Ruta desde mi ubicación")
-
-                            // Promociones
-                            Button {
-                                establecimientoSeleccionado = est
-                                navegarAPromociones = true
-                                debouncedSearchText = ""
-                                searchText = ""
-                                searchResults = []
-                                searchFieldFocused = false
-                                withAnimation(.easeOut(duration: 0.2)) { mostrarAcciones = false }
-                            } label: {
-                                Circle()
-                                    .fill(themeManager.cardBackground)
-                                    .frame(width: 58, height: 58)
-                                    .overlay(Image(systemName: "tag.fill").font(.system(size: 22, weight: .semibold)).foregroundColor(themeManager.textPrimary))
-                            }
-                            .accessibilityLabel("Ver promociones")
-
-                            // Favoritos
-                            Button {
-                                favoritosManager.toggleFavorite(establecimientoId: est.establecimiento_id)
-                                hapticSuccess()
-                                withAnimation(.easeOut(duration: 0.2)) { mostrarAcciones = false }
-                            } label: {
-                                Circle()
-                                    .fill(themeManager.cardBackground)
-                                    .frame(width: 58, height: 58)
-                                    .overlay(Image(systemName: favoritosManager.isFavorite(establecimientoId: est.establecimiento_id) ? "heart.slash" : "heart.fill").font(.system(size: 22, weight: .semibold)).foregroundColor(favoritosManager.isFavorite(establecimientoId: est.establecimiento_id) ? themeManager.textPrimary : .red))
-                            }
-                            .accessibilityLabel(favoritosManager.isFavorite(establecimientoId: est.establecimiento_id) ? "Quitar de favoritos" : "Guardar en favoritos")
-                        }
-
-                        HStack(spacing: 24) {
-                            // Sitio web (si existe)
-                            if let urlStr = est.establecimiento_url, URL(string: urlStr) != nil {
-                                Button {
-                                    abrirSitioWeb(est)
-                                    debouncedSearchText = ""
-                                    searchText = ""
-                                    searchResults = []
-                                    searchFieldFocused = false
-                                    withAnimation(.easeOut(duration: 0.2)) { mostrarAcciones = false }
-                                } label: {
-                                    Circle()
-                                        .fill(themeManager.cardBackground)
-                                        .frame(width: 58, height: 58)
-                                        .overlay(Image(systemName: "safari").font(.system(size: 22, weight: .semibold)).foregroundColor(themeManager.textPrimary))
-                                }
-                                .accessibilityLabel("Ver sitio web")
-                            }
-
-                            // Cerrar
-                            Button {
-                                withAnimation(.easeOut(duration: 0.2)) { mostrarAcciones = false }
-                            } label: {
-                                Circle()
-                                    .fill(Color.red.opacity(0.2))
-                                    .frame(width: 58, height: 58)
-                                    .overlay(Image(systemName: "xmark").font(.system(size: 20, weight: .bold)).foregroundColor(.red))
-                            }
-                            .accessibilityLabel("Cerrar")
-                        }
-                        .opacity(0.9)
-                    }
-                    .padding(.vertical, 18)
-                    .padding(.horizontal, 16)
-                    .background(.ultraThinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 18))
-                    .padding(.bottom, 18)
-                }
-                .transition(.move(edge: .bottom).combined(with: .opacity))
-            }
-        }
-    }
+    // Overlay inline eliminado: sustituido por GV_ActionOverlay
 
     // MARK: - Haptics
     private func hapticSelection() {

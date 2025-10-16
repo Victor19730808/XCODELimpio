@@ -22,8 +22,8 @@ struct limpioCSApp: App {
                     showMainApp = true
                 }
             } else {
-                // 🚀 Mostrar splash screen normal
-                GV_SCR_tp_splash()
+                // 🚀 Mostrar NUEVO header test mínimo
+                GV_SplashHeaderTest()
                     .environmentObject(locationService)
                     .onAppear {
                         needsSeed = seedManager.checkSeedStatus()
